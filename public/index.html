@@ -156,24 +156,46 @@
                 <h1>Make an impact Today</h1>
                 <p>support our mission by contributiing a donation.</p>
             </div>
-        
-            <div class="donate-form">
-                <h2>Donate Today</h2>
-                <p>Your support builds equity and healthier futures.</p>
-                <!-- row of presets -->
-                 <!-- cousotm amount -->
-                  <!-- toggle for freuqncy -->
-                   <!-- donor info -->
-                    <!-- name -->
-                     <!-- email, requireed for recipt -->
 
-                     <!-- add gogole pay and apple pay icons  -->
-                <a href="https://buy.stripe.com/test_dRm5kEdm4bQA96cgftcjS00class=" class = "donate-btn" >Donate 25$</a>
-                <!-- Trust badges (🔒 Secure, 🧾 Tax-deductible, 💌 Cancel anytime). -->
-                 <!-- Success + Cancel pages (to thank donors or let them retry) -->
-                  <!-- you could even start with Stripe Payment Links (no code at all) just to see it work, then graduate to Checkout, and then later to Elements. -->
-                   <!-- Later: set up webhooks to track successful donations automatically. -->
+            <div class="card">
+                <p>Click to create a $25 checkout session and redirect to Stripe.</p>
+                <button id="donate">Donate $25</button>
+                <pre id="log"></pre>
             </div>
+            
+            
+            <!-- <form id="donate-form"> -->
+                <!-- <h2>Donate Today</h2> -->
+                <!-- <p>Your support builds equity and healthier futures.</p> -->
+
+                <!-- <label for="amount">Donation Amount (USD)</label> -->
+                <!-- <select id="amount" required> -->
+                    <!-- <option value="">--Choose an amount--</option> -->
+                    <!-- <option value="1000">$10</option> -->
+                    <!-- <option value="2500">$25</option> -->
+                    <!-- <option value="5000">$50</option> -->
+                    <!-- cousotm amount -->
+                <!-- </select> -->
+                <!-- <div id="amount-error" class="error" hidden>Please select an amount.</div> -->
+                
+                <!-- toggle for freuqncy -->
+
+                <!-- <label for="email">Email (required for receipt)</label> -->
+                <!-- <input id="email" type="email" placeholder="you@example.com" autocomplete="email" required /> -->
+                <!-- <div id="email-error" class="error" hidden>Please enter a valid email.</div> -->
+
+                <!-- <button type="submit">Donate</button> -->
+            <!-- </form> -->
+
+
+                <!-- add gogole pay and apple pay icons  -->
+
+                <!-- <a href="https://buy.stripe.com/test_dRm5kEdm4bQA96cgftcjS00" class = "donate-btn" >Donate 25$</a> -->
+
+                <!-- Trust badges (🔒 Secure, 🧾 Tax-deductible, 💌 Cancel anytime). -->
+                <!-- Success + Cancel pages (to thank donors or let them retry) -->
+                <!-- you could even start with Stripe Payment Links (no code at all) just to see it work, then graduate to Checkout, and then later to Elements. -->
+                 <!-- Later: set up webhooks to track successful donations automatically. -->
         </section>
 
         <section class="volunteer">
@@ -207,32 +229,90 @@
 
 
     <script>
-        // async () => { ... } → defines the function as async, meaning we can use await inside (to handle promises easily).
-        document.getElementById("donate-btn").addEventListener("click", async () => {
-            // fetch()->  built-in browser function for making HTTP requests from JavaScript.
-            // the URL is the end point in backend server
-            // await -> ouses here until server responds
-            const res = await fetch("http://localhost:3000/api/create-checkout-session", {
-                // making a post request
-                method: "POST",
 
-                // headers → tell the server how we’re sending data.
-                // "Content-Type": "application/json" → means the body is JSON text.
-                headers: { "Content-Type": "application/json" },
+        const log = document.getElementById("log");
+        const write = (m) => (log.textContent += m + "\n");
 
-                // body: → the actual data we’re sending in the request.
-                // JSON.stringify(...) → turns our JavaScript object into a JSON string
-                body: JSON.stringify({ amount_cents: 2500, email: "test@example.com" })
+        document.getElementById("donate").addEventListener("click", async () => {
+        write("POST → /api/create-checkout-session …");
+        try {
+            // const res = await fetch("http://localhost:3000/api/create-checkout-session", {
+            const res = await fetch("/api/create-checkout-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ amount_cents: 2500, email: "test@example.com" })
             });
-            // takes the server’s response and converts it from JSON into a JavaScript object.
+            write("Status: " + res.status);
             const data = await res.json();
-            // Now data looks like: { url: "https://checkout.stripe.com/session/abc123" }
+            write("URL: " + (data.url || data.error));
+            if (data.url) window.location.href = data.url;
+        } catch (e) {
+            write("Fetch failed: " + e.message);
+        }
+        });
 
-            // tells the browser to go to a new page (the URL returned by stripe)
-            window.location.href = data.url; // redirect to Stripe Checkout
+        // const log = document.getElementById("log");
+        // const write = (m) => (log.textContent += m + "\n");
+
+        // document.getElementById("donate").addEventListener("click", async () => {
+        // write("Click → sending POST to /api/create-checkout-session...");
+        // try {
+        //     const res = await fetch("http://localhost:3000/api/create-checkout-session", {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ amount_cents: 2500, email: "test@example.com" })
+        //     });
+
+        //     write("Response status: " + res.status);
+
+        //     // If server returned an error, show it
+        //     if (!res.ok) {
+        //     const txt = await res.text();
+        //     write("Server error: " + txt);
+        //     return;
+        //     }
+
+        //     const data = await res.json();
+        //     write("Got URL: " + data.url);
+        //     if (data.url) {
+        //     write("Redirecting to Stripe...");
+        //     window.location.href = data.url;
+        //     } else {
+        //     write("No URL returned. Check server logs.");
+        //     }
+        // } catch (e) {
+        //     write("Fetch failed: " + e.message);
+        //     console.error(e);
+        // }
+        // });
 
 
-        } )
+
+        // // async () => { ... } → defines the function as async, meaning we can use await inside (to handle promises easily).
+        // document.getElementById("donate-btn").addEventListener("click", async () => {
+        //     // fetch()->  built-in browser function for making HTTP requests from JavaScript.
+        //     // the URL is the end point in backend server
+        //     // await -> pauses here until server responds
+        //     const res = await fetch("http://localhost:3000/api/create-checkout-session", {
+        //         // making a post request
+        //         method: "POST",
+
+        //         // headers → tell the server how we’re sending data.
+        //         // "Content-Type": "application/json" → means the body is JSON text.
+        //         headers: { "Content-Type": "application/json" },
+
+        //         // body: → the actual data we’re sending in the request.
+        //         // JSON.stringify(...) → turns our JavaScript object into a JSON string
+        //         body: JSON.stringify({ amount_cents: 2500, email: "test@example.com" })
+        //     });
+        //     // takes the server’s response and converts it from JSON into a JavaScript object.
+        //     const data = await res.json();
+        //     // Now data looks like: { url: "https://checkout.stripe.com/session/abc123" }
+
+        //     // tells the browser to go to a new page (the URL returned by stripe)
+        //     window.location.href = data.url; // redirect to Stripe Checkout
+
+        // } );
     </script>
   
 </body>
