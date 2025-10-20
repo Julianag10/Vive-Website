@@ -1,0 +1,8 @@
+# Don't track installed libraries
+node_modules/ 
+
+# Don't track secret environment variables
+.env
+
+# Don't track MacOS Finder junk files
+.DS_Store
