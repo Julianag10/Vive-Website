@@ -1,6 +1,8 @@
 // server.js
 import express from "express";
 import Stripe from "stripe";
+import { engine } from "express-handlebars";
+
 import dotenv from "dotenv";
 
 // load environment variables
@@ -10,24 +12,56 @@ dotenv.config();
 const app = express(); // creates express server
 app.use(express.json()); // lets backend read JSON from requesets
 
+// ---------- Handlebars setup ----------
+app.engine("hbs", engine({ extname: ".hbs" }));
+app.set("view engine", "hbs");
+app.set("views", "./views");
+
+// ---------- Static files ----------
+// serve static files in /public (index.html, success.html, cancel.html)
+app.use(express.static("public"));
+
+// ---------- Stripe setup ----------
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || "sk_test_REPLACE_ME";
+const stripe = new Stripe(STRIPE_SECRET_KEY);
+
+// ---------- Logging middleware ----------
 // log every request
 app.use((req, res, next) => {
   console.log("➡️ Request:", req.method, req.url);
   next();
 });
 
-// serve static files in /public (index.html, success.html, cancel.html)
-app.use(express.static("public"));
 
-// simple test route
+// ---------- Routes ------------------------------
+
+// Home page
 app.get("/", (req, res) => {
-  res.send("Server is running ✅");
+  res.render("home", { title: "Dynamic Test " + new Date().toLocaleTimeString() });
 });
 
-// Stripe setup
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || "sk_test_REPLACE_ME";
-const stripe = new Stripe(STRIPE_SECRET_KEY);
+// app.get("/", (req, res) => {
+//   res.render("home", { title: "Welcome to VIVE" });
+// });
 
+// About page
+app.get("/about", (req, res) => {
+  res.render("about", { title: "About VIVE" });
+});
+
+// Success page (hbs or html, your choice)
+app.get("/success", (req, res) => {
+  res.render("success", { title: "Donation Successful" });
+});
+
+// Cancel page
+app.get("/cancel", (req, res) => {
+  res.render("cancel", { title: "Donation Canceled" });
+});
+
+
+
+// ---------- Stripe Checkout Session --------------------
 
 // allow a POST/create-checkout-session request
 // add a new POST endpoint for creating checkout sessions
@@ -69,7 +103,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
   }
 });
 
-// start server
+// -------------------- Start server --------------------
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
