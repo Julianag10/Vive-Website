@@ -79,22 +79,24 @@ body {
 
 .hero{
     grid-area: hero;
-    position: relative;
+    position: relative;  /* makes this the "anchor" for .hero-text */
     width: 100%;
-
+    height: 70vh;     /* takes up 70% of the viewport height */
 }
 
 .hero img{
+    position: absolute;      /* makes the image fill the hero section */
     width: 100%;
+    height: 100%;      /* fill the height of .hero */
     object-fit: cover;         /* crop image while keeping aspect ratio */
     display: block;
 }
 
 .hero-text{
     position: absolute;        /* place text on top of image */
-    /* color:white; */
+    color:white;
     text-align: left;
-    padding: 1rem;
+    
 }
 
 .about{
