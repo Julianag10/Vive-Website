@@ -47,13 +47,18 @@ h3 {
     line-height: 1.2em;
     letter-spacing: -0.03em;
 }
+
 p, li{
     font-family: var(--font-secondary);
     font-size: var(--font-size-p);
     line-height: 1.2em;
     letter-spacing: -0.03em;
 }
-html, body { margin:0 }
+
+html, body { 
+    margin:0 ;
+    height: 100%;       /* make page take full viewport */
+}
 
 body {
   background-color: var(--color-background);
@@ -65,7 +70,6 @@ body {
   grid-template-columns: 1fr 1fr 1fr; /* 3 equal columns */
   grid-template-rows: auto;
   grid-template-areas: 
-    "header header header"
     "hero hero hero"
     "about about about"
     "programs programs programs"
@@ -74,13 +78,13 @@ body {
     "donate donate donate"
     "volunteer volunteer volunteer"
     "testimonials testimonials testimonials"
-    "partners partners partners"
-    "footer footer footer";
-  gap: 4rem 0rem; /*adds space between each section inside grid container*/
+    "partners partners partners";
+    gap: 4rem 0rem; /*adds space between each section inside grid container*/
 }
 
-.nav{
+.header{
     grid-area: header;
+    background-color: var(--color-primary);
 }
 
 .hero{
@@ -280,3 +284,16 @@ body {
     padding: 4rem;
 }
 
+.testimonials{
+    grid-area: testimonials;
+
+}
+
+.partners{
+    grid-area: partners;
+}
+
+.footer{
+    grid-area: footer;
+    background-color: var(--color-primary);
+}
