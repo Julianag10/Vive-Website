@@ -104,13 +104,13 @@ body {
     display:grid;
     grid-template-columns: 1fr 1fr; /* 2 equal columns */
     gap: 2rem; /*makes spacbetween grid coloms */
-    padding: 3rem 2rem; /* keeps text from touching edges of bakcground */
+    padding: 0 2rem; /* keeps text from touching edges of bakcground */
     background: var(--color-light);
 }
 
 .programs{
     grid-area: programs;
-    padding: 4rem 2rem; 
+    padding: 0 2rem; 
 }
 
 .programs h2{ text-align: center;}
