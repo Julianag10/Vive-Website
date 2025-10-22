@@ -4,10 +4,49 @@
   --color-accent: #CBEEF3;
   --color-text: #222222;
   --color-background: #ffffff;
+
+    /* Font families */
+    --font-primary: 'ADLaM Display', cursive;
+    --font-secondary: 'Varela Round', sans-serif;
+
+  /* Font sizes (desktop-first, can scale with media queries) */
+  --font-size-h1: 8.8rem;   /* big hero headings */
+  --font-size-h2: 2.8rem;   /* section headings */
+  --font-size-h3: 1.8rem;    
+  --font-size-p: 1.125rem;      /* default paragraph */
+  --font-size-small: 0.875rem; /* fine print */
+  
 }
 
-:root
+h1 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-h1);
+  font-weight: 600;
+  line-height: 1em;
+  letter-spacing: -0.05em;
+}
 
+h2 {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-h2);
+    font-weight: 400;
+    line-height: 1.2em;
+    letter-spacing: -0.03em;
+}
+
+h3 {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-h3);
+    font-weight: 400;
+    line-height: 1.2em;
+    letter-spacing: -0.03em;
+}
+p, li{
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-p);
+    line-height: 1.2em;
+    letter-spacing: -0.03em;
+}
 html, body { margin:0 }
 
 body {
@@ -34,9 +73,28 @@ body {
   gap: 4rem 0rem; /*adds space between each section inside grid container*/
 }
 
+.nav{
+    grid-area: header;
+}
+
 .hero{
     grid-area: hero;
+    position: relative;
+    width: 100%;
 
+}
+
+.hero img{
+    width: 100%;
+    object-fit: cover;         /* crop image while keeping aspect ratio */
+    display: block;
+}
+
+.hero-text{
+    position: absolute;        /* place text on top of image */
+    /* color:white; */
+    text-align: left;
+    padding: 1rem;
 }
 
 .about{
@@ -52,6 +110,7 @@ body {
     grid-area: programs;
     padding: 4rem 2rem; 
 }
+
 .programs h2{ text-align: center;}
 
 .programs-grid{
@@ -61,33 +120,46 @@ body {
 }
 
 .program-card {
-    background: var(--color-secondary);
-    padding: 1.5rem; /* adds spsce beteern the cards boarder and inner text */
-    border-radius: 10px;
+    display: grid;
+    grid-template-rows: auto 1fr 1fr auto auto; 
+    gap: 1rem;
+    padding: 3rem; /* adds spsce beteern the cards boarder and inner stuff */
 
+    background: var(--color-secondary);
+    color:white;
+    border-radius: 10px;
+    
     /* enable container queries */
-    container-type: inline-size;
-    container-name: program;
+    /* container-type: inline-size; */
+    /* container-name: program; */
 }
 
 .program-card h3{
+    margin:0;
     text-align: center;
 }
 
+.program-card p, 
+.program-card .activities {
+    margin:0;
+    padding-left: 0;
+    list-style: none;  
+    padding-bottom: 1rem;
+}
+
+.program-card .activities li {
+  margin-bottom: 1rem;
+}
+
 /* Circular images */
-.program-card img {
+.program-card img { 
+    /* margin: 0;  */
     display: block; /* images are inline by default */
-    width: 80% ;
+    max-width: 100% ;
     aspect-ratio: 1 /1; /*keep it square */
     object-fit: cover; /* ensures the image fills the circle */
     border-radius: 50%;
-    margin: 0 auto 1rem;
-}
-
-.program-card p {
-  max-width: 80%;   /* adjust this number to taste */
-  margin: 0 auto 1rem; /* center it inside the card */
-  text-align: left;
+    justify-self: center; /* centers image while text stays aligned left */
 }
 
 .program-card button{
@@ -95,12 +167,12 @@ body {
     margin: 0 auto 1rem;  /* auto left/right centers it */
 }
 
-
 .features {
     grid-area: features;
     display: grid;
     background-color: #BADA54;
 }
+
 .features-row {
     display: grid;
     grid-template-columns: 1fr 1fr; /* 2 equal columns */
@@ -160,35 +232,43 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     background-color: #0685EE;
-    margin: 1rem;
+    margin:1rem;
     padding: 4rem;
     gap: 4rem;
-    border-radius: 10px;
+    /* border-radius: 10px; */
 }
 
-/* .fact-impact{
+.fact-impact{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-} */
+    background-color: #0685EE;
+    color: white;
+    border-radius: 10px;
+    border: 5px solid #BADA54;
+    padding: 1rem;
+}
 
 .donate{
     grid-area: donate;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 4rem;
     background-color: #BADA54;
     padding: 4rem;
+    text-align: center;
 }
 
 .donate-form {
     background-color: #CBEEF3 ;
     padding: 1.5rem; /* adds spsce beteern the forms boarder and inner text */
     border-radius: 10px ;
-    border: 3px solid #0685EE;
+    border: 5px solid #0685EE;
+    
 }
 
 .volunteer{
     grid-area: volunteer;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    padding: 4rem;
 }
 

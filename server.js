@@ -37,7 +37,7 @@ app.use((req, res, next) => {
 
 // Home page
 app.get("/", (req, res) => {
-  res.render("home", { title: "Dynamic Test " + new Date().toLocaleTimeString() });
+  res.render("home", { title: "Welcome to Vive" });
 });
 
 // app.get("/", (req, res) => {
