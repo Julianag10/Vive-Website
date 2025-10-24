@@ -133,38 +133,10 @@
       <p>Support our mission by contributing a donation.</p>
     </div>
 
-    <div class="donate-form">
-      <p>Click to create a $25 checkout session and redirect to Stripe.</p>
-      <button id="donate">Donate $25</button>
-        <!-- <h2>Donate Today</h2> -->
-        <!-- <p>Your support builds equity and healthier futures.</p> -->
-
-        <!-- <label for="amount">Donation Amount (USD)</label> -->
-        <!-- <option value="">Choose an amount </option> -->
-        <!-- <option value="1000">$10</option> -->
-        <!-- <option value="2500">$25</option> -->
-        <!-- <option value="5000">$50</option> -->
-        <!-- cousotm amount -->
-
-
-        <!-- <div id="amount-error" class="error" hidden>Please select an amount.</div> -->
-                
-        <!-- toggle for freuqncy -->
-
-        {{!-- handel form input validation --}}
-        
-      <pre id="log"></pre>
-
-
-                <!-- add gogole pay and apple pay icons  -->
-
-                <!-- <a href="https://buy.stripe.com/test_dRm5kEdm4bQA96cgftcjS00" class = "donate-btn" >Donate 25$</a> -->
-
-                <!-- Trust badges (🔒 Secure, 🧾 Tax-deductible, 💌 Cancel anytime). -->
-                <!-- Success + Cancel pages (to thank donors or let them retry) -->
-                <!-- you could even start with Stripe Payment Links (no code at all) just to see it work, then graduate to Checkout, and then later to Elements. -->
-                <!-- Later: set up webhooks to track successful donations automatically. -->
+    <div class ="donate-form">
+        {{> donation-form}}
     </div>
+
   </section>
 
   <section class="volunteer">
