@@ -1,0 +1,21 @@
+<!-- === PARTIAL: Donation Form === -->
+<form id="donation-form" class="donation-form">
+  {{!-- === FIELD TO CUSTOMIZE === 
+        You can style labels, add preset donation buttons, 
+        or match your site’s form grid system. --}}
+  <label>Donation Amount (USD)</label>
+  <input id="amount" type="number" min="1" step="1" value="25" required />
+
+  <label>Full Name</label>
+  <input id="name" type="text" placeholder="Your name" required />
+
+  <label>Email (for receipt)</label>
+  <input id="email" type="email" placeholder="you@example.com" />
+
+  <label>Card</label>
+  <div id="card-element" class="card-field"></div> {{!-- Stripe Element mounts here --}}
+
+  <button id="submit">Donate</button>
+  <div id="error" class="error" role="alert"></div>
+  <div id="success" style="display:none">Thanks — donation complete!</div>
+</form>

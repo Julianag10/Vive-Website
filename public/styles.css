@@ -1,8 +1,8 @@
 /* 🔴 Outline every element */
-/* * {
+* {
   outline: 1px dashed red !important;
   position: relative; 
-} */
+}
 
 :root {
   --color-primary:#BADA54;
