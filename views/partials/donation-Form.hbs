@@ -1,58 +1,8 @@
-<form id="donation-form" class="donation-form" novalidate>
-  <div class="form-row">
-    <label for="amount">Donation amount (USD)</label>
-    <input id ="amount" name ="amount" type="number" inputmode="decimal" min="1" step="1" value="25" required placeholder="Enter amount" />
-  </div>
-
-  <div class="form-row">
-    <label for="donorName">Full Name</label>
-    <input id ="donorName" name="donorName" type="text" autocomplete="name" required />
-  </div>
-
-  <div class="form-row">
-    <label for="email">Email (for recipt)</label>
-    <input id="email" name="email" type="email" autocomplete="email" />
-  </div>
-
-  <div class="form-row">
-    <label for="card-element">Card</label>
-
-    {{!-- placeholder --}}
-    <div id="card-element" class="card-field"> </div>
-    <div id ="card-errors" class="error" role="alert"></div>
-  </div>
-
-  <button id="donateBtn" type="submit">Donate</button>
-
-  <p id="donation-success" style="display:none" aria-live="polite">
-    Thank you! Your donation was completed.
-  </p>
-
+<h2>Donate</h2>
+<form id="payment-form">
+  <div id="card-element"><!-- Stripe inserts card input here --></div>
+  <button type="button" id="pay" data-pk="{{publishableKey}}">Pay $25</button>
 </form>
-<!-- <h2>Donate Today</h2> -->
-<!-- <p>Your support builds equity and healthier futures.</p> -->
 
-<!-- <label for="amount">Donation Amount (USD)</label> -->
-<!-- <option value="">Choose an amount </option> -->
-<!-- <option value="1000">$10</option> -->
-<!-- <option value="2500">$25</option> -->
-<!-- <option value="5000">$50</option> -->
-<!-- cousotm amount -->
+<p id="result"></p>
 
-
-<!-- <div id="amount-error" class="error" hidden>Please select an amount.</div> -->
-        
-<!-- toggle for freuqncy -->
-
-{{!-- handel form input validation --}}
-
-
-{{!-- add auto complete for card information --}}
-<!-- add gogole pay and apple pay icons  -->
-
-<!-- <a href="https://buy.stripe.com/test_dRm5kEdm4bQA96cgftcjS00" class = "donate-btn" >Donate 25$</a> -->
-
-<!-- Trust badges (🔒 Secure, 🧾 Tax-deductible, 💌 Cancel anytime). -->
-<!-- Success + Cancel pages (to thank donors or let them retry) -->
-<!-- you could even start with Stripe Payment Links (no code at all) just to see it work, then graduate to Checkout, and then later to Elements. -->
-<!-- Later: set up webhooks to track successful donations automatically. -->

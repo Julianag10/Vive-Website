@@ -1,56 +1,52 @@
 
 //get referencer to important DOM elements in donation form
 // needed for interactivity
-const form = document.getElementById("donation-fomr");
-const donateBtn = document.getElementById("donateBtn");
-const successMsg = document.getElementById("donation-success");
-const errorBox = document.getElementById("card-errors");
+// const form = document.getElementById("donation-fomr");
+// const donateBtn = document.getElementById("donateBtn");
+// const successMsg = document.getElementById("donation-success");
+// const errorBox = document.getElementById("card-errors");
 
 // helper to toggle the button state while processing
-function setLoading(isLoading){
-    if(isLoading){
+// function setLoading(isLoading){
+//     if(isLoading){
 
-    }
-}
+//     }
+// }
 
 // helper to show error messages
-function showError(message) {
-    //clears of displays error text inside <div id="card-error">
-  errorBox.textContent = message || "";
-}
+// function showError(message) {
+//     //clears of displays error text inside <div id="card-error">
+//   errorBox.textContent = message || "";
+// }
 
 //listen for live validation errors as the user typesint the card fril s
 // card.on("change", (event) => {
 //   showError(event.error ? event.error.message : "");
 // });
 
-// main submit handler: process the donation
-form.addEventListener("submit", async(e) =>{
-    e.preventDefault(); // dont reload the page
-    showError(""); // clear old errors
-    // successMsg.style.display = "none"; // hide old success message
-    // setLoading(true);
+// // main submit handler: process the donation
+// form.addEventListener("submit", async(e) =>{
+//     e.preventDefault(); // dont reload the page
+//     showError(""); // clear old errors
+//     // successMsg.style.display = "none"; // hide old success message
+//     // setLoading(true);
 
-    // read non-senstive inputs from form 
-    const amount = Number(document.getElementById("amount").value);
-    const name = document.getElementById("donorName").value.trim();
-    const email = document.getElementById("email").value.trim();
+//     // read non-senstive inputs from form 
+//     const amount = Number(document.getElementById("amount").value);
+//     const name = document.getElementById("donorName").value.trim();
+//     const email = document.getElementById("email").value.trim();
 
-    // cliner side validation
-    // WORKING TO UNDERSTNAD validation fromclient side and non client side validation
-    // whta dose client side mean , and what dose client side validation mean and hwo diis the server rechecking everyting , hhow is validatoin working through out my ehole site inclideing on the donation-fomr.hbs
+//     // cliner side validation
+//     // WORKING TO UNDERSTNAD validation fromclient side and non client side validation
+//     // whta dose client side mean , and what dose client side validation mean and hwo diis the server rechecking everyting , hhow is validatoin working through out my ehole site inclideing on the donation-fomr.hbs
 
-    // other wuestions:
-    // i dont want to toggle donateBtn state while loading maybe just make it look dimmer so it looks like you cant click but i would want tp show a animation like a loading circle but i dont want to get into that now ill make the animation later but for now i want msybe just a popp up to say porcressing or loading 
+//     // other wuestions:
+//     // i dont want to toggle donateBtn state while loading maybe just make it look dimmer so it looks like you cant click but i would want tp show a animation like a loading circle but i dont want to get into that now ill make the animation later but for now i want msybe just a popp up to say porcressing or loading 
 
-});
-
-
+// });
 
 
-const amountCents = 2500; // e.g., $25.00
-
-async function initPayment(amountCents){
+async function initPayment(amountCents, publishableKey){
     // STEP 1: client(donation.js) asks server for a paymentintent
     // client(donation.js) sends an HTTP POST request to server.js
     const res = await fetch('/create-payment-intent',{
@@ -63,8 +59,10 @@ async function initPayment(amountCents){
 
     // STEP 2; gets keys from server
     // take the HTTP response (JSON text) and parse it back into JS object
-    const { clientSecret, publishableKey } = await res.json();
+    // const { clientSecret, publishableKey } = await res.json();
+    const { clientSecret } = await res.json();
 
+    
     // Step 3: Init Stripe.js with publishable key
     // every time in refresh the page or restart a new payment, this reinitalizes
 
@@ -96,16 +94,23 @@ async function initPayment(amountCents){
         });
 
         if (error) {
-            alert(error.message);
+            // alert(error.message);
+            document.querySelector('#result').textContent = error.message;
         } else if (paymentIntent.status === 'succeeded') {
-            alert('Payment succeeded!');
+            // alert('Payment succeeded!');
+            document.querySelector('#result').textContent = 'Payment succeeded!';
             console.log(paymentIntent); // Full object
         }
     };
 
 }
 
-initPayment(2500);
+// This runs when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  const amount = 2500; // $25
+  const publishableKey = document.querySelector('#pay').dataset.pk;
+  initPayment(amount, publishableKey);
+});
 
 
 

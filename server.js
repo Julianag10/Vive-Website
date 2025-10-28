@@ -42,26 +42,24 @@ app.get("/", (req, res) => {
   res.render("home", { title: "Welcome to Vive" });
 });
 
-// app.get("/", (req, res) => {
-//   res.render("home", { title: "Welcome to VIVE" });
-// });
-
-// About page
+// donate page
 app.get("/donate", (req, res) => {
   //tells express/handelbard to render view.donate.hbs inside main,hbs
   res.render("donate", { 
-    title: "Donate - Vive" });
+    title: "Donate - Vive" ,
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+  });
 });
 
 // Success page (hbs or html, your choice)
-app.get("/success", (req, res) => {
-  res.render("success", { title: "Donation Successful" });
-});
+// app.get("/success", (req, res) => {
+//   res.render("success", { title: "Donation Successful" });
+// });
 
 // Cancel page
-app.get("/cancel", (req, res) => {
-  res.render("cancel", { title: "Donation Canceled" });
-});
+// app.get("/cancel", (req, res) => {
+//   res.render("cancel", { title: "Donation Canceled" });
+// });
 
 
 
