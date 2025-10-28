@@ -10,6 +10,7 @@ dotenv.config();
 
 // create express app
 const app = express(); // creates express server
+//express.json() middleware automatically parses JSON request bodies into req.body.
 app.use(express.json()); // lets backend read JSON from requesets
 
 // ---------- Handlebars setup ----------
@@ -23,8 +24,8 @@ app.use(express.static("public"));
 
 // ---------- Stripe setup ----------
 // lets your server talk to Stripe’s API (create PaymentIntents, verify webhooks, etc.)
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || "sk_test_REPLACE_ME";
-const stripe = new Stripe(STRIPE_SECRET_KEY);
+// creats a strip client(server side)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ---------- Logging middleware ----------
 // log every request
@@ -106,6 +107,33 @@ app.get("/cancel", (req, res) => {
 //   }
 // });
 
+
+app.post('/create-payment-intent', async(req,res) => {
+  try{
+    const { amount } = req.body; // from donation.js
+
+    // calls strip backend API with secrete key
+    // sends stripeAPI  payments.Inetns/create()
+    // paymentInents object lives on stripe servers, i get its id  and client scetr  back in my server
+    // creates a pi object
+    const pi = await stripe.paymentIntents.create({
+      amount, 
+      currency: 'usd',
+      // lets stripe decide the best payment methods
+      automatic_payment_methods: {enabled: true}
+    });
+
+    // sends a json response back to client 
+    res.json({
+      // payment inetnt id
+      clientSecret: pi.client_secret,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+    })
+  } catch (e) { // if strip throws an error( like invalid currency), 
+    // cathces erros and sends an error response
+    res.status(400).json({error: e.message });
+  }
+})
 
 
 // -------------------- Start server --------------------

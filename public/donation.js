@@ -1,26 +1,3 @@
-// initalzize strip with my publishable key
-// identifies your Stripe account when the browser talks directly to Stripe (for Elements, Checkout redirect, etc.)
-// gives me a stripe client object, with methods i call in the browser
-const stripe = Stripe("pk_test_51SJNY2LiN9ZtVTjrzuyWNbYynJU1OMD5D6DMCKzCHsTaw17Irh9OLDJwDIWC2075wEaUQ5jYf5GzFI8YoeeujeeH0031HbMKrO");
-
-// creates element manager, creating secure input fields, 
-// captures card infor eihout exposing raw card numbers to your site's JS
-const elements = stripe.elements();
-
-//define styles for carrd fields
-const elementStyle = {
-    base: {
-        fontFamily: "Varela Round",
-        fontSize: "16px"
-    }
-}
-
-// create a secure card element
-// returns a special object tired to stripe: CARD ELEMENT INSTANCE not a dOM element
-const card = elements.create("card", {style: elementStyle});
-
-//puts the card elemnt int o the placehold div in donate-form
-card.mount("#card-element");
 
 //get referencer to important DOM elements in donation form
 // needed for interactivity
@@ -71,7 +48,65 @@ form.addEventListener("submit", async(e) =>{
 
 
 
+const amountCents = 2500; // e.g., $25.00
+
+async function initPayment(amountCents){
+    // STEP 1: client(donation.js) asks server for a paymentintent
+    // client(donation.js) sends an HTTP POST request to server.js
+    const res = await fetch('/create-payment-intent',{
+        // sending a json message to server
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
+        body: JSON.stringify({ amount: amountCents})
+    });
+
+    // STEP 2; gets keys from server
+    // take the HTTP response (JSON text) and parse it back into JS object
+    const { clientSecret, publishableKey } = await res.json();
+
+    // Step 3: Init Stripe.js with publishable key
+    // every time in refresh the page or restart a new payment, this reinitalizes
+
+    // identifies your Stripe account when the browser talks directly to Stripe (for Elements, Checkout redirect, etc.)
+    // gives me a stripe client object, with methods i call in the browser
+    const stripe = Stripe(publishableKey);
+    // creates element manager object, creating secure input fields, 
+    // captures card info without exposing raw card numbers to your site's JS
+    const elements = stripe.elements();
+
+
+    // STEP 4: mount secure card input
+    // create a secure card element
+    // returns a special object tied to stripe: CARD ELEMENT INSTANCE not a DOM element
+    const card = elements.create('card');
+
+    // puts the card elemnt into the placehold div in donate-form
+    // creating safe input fields
+    card.mount('#card-element');
+
+    // STEP 5: on click confirm paymetn
+    document.querySelector('#pay').onclick = async () => {
+    // take clientsecret( so strip knwos which payment inetnt thsi belongs to )
+    // when .confirmCardPayment, i pass payment_method:'card' 
+    // strip.js reads the card number thats inside the 'card' element 
+    // and then links it to the paymentinentet, using client screte(paimentinetent id)
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: { card }
+        });
+
+        if (error) {
+            alert(error.message);
+        } else if (paymentIntent.status === 'succeeded') {
+            alert('Payment succeeded!');
+            console.log(paymentIntent); // Full object
+        }
+    };
+
+}
+
+initPayment(2500);
 
 
 
-//client secrte , returned by strioe when tou create a pat=ymentintetn on teh server
+
