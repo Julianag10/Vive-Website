@@ -68,42 +68,57 @@ app.get("/donate", (req, res) => {
 // allow a POST/create-checkout-session request
 // add a new POST endpoint for creating checkout sessions
 // now backend knows how to ask Stripe for a payment page.
-// app.post("/api/create-checkout-session", async (req, res) => {
-//   try {
-//     // req.body = donation info sent from your frontend
-//     const { amount_cents = 2500, email = "test@example.com" } = req.body || {};
-//     console.log("➡️ Body:", req.body);
+app.post("/create-checkout-session" , async (req, res) =>  {
+  // try {
+    // req.body = donation info sent from your frontend
+    const { priceID, amountCents, email} = req.body || {};
 
-//     // create checkout session
-//     // calls stripes API to create a checkout session
-//     const session = await stripe.checkout.sessions.create({
-//       mode: "payment",
-//       payment_method_types: ["card", "link"],
-//       customer_email: email,
-//       line_items: [
-//         {
-//           price_data: {
-//             currency: "usd",
-//             product_data: { name: "Donation" },
-//             unit_amount: amount_cents,
-//           },
-//           quantity: 1,
-//         },
-//       ],
-//       success_url: "http://localhost:3000/success.html",
-//       cancel_url: "http://localhost:3000/cancel.html",
-//     });
+    let lineItem;
 
-//     // session is stripes response after calling the stripe API, Stripe sends back a checkout URL as a response 
-//     // then server.js sends the session.url as a response to front end
-//     // res.json({ url: session.url }) = respond with the checkout URL
-//     console.log("✅ Created session:", session.id);
-//     res.json({ url: session.url });
-//   } catch (err) {
-//     console.error("❌ Error:", err);
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+    if(priceID) {
+      // donor clicked a fixed button wiht a strip price Id
+      lineItem = {
+        price: priceID,
+        quantity: 1,
+      };
+    } else if (amountCents) {
+      // donor type d a cousome amont
+      lineItem = {
+        price_data: {
+          product_data: {
+            name: "custom donation", 
+          }, 
+          currency: "USD",
+          unit_amount: amount,
+        },
+        quantity: 1,
+      };
+    } else {
+        return res.status(400).json({ error: "Must provide priceId or amount" });
+    }
+
+    // calls stripes API to create a checkout session
+    const session = await stripe.checkout.sessions.create({
+      ui_mode: "custom",
+      customer_email: email,
+      billing_address_collection: 'auto',
+      line_items: [lineItem],
+      mode: "payment",
+      // Stripe returns the session object (session.id, session.url, ect. )
+      return_url: `http://localhost:3000/complete.html?session_id={CHECKOUT_SESSION_ID}`,
+      // success_url: "http://localhost:3000/success.html",
+      // cancel_url: "http://localhost:3000/cancel.html",
+    });
+    
+    res.json({ clientSecret: session.client_secret  });
+    console.log("✅ Created session:", session.id);
+  // } catch (err) {
+  //   console.error("❌ Error:", err);
+  //   res.status(500).json({ error: err.message });
+  // }
+
+});
+
 
 
 app.post('/create-payment-intent', async(req,res) => {

@@ -1,3 +1,7 @@
+// identifies your Stripe account when the browser talks directly to Stripe (for Elements, Checkout redirect, etc.)
+// gives me a stripe client object, with methods i call in the browser
+const stripe = Stripe(publishableKey);
+
 
 //get referencer to important DOM elements in donation form
 // needed for interactivity
@@ -66,9 +70,7 @@ async function initPayment(amountCents, publishableKey){
     // Step 3: Init Stripe.js with publishable key
     // every time in refresh the page or restart a new payment, this reinitalizes
 
-    // identifies your Stripe account when the browser talks directly to Stripe (for Elements, Checkout redirect, etc.)
-    // gives me a stripe client object, with methods i call in the browser
-    const stripe = Stripe(publishableKey);
+    
     // creates element manager object, creating secure input fields, 
     // captures card info without exposing raw card numbers to your site's JS
     const elements = stripe.elements();
