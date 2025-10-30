@@ -6,20 +6,65 @@
 // strip.intiCheckout()
 // stripe.redirecttocheckout()
 
+//listen for live validation errors as the user typesint the card fril s
+// card.on("change", (event) => {
+//   showError(event.error ? event.error.message : "");
+// });
+
+// creates element manager object, creating secure input fields, 
+// captures card info without exposing raw card numbers to your site's JS
+const elements = stripe.elements();
+
+// ====================================================================================
+
+// = Stripe.js client created with publishable key
+// can initi checkout adn create and ount elemets
+let stripe; 
+
+// chekcout instance returned by stripe.intiCheckout(...)
+// can create UI elements and listene for session changes
+let checkout;
+
+// actions object that comes from checkout.loadACtins()
+// these actions are methods are methods that operate ni teh live checkout session
+let actions;
 
 
 
+document.addEventListener("DOMContentLoaded", () => {
+  // don’t hardcode pk here; fetch it from server if you prefer
+  stripe = Stripe("pk_test_..."); 
+  initialize();
+});
+
+// CAHCE EMAIL WITH DOM NODES
 const emailInput = document.getElementById("email");
 const emailErrors = document.getElementById("email-errors");
 
+const validateEmail = async (email) => {
+    // actions.updateEmail(email) is checkout session method 
+    // updateEmail(email) tries to attach the emial to the checkout session
+    // updateRedult will be the object returned by actions.updateEmail(email)
+    const updateResult = await actions.updateEmail(email);
+    // returns
+    // case: 1 SUcess
+    // {    type: "sucess",
+    //      session: { stripe session object, with update email field}  }
+    //
+    // case 2 error 
+    // {    type: "error",
+    //      error: {
+    //      message: "Invalid email address" }
+    // }
+
+    const isValid = updateResult.type !== "error";
+    return { isValid, message: !isValid ? updateResult.error.message : null };
+};
 
 
-//get referencer to important DOM elements in donation form
-// needed for interactivity
-// const form = document.getElementById("donation-fomr");
-// const donateBtn = document.getElementById("donateBtn");
-// const successMsg = document.getElementById("donation-success");
-// const errorBox = document.getElementById("card-errors");
+// stops sensitive card info form beign sen tto as an HTTP request to teh url in the foroms action attribute
+document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+
 
 async function initializeCheckout(){
     // client(donation.js) sends an HTTP POST request to server.js
@@ -42,21 +87,46 @@ async function initializeCheckout(){
     // Init Stripe.js with publishable key
     const stripe = Stripe(publishableKey);
 
+    // CUSTOMEIXE THE PAYMENT ELEMETN UI 
     const appearance = {
         theme:'stripe',
     };
 
-    // initalize checkout obeject with client secrt, so that we know what paymetn we are working wiht
-    const checkout =  await stripe.initCheckout({clientSecret, elementsOptions: {appearance}});
-
-    // listen to checkout session updates
-    checkout.on('change', (session) => {
-        // Handle changes to the checkout session
+    // init checkout session obeject w/ clientSecert, to specify what checkout session we are working wiht 
+    // checkout session object is like a shopping cart + order tracker
+    const checkout =  await stripe.initCheckout({
+        clientSecret, 
+        elementsOptions: {appearance},
     });
+
+    // LISTEN TO CHECOUTSESSION UPDATES
+    // Whenever any of these inside of checkout session changes 
+    // chechout seeesion object is liek a record of the whrolw chekout flow it contains:
+    // what items the custm is buying
+    // how much it costs
+    // what payment methids are emabled
+    // the cust emil
+    // blling Address
+    // status(open, complete, ect)
+    // checkout.on('change', (session) => {
+        // Handle changes to the checkout session
+    // });
 
     //after calling initcheckout use loadActions() to access methods for reading and manipulating Checkout Sessions
     const loadActionsResult = await checkout.loadActions();
+    // loadActions() returns:
+    // {type: "error", error: { message: string }}
+    // {type: "success", actions: object }
+    // on success tge actions: object provides methods to interact with the checout session
 
+    if(loadActionsResult.type === "success"){
+        actions = loadActionsResult.actions;
+        const session = actions.getSession();
+        const cents = session.total.total.amount;
+
+        document.querySelector("#button-text").textContent =
+        `Pay $${(cents/100).toFixed(2)} now`;
+    }
     // collecr the cusotmers emial
     // as the user types ("input"), clear andy previous error and remove error styleing
     emailInput.addEventListener("input", () => {
@@ -76,117 +146,81 @@ async function initializeCheckout(){
 
         const { isValid, message } = await validateEmail(newEmail);
         if(!isValid){
-            emailInput 
+            emailInput.classList.add("error");
+            // message is the error.message from updateEmail(email)
+            // put the eroor messae in the <div id="emailErrors">
+            emailErrors.textContent = message;
+            showMessage(message);
+            setLoading(false);
+            return;
         }
-    })
-
-}
-// helper to toggle the button state while processing
-// function setLoading(isLoading){
-//     if(isLoading){
-
-//     }
-// }
-
-// helper to show error messages
-// function showError(message) {
-//     //clears of displays error text inside <div id="card-error">
-//   errorBox.textContent = message || "";
-// }
-
-//listen for live validation errors as the user typesint the card fril s
-// card.on("change", (event) => {
-//   showError(event.error ? event.error.message : "");
-// });
-
-// // main submit handler: process the donation
-// form.addEventListener("submit", async(e) =>{
-//     e.preventDefault(); // dont reload the page
-//     showError(""); // clear old errors
-//     // successMsg.style.display = "none"; // hide old success message
-//     // setLoading(true);
-
-//     // read non-senstive inputs from form 
-//     const amount = Number(document.getElementById("amount").value);
-//     const name = document.getElementById("donorName").value.trim();
-//     const email = document.getElementById("email").value.trim();
-
-//     // cliner side validation
-//     // WORKING TO UNDERSTNAD validation fromclient side and non client side validation
-//     // whta dose client side mean , and what dose client side validation mean and hwo diis the server rechecking everyting , hhow is validatoin working through out my ehole site inclideing on the donation-fomr.hbs
-
-//     // other wuestions:
-//     // i dont want to toggle donateBtn state while loading maybe just make it look dimmer so it looks like you cant click but i would want tp show a animation like a loading circle but i dont want to get into that now ill make the animation later but for now i want msybe just a popp up to say porcressing or loading 
-
-// });
-
-
-async function initPayment(amountCents, publishableKey){
-    // STEP 1: client(donation.js) asks server for a paymentintent
-    // client(donation.js) sends an HTTP POST request to server.js
-    const res = await fetch('/create-payment-intent',{
-        // sending a json message to server
-        method: 'POST',
-        headers: {'Content-Type' : 'application/json'},
-        // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
-        body: JSON.stringify({
-            priceID: "price_123",
-            amountCents: null,
-            email: "donor@example.com"
-        })
     });
 
-    // STEP 2; gets keys from server
-    // take the HTTP response (JSON text) and parse it back into JS object
-    const { clientSecret, publishableKey } = await res.json();
-
-    
-    // Step 3: Init Stripe.js with publishable key
-    // every time in refresh the page or restart a new payment, this reinitalizes
-    const stripe = Stripe(publishableKey);
-    
-    // creates element manager object, creating secure input fields, 
-    // captures card info without exposing raw card numbers to your site's JS
-    const elements = stripe.elements();
-
-
-    // STEP 4: mount secure card input
-    // create a secure card element
-    // returns a special object tied to stripe: CARD ELEMENT INSTANCE not a DOM element
-    const card = elements.create('card');
-
-    // puts the card elemnt into the placehold div in donate-form
-    // creating safe input fields
-    card.mount('#card-element');
-
-    // STEP 5: on click confirm paymetn
-    document.querySelector('#pay').onclick = async () => {
-    // take clientsecret( so strip knwos which payment inetnt thsi belongs to )
-    // when .confirmCardPayment, i pass payment_method:'card' 
-    // strip.js reads the card number thats inside the 'card' element 
-    // and then links it to the paymentinentet, using client screte(paimentinetent id)
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: { card }
-        });
-
-        if (error) {
-            // alert(error.message);
-            document.querySelector('#result').textContent = error.message;
-        } else if (paymentIntent.status === 'succeeded') {
-            // alert('Payment succeeded!');
-            document.querySelector('#result').textContent = 'Payment succeeded!';
-            console.log(paymentIntent); // Full object
-        }
-    };
-
+    // CREATE PAYMENT ELEMTN
+    const paymentElement = checkout.createPaymentElement();
+    paymentElement.mount("#payment-element");
 }
 
-// This runs when page loads
-document.addEventListener('DOMContentLoaded', () => {
-  const amount = 2500; // $25
-  const publishableKey = document.querySelector('#pay').dataset.pk;
-  initPayment(amount, publishableKey);
-});
+// show a spinner. disable button while confirming
+async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true); // START LOADING 
+
+    // double check the email before sconfirmation
+    const email = emailInput.value;
+    const {isValid, message} = await validateEmail(email);
+    if(!isValid){
+        emailInput.classList.add("error");
+        emailErrors.textContent = message;
+        showMessage(message);
+        setLoading(false);
+        return;
+    }
+
+    //COMPLET THE PAYMENT with .confirm
+    const { error } = await actions.confirm();   // ← use saved actions
+    // This point will only be reached if there is an immediate error when confirming the payment
+    if (error) showMessage(error.message);
+
+    setLoading(false);  // STOP LOADING 
+}
+
+function showMessage(messageText){
+    const ele = document.querySelector("#payment-message");
+    ele.classList.remove("hidden");
+    ele.textContent = messageText;
+    // renders a temporay notificatin to the user 
+    setTimeout(() => {
+        el.classList.add("hidden");
+        el.textContent = "";
+    }, 4000);
+}
+
+// Toggles the submit button disabled state, shows/hides a spinner, swaps button label visibility.
+function setLoading(isLoading){
+    const btn = document.querySelector("#submit");
+    const spinner = document.querySelector("#spinner");
+    const text = document.querySelector("#button-text");
+
+    //HTML form controls like <button> & <input> have builtin BOOLEAN property called DISABLED
+    // if disabled = true, button is disabled, broser ignores it 
+    btn.disabled = isLoading;
+
+    // .toggle(className, optional boolean)
+    // if optional boolean = true => forces the class to be added
+    // if optional boolean = false => forces the class to be removed
+    spinner.classList.toggle("hidden", !isLoading);
+    text.classList.toggle("hidden", !isLoading);
+}
+
+
+
+
+
+
+
+    
+
 
 
 
