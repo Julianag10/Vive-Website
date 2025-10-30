@@ -16,6 +16,8 @@
 const elements = stripe.elements();
 
 // ====================================================================================
+// QUESTIONS ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ 
+// ====================================================================================
 
 // = Stripe.js client created with publishable key
 // can initi checkout adn create and ount elemets
@@ -212,16 +214,6 @@ function setLoading(isLoading){
     spinner.classList.toggle("hidden", !isLoading);
     text.classList.toggle("hidden", !isLoading);
 }
-
-
-
-
-
-
-
-    
-
-
 
 
 

@@ -4,66 +4,6 @@
   position: relative; 
 }
 
-:root {
-  --color-primary:#BADA54;
-  --color-secondary: #0685EE;
-  --color-accent: #CBEEF3;
-  --color-text: #222222;
-  --color-background: #ffffff;
-
-    /* Font families */
-    --font-primary: 'ADLaM Display', cursive;
-    --font-secondary: 'Varela Round', sans-serif;
-
-  /* Font sizes (desktop-first, can scale with media queries) */
-  --font-size-h1: 8.8rem;   /* big hero headings */
-  --font-size-h2: 2.8rem;   /* section headings */
-  --font-size-h3: 1.8rem;    
-  --font-size-p: 1.125rem;      /* default paragraph */
-  --font-size-small: 0.875rem; /* fine print */
-  
-}
-
-h1 {
-  font-family: var(--font-primary);
-  font-size: var(--font-size-h1);
-  font-weight: 600;
-  line-height: 1em;
-  letter-spacing: -0.05em;
-}
-
-h2 {
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-h2);
-    font-weight: 400;
-    line-height: 1.2em;
-    letter-spacing: -0.03em;
-}
-
-h3 {
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-h3);
-    font-weight: 400;
-    line-height: 1.2em;
-    letter-spacing: -0.03em;
-}
-
-p, li{
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-p);
-    line-height: 1.2em;
-    letter-spacing: -0.03em;
-}
-
-html, body { 
-    margin:0 ;
-    height: 100%;       /* make page take full viewport */
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-text);
-}
 
 .home-grid {
   display: grid;
@@ -82,10 +22,6 @@ body {
     gap: 4rem 0rem; /*adds space between each section inside grid container*/
 }
 
-.header{
-    grid-area: header;
-    background-color: var(--color-primary);
-}
 
 .hero{
     grid-area: hero;
@@ -269,13 +205,7 @@ body {
     text-align: center;
 }
 
-.donate-form {
-    background-color: #CBEEF3 ;
-    padding: 1.5rem; /* adds spsce beteern the forms boarder and inner text */
-    border-radius: 10px ;
-    border: 5px solid #0685EE;
-    
-}
+
 
 .volunteer{
     grid-area: volunteer;
@@ -293,7 +223,5 @@ body {
     grid-area: partners;
 }
 
-.footer{
-    grid-area: footer;
-    background-color: var(--color-primary);
-}
+
+

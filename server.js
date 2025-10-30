@@ -39,27 +39,30 @@ app.use((req, res, next) => {
 
 // Home page
 app.get("/", (req, res) => {
-  res.render("home", { title: "Welcome to Vive" });
+  // "home" name of the .hbs file that will be turned into a html file 
+  // then send that HTML back to the browser
+  // express will look for views/donate.hbs and render it inside my layout mian.hbs
+  res.render("home", {
+    title: "Home",
+    stylesheet: "home.css"
+  });
 });
 
 // donate page
 app.get("/donate", (req, res) => {
-  //tells express/handelbard to render view.donate.hbs inside main,hbs
-  res.render("donate", { 
-    title: "Donate - Vive" ,
+  res.render("donate", {
+    title: "Donate",
+    stylesheet: "donate.css"
   });
 });
 
-// Success page (hbs or html, your choice)
-// app.get("/success", (req, res) => {
-//   res.render("success", { title: "Donation Successful" });
-// });
-
-// Cancel page
-// app.get("/cancel", (req, res) => {
-//   res.render("cancel", { title: "Donation Canceled" });
-// });
-
+// complete page
+app.get("/complete", (req, res) => {
+  res.render("complete", {
+    title: "Payment Complete",
+    stylesheet: "complete.css"
+  });
+});
 
 
 // ---------- Stripe Checkout Session --------------------
@@ -109,6 +112,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
       // cancel_url: "http://localhost:3000/cancel.html",
     });
     
+    // sends res back to front end 
     res.json({ 
       clientSecret: session.client_secret,
       publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
@@ -121,36 +125,56 @@ app.post("/create-checkout-session" , async (req, res) =>  {
 
 });
 
+//final truth check 
+// since my broweser can talk to stripes secret API directly , server must do it and report bakc a safe summary
+// the browser needs to knwo if the donation succeeeded, right now only stripe knows. and only server wuth the secret key can securley cas stripe for the real ressult
+app.get("/session-status", async (req, res) => {
+  // stripe.checkout.sessions.retrieve(...) server calls stripes APU using secret key(already configured in stripe client) to fetch the checkout session object for that session id
+  const session = await stripe.checkout.sessions.retrieve(
+    // req.query.session_id reads the session_is query param from teh URL 
+    req.query.session_id,
+    // expand: ["payment_intent"]sesion.paymetn_intetn woudljust be an ID string
+    // exand tells stripe "inline the fill Payment INtent objecgt right in teh response"
+    {expand: ["payment_intent"]}
+  );
+
+  res.json({
+    status: session.status,
+    payment_status: session.payment_status,
+    payment_intent_id: session.payment_intent.id,
+    payment_intent_status: session.payment_intent.status
+  });
+
+});
 
 
 
+// app.post('/create-payment-intent', async(req,res) => {
+//   try{
+//     const { amount } = req.body; // from donation.js
 
-app.post('/create-payment-intent', async(req,res) => {
-  try{
-    const { amount } = req.body; // from donation.js
+//     // calls strip backend API with secrete key
+//     // sends stripeAPI  payments.Inetns/create()
+//     // paymentInents object lives on stripe servers, i get its id  and client scetr  back in my server
+//     // creates a pi object
+//     const pi = await stripe.paymentIntents.create({
+//       amount, 
+//       currency: 'usd',
+//       // lets stripe decide the best payment methods
+//       automatic_payment_methods: {enabled: true}
+//     });
 
-    // calls strip backend API with secrete key
-    // sends stripeAPI  payments.Inetns/create()
-    // paymentInents object lives on stripe servers, i get its id  and client scetr  back in my server
-    // creates a pi object
-    const pi = await stripe.paymentIntents.create({
-      amount, 
-      currency: 'usd',
-      // lets stripe decide the best payment methods
-      automatic_payment_methods: {enabled: true}
-    });
-
-    // sends a json response back to client 
-    res.json({
-      // payment inetnt id
-      clientSecret: pi.client_secret,
-      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
-    })
-  } catch (e) { // if strip throws an error( like invalid currency), 
-    // cathces erros and sends an error response
-    res.status(400).json({error: e.message });
-  }
-})
+//     // sends a json response back to client 
+//     res.json({
+//       // payment inetnt id
+//       clientSecret: pi.client_secret,
+//       publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+//     })
+//   } catch (e) { // if strip throws an error( like invalid currency), 
+//     // cathces erros and sends an error response
+//     res.status(400).json({error: e.message });
+//   }
+// })
 
 
 // -------------------- Start server --------------------
