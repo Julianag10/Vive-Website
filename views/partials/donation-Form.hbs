@@ -13,8 +13,14 @@
         <button type="button" id="custom-donate-btn" > Donate Custom </button>
     </div>
 
-    <label for="email">Email</label>
-    <input type="email" id="email" placeholder="you@example.com" required />
+    <label for="email">
+        Email
+        <input type="email" id="email" placeholder="you@example.com" required />
+    </label>
+    <div id="email-errors">
+            {{!-- This empty <div> is where you display validation errors dynamically. --}}
+    </div>
+
     
     <h4>Billing Address</h4>
     <div id="billing-address-element">

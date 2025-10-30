@@ -1,6 +1,17 @@
 // identifies your Stripe account when the browser talks directly to Stripe (for Elements, Checkout redirect, etc.)
 // gives me a stripe client object, with methods i call in the browser
-const stripe = Stripe(publishableKey);
+// methods: 
+// stripe.elements()
+// stripe.confirmcardPayment()
+// strip.intiCheckout()
+// stripe.redirecttocheckout()
+
+
+
+
+const emailInput = document.getElementById("email");
+const emailErrors = document.getElementById("email-errors");
+
 
 
 //get referencer to important DOM elements in donation form
@@ -10,6 +21,66 @@ const stripe = Stripe(publishableKey);
 // const successMsg = document.getElementById("donation-success");
 // const errorBox = document.getElementById("card-errors");
 
+async function initializeCheckout(){
+    // client(donation.js) sends an HTTP POST request to server.js
+    const res = await fetch("/create-checkout-session" , {
+        // sending a json message to server
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
+        body: JSON.stringify({
+            priceID: "price_123",
+            amountCents: null,
+            email: "donor@example.com"
+        })
+    });
+
+    // gets keys from server
+    // take the HTTP response (JSON text) and parse it back into JS object
+    const { clientSecret, publishableKey } = await res.json();
+
+    // Init Stripe.js with publishable key
+    const stripe = Stripe(publishableKey);
+
+    const appearance = {
+        theme:'stripe',
+    };
+
+    // initalize checkout obeject with client secrt, so that we know what paymetn we are working wiht
+    const checkout =  await stripe.initCheckout({clientSecret, elementsOptions: {appearance}});
+
+    // listen to checkout session updates
+    checkout.on('change', (session) => {
+        // Handle changes to the checkout session
+    });
+
+    //after calling initcheckout use loadActions() to access methods for reading and manipulating Checkout Sessions
+    const loadActionsResult = await checkout.loadActions();
+
+    // collecr the cusotmers emial
+    // as the user types ("input"), clear andy previous error and remove error styleing
+    emailInput.addEventListener("input", () => {
+        // Clear any validation errors
+        emailErrors.textContent = "";
+        emailInput.classList.remove("error");
+    });
+
+    // "blur" fires when input looses focus, when "blur" validate via actions.update email 
+    emailInput.addEventListener("blur", async () => {
+        const newEmail = emailInput.value;
+        // checking if email is valid after loosing focus
+        if(!newEmail){ 
+            // if the new email feild is empty do nothng 
+            return;
+        }
+
+        const { isValid, message } = await validateEmail(newEmail);
+        if(!isValid){
+            emailInput 
+        }
+    })
+
+}
 // helper to toggle the button state while processing
 // function setLoading(isLoading){
 //     if(isLoading){
@@ -58,18 +129,21 @@ async function initPayment(amountCents, publishableKey){
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
-        body: JSON.stringify({ amount: amountCents})
+        body: JSON.stringify({
+            priceID: "price_123",
+            amountCents: null,
+            email: "donor@example.com"
+        })
     });
 
     // STEP 2; gets keys from server
     // take the HTTP response (JSON text) and parse it back into JS object
-    // const { clientSecret, publishableKey } = await res.json();
-    const { clientSecret } = await res.json();
+    const { clientSecret, publishableKey } = await res.json();
 
     
     // Step 3: Init Stripe.js with publishable key
     // every time in refresh the page or restart a new payment, this reinitalizes
-
+    const stripe = Stripe(publishableKey);
     
     // creates element manager object, creating secure input fields, 
     // captures card info without exposing raw card numbers to your site's JS

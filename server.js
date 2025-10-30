@@ -47,7 +47,6 @@ app.get("/donate", (req, res) => {
   //tells express/handelbard to render view.donate.hbs inside main,hbs
   res.render("donate", { 
     title: "Donate - Vive" ,
-    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
   });
 });
 
@@ -110,7 +109,10 @@ app.post("/create-checkout-session" , async (req, res) =>  {
       // cancel_url: "http://localhost:3000/cancel.html",
     });
     
-    res.json({ clientSecret: session.client_secret  });
+    res.json({ 
+      clientSecret: session.client_secret,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+     });
     console.log("✅ Created session:", session.id);
   // } catch (err) {
   //   console.error("❌ Error:", err);
