@@ -2,7 +2,6 @@
 import express from "express";
 import Stripe from "stripe";
 import { engine } from "express-handlebars";
-
 import dotenv from "dotenv";
 
 // load environment variables
@@ -53,6 +52,7 @@ app.get("/donate", (req, res) => {
   res.render("donate", {
     title: "Donate",
     stylesheet: "donate.css"
+    // donate.js is a global script file
   });
 });
 
@@ -60,18 +60,24 @@ app.get("/donate", (req, res) => {
 app.get("/complete", (req, res) => {
   res.render("complete", {
     title: "Payment Complete",
-    stylesheet: "complete.css"
+    stylesheet: "complete.css",
+    scripts: "complete.js"
   });
 });
 
 
-// ---------- Stripe Checkout Session --------------------
+// ---------- API ENPOINTS --------------------
 
-// allow a POST/create-checkout-session request
+// publishable key to front end
+app.get("/config", (req, res) => {
+  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY});
+});
+
+// allow a POST /create-checkout-session request
 // add a new POST endpoint for creating checkout sessions
 // now backend knows how to ask Stripe for a payment page.
 app.post("/create-checkout-session" , async (req, res) =>  {
-  // try {
+  try {
     // req.body = donation info sent from your frontend
     const { priceID, amountCents, email} = req.body || {};
 
@@ -113,19 +119,16 @@ app.post("/create-checkout-session" , async (req, res) =>  {
     });
     
     // sends res back to front end 
-    res.json({ 
-      clientSecret: session.client_secret,
-      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
-     });
+    res.json({ clientSecret: session.client_secret });
     console.log("✅ Created session:", session.id);
-  // } catch (err) {
-  //   console.error("❌ Error:", err);
-  //   res.status(500).json({ error: err.message });
-  // }
+  } catch (err) {
+    console.error("❌ Error creating sesion: ",  err);
+    res.status(500).json({ error: err.message });
+  }
 
 });
 
-//final truth check 
+// final truth check 
 // since my broweser can talk to stripes secret API directly , server must do it and report bakc a safe summary
 // the browser needs to knwo if the donation succeeeded, right now only stripe knows. and only server wuth the secret key can securley cas stripe for the real ressult
 app.get("/session-status", async (req, res) => {

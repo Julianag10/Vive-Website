@@ -1,10 +1,3 @@
-// identifies your Stripe account when the browser talks directly to Stripe (for Elements, Checkout redirect, etc.)
-// gives me a stripe client object, with methods i call in the browser
-// methods: 
-// stripe.elements()
-// stripe.confirmcardPayment()
-// strip.intiCheckout()
-// stripe.redirecttocheckout()
 
 //listen for live validation errors as the user typesint the card fril s
 // card.on("change", (event) => {
@@ -28,15 +21,22 @@ let stripe;
 let checkout;
 
 // actions object that comes from checkout.loadACtins()
-// these actions are methods are methods that operate ni teh live checkout session
+// these actions are methods that operate ni teh live checkout session
 let actions;
 
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  // don’t hardcode pk here; fetch it from server if you prefer
-  stripe = Stripe("pk_test_..."); 
-  initialize();
+document.addEventListener("DOMContentLoaded", async () => {
+    // asks server for the publishable key( safe to expose)
+    const configRes = await fetch("/config"); 
+    const {publishableKey} = await configRes.json();
+    
+    // initalise stripe.js with publushable key
+    // gives me a stripe client object, with methods i call in the browser
+    stripe = stripe(publishableKey);
+
+    // start checkoutflow 
+    initializeCheckout();
 });
 
 // CAHCE EMAIL WITH DOM NODES
@@ -69,6 +69,7 @@ document.querySelector("#payment-form").addEventListener("submit", handleSubmit)
 
 
 async function initializeCheckout(){
+    // ask backend to create a checkout session
     // client(donation.js) sends an HTTP POST request to server.js
     const res = await fetch("/create-checkout-session" , {
         // sending a json message to server
@@ -84,10 +85,7 @@ async function initializeCheckout(){
 
     // gets keys from server
     // take the HTTP response (JSON text) and parse it back into JS object
-    const { clientSecret, publishableKey } = await res.json();
-
-    // Init Stripe.js with publishable key
-    const stripe = Stripe(publishableKey);
+    const { clientSecret } = await res.json();
 
     // CUSTOMEIXE THE PAYMENT ELEMETN UI 
     const appearance = {
@@ -163,6 +161,7 @@ async function initializeCheckout(){
     paymentElement.mount("#payment-element");
 }
 
+
 // show a spinner. disable button while confirming
 async function handleSubmit(e) {
     e.preventDefault();
@@ -186,6 +185,8 @@ async function handleSubmit(e) {
 
     setLoading(false);  // STOP LOADING 
 }
+
+// -------------HELPERS-------------
 
 function showMessage(messageText){
     const ele = document.querySelector("#payment-message");
