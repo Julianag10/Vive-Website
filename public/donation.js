@@ -35,8 +35,42 @@ document.addEventListener("DOMContentLoaded", async () => {
     // gives me a stripe client object, with methods i call in the browser
     stripe = Stripe(publishableKey);
 
-    // start checkoutflow 
-    initializeCheckout();
+    
+    // instead stripe waits for user inout forpirce ids
+    document.querySelectorAll(".donate-btn").forEach (btn => {
+        // e give access to event object, specifically what button was clicked
+        btn.addEventListener("click", async(e) => {
+            // e contins detials about what triggereed the event 
+            // e.target the acualt HTML eke that was clicked 
+            // .dataset an object that holds all data-* attributes on that elemetn
+            // HTML attribute that starts with data- becomes available automatically under that element’s .dataset
+            const priceID = e.target.dataset.priceID;
+            const email = document.getElementById("email").value || "donor@example.com";
+
+            console.log(`Clicked fixed amount button for ${priceID}`);
+
+            initializeCheckout(priceID, null, email);
+        });
+    });
+
+    document.getElementById('custom-donate-btn').addEventListener("click", async(e) => {
+        const amountInput = document.getElementById("custom-amount");
+        const amountValue = Number(amountInput.value);
+
+        if (!amountValue || amountValue <= 0) {
+            alert("Please enter a valid custom donation amount");
+            return;
+        }
+
+        const amountCents = Math.round(amountValue * 100);
+        const email = document.getElementById("email").value || "donor@example.com";
+
+        console.log('cusotome donation: $${amountValue} (${amountCents} cents)');
+        initializeCheckout(null, amountCents, email);
+    });
+    // TODO: intergrate price id for cusotme button
+    // TODO how will this impact the load actions where: document.querySelector("#button-text").textContent =
+    //    `Pay $${(cents/100).toFixed(2)} now`;, wond i have o add a new query selvto here that changes the button or will and hwo will the cousomt donatin amount get pushed into the button text, cents
 });
 
 // CAHCE EMAIL WITH DOM NODES
@@ -68,7 +102,7 @@ const validateEmail = async (email) => {
 document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
 
 
-async function initializeCheckout(){
+async function initializeCheckout(priceID = null, amountCents = null, email = null){
     // ask backend to create a checkout session
     // client(donation.js) sends an HTTP POST request to server.js
     const res = await fetch("/create-checkout-session" , {
@@ -76,11 +110,7 @@ async function initializeCheckout(){
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
-        body: JSON.stringify({
-            priceID: "price_123",
-            amountCents: null,
-            email: "donor@example.com"
-        })
+        body: JSON.stringify({ priceID, amountCents, email})
     });
 
     // gets keys from server
@@ -98,6 +128,9 @@ async function initializeCheckout(){
         clientSecret, 
         elementsOptions: {appearance},
     });
+
+    console.log("Stripe object:", Stripe);
+
 
     // LISTEN TO CHECOUTSESSION UPDATES
     // Whenever any of these inside of checkout session changes 
@@ -151,7 +184,7 @@ async function initializeCheckout(){
             // put the eroor messae in the <div id="emailErrors">
             emailErrors.textContent = message;
             showMessage(message);
-            setLoading(false);
+            // setLoading(false);
             return;
         }
     });
