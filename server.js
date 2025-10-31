@@ -43,7 +43,9 @@ app.get("/", (req, res) => {
   // express will look for views/donate.hbs and render it inside my layout mian.hbs
   res.render("home", {
     title: "Home",
-    stylesheet: "home.css"
+    stylesheet: "home.css",
+    stripe: true,
+    donation: true
   });
 });
 
@@ -51,8 +53,9 @@ app.get("/", (req, res) => {
 app.get("/donate", (req, res) => {
   res.render("donate", {
     title: "Donate",
-    stylesheet: "donate.css"
-    // donate.js is a global script file
+    stylesheet: "donate.css",
+    stripe: true,
+    donation: true
   });
 });
 
@@ -61,7 +64,9 @@ app.get("/complete", (req, res) => {
   res.render("complete", {
     title: "Payment Complete",
     stylesheet: "complete.css",
-    script: "complete.js"
+    script: "complete.js",
+    stripe: true,
+    complete: true
   });
 });
 

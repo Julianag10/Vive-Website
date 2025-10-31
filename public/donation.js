@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // e.target the acualt HTML eke that was clicked 
             // .dataset an object that holds all data-* attributes on that elemetn
             // HTML attribute that starts with data- becomes available automatically under that element’s .dataset
-            const priceID = e.target.dataset.priceID;
+            const priceID = e.target.dataset.priceId;
             const email = document.getElementById("email").value || "donor@example.com";
 
             console.log(`Clicked fixed amount button for ${priceID}`);
@@ -184,7 +184,7 @@ async function initializeCheckout(priceID = null, amountCents = null, email = nu
             // put the eroor messae in the <div id="emailErrors">
             emailErrors.textContent = message;
             showMessage(message);
-            // setLoading(false);
+            setLoading(false);
             return;
         }
     });

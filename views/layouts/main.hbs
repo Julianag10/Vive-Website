@@ -11,15 +11,22 @@
 
     <link rel="stylesheet" href="/global.css" />
 
-
     {{#if stylesheet}}
         <link rel="stylesheet" href="/{{stylesheet}}" />
     {{/if}}
 
-    <!-- → loads Stripe.js in the browser.-->
-    <script src="https://js.stripe.com/v3/basil.js"></script>
+    
+    {{#if stripe}}
+        <script src="https://js.stripe.com/clover/stripe.js"></script>
+    {{/if}}
 
+    {{#if donation}}
+        <script src="/donation.js" defer></script>
+    {{/if}}
 
+    {{#if complete}}
+        <script src="/complete.js" defer></script>
+    {{/if}}
 
 </head>
 <body> 
@@ -31,8 +38,8 @@
 
     {{> footer}}   <!-- reusable footer -->
     
-
-    <script src="/donation.js"></script>
+    
+    
 
     {{#if script}}
         <script src="/{{script}}"></script>
