@@ -6,7 +6,7 @@
 
 // creates element manager object, creating secure input fields, 
 // captures card info without exposing raw card numbers to your site's JS
-const elements = stripe.elements();
+// const elements = stripe.elements();
 
 // ====================================================================================
 // QUESTIONS ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ 
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     // initalise stripe.js with publushable key
     // gives me a stripe client object, with methods i call in the browser
-    stripe = stripe(publishableKey);
+    stripe = Stripe(publishableKey);
 
     // start checkoutflow 
     initializeCheckout();
@@ -94,7 +94,7 @@ async function initializeCheckout(){
 
     // init checkout session obeject w/ clientSecert, to specify what checkout session we are working wiht 
     // checkout session object is like a shopping cart + order tracker
-    const checkout =  await stripe.initCheckout({
+    checkout =  await stripe.initCheckout({
         clientSecret, 
         elementsOptions: {appearance},
     });
@@ -189,9 +189,9 @@ async function handleSubmit(e) {
 // -------------HELPERS-------------
 
 function showMessage(messageText){
-    const ele = document.querySelector("#payment-message");
-    ele.classList.remove("hidden");
-    ele.textContent = messageText;
+    const el = document.querySelector("#payment-message");
+    el.classList.remove("hidden");
+    el.textContent = messageText;
     // renders a temporay notificatin to the user 
     setTimeout(() => {
         el.classList.add("hidden");

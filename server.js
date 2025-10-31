@@ -61,7 +61,7 @@ app.get("/complete", (req, res) => {
   res.render("complete", {
     title: "Payment Complete",
     stylesheet: "complete.css",
-    scripts: "complete.js"
+    script: "complete.js"
   });
 });
 
@@ -97,7 +97,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
             name: "custom donation", 
           }, 
           currency: "USD",
-          unit_amount: amount,
+          unit_amount: amountCents,
         },
         quantity: 1,
       };
@@ -113,7 +113,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
       line_items: [lineItem],
       mode: "payment",
       // Stripe returns the session object (session.id, session.url, ect. )
-      return_url: `http://localhost:3000/complete.html?session_id={CHECKOUT_SESSION_ID}`,
+      return_url: `http://localhost:3000/complete?session_id={CHECKOUT_SESSION_ID}`,
 
     });
     
