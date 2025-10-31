@@ -114,8 +114,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
       mode: "payment",
       // Stripe returns the session object (session.id, session.url, ect. )
       return_url: `http://localhost:3000/complete.html?session_id={CHECKOUT_SESSION_ID}`,
-      // success_url: "http://localhost:3000/success.html",
-      // cancel_url: "http://localhost:3000/cancel.html",
+
     });
     
     // sends res back to front end 
@@ -134,7 +133,8 @@ app.post("/create-checkout-session" , async (req, res) =>  {
 app.get("/session-status", async (req, res) => {
   // stripe.checkout.sessions.retrieve(...) server calls stripes APU using secret key(already configured in stripe client) to fetch the checkout session object for that session id
   const session = await stripe.checkout.sessions.retrieve(
-    // req.query.session_id reads the session_is query param from teh URL 
+    // req.query.session_id reads the session_id query param from the URL 
+    // req query param is set in complete.js
     req.query.session_id,
     // expand: ["payment_intent"]sesion.paymetn_intetn woudljust be an ID string
     // exand tells stripe "inline the fill Payment INtent objecgt right in teh response"
@@ -149,36 +149,6 @@ app.get("/session-status", async (req, res) => {
   });
 
 });
-
-
-
-// app.post('/create-payment-intent', async(req,res) => {
-//   try{
-//     const { amount } = req.body; // from donation.js
-
-//     // calls strip backend API with secrete key
-//     // sends stripeAPI  payments.Inetns/create()
-//     // paymentInents object lives on stripe servers, i get its id  and client scetr  back in my server
-//     // creates a pi object
-//     const pi = await stripe.paymentIntents.create({
-//       amount, 
-//       currency: 'usd',
-//       // lets stripe decide the best payment methods
-//       automatic_payment_methods: {enabled: true}
-//     });
-
-//     // sends a json response back to client 
-//     res.json({
-//       // payment inetnt id
-//       clientSecret: pi.client_secret,
-//       publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
-//     })
-//   } catch (e) { // if strip throws an error( like invalid currency), 
-//     // cathces erros and sends an error response
-//     res.status(400).json({error: e.message });
-//   }
-// })
-
 
 // -------------------- Start server --------------------
 const PORT = 3000;
