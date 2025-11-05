@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import Stripe from "stripe";
 import { engine } from "express-handlebars";
@@ -32,7 +31,6 @@ app.use((req, res, next) => {
   console.log("➡️ Request:", req.method, req.url);
   next();
 });
-
 
 // ---------- Routes ------------------------------
 
@@ -78,13 +76,9 @@ app.get("/config", (req, res) => {
   res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY});
 });
 
-// allow a POST /create-checkout-session request
-// add a new POST endpoint for creating checkout sessions
-// now backend knows how to ask Stripe for a payment page.
 app.post("/create-checkout-session" , async (req, res) =>  {
   try {
     // req.body = donation info sent from your frontend
-    // const { priceID, amountCents, email} = req.body || {};
     const { priceID, amountCents} = req.body || {};
 
     let lineItem;
@@ -114,26 +108,22 @@ app.post("/create-checkout-session" , async (req, res) =>  {
     // calls stripes API to create a checkout session
     const session = await stripe.checkout.sessions.create({
       ui_mode: "custom",
-      //customer_email: email,
       billing_address_collection: 'auto',
       line_items: [lineItem],
       mode: "payment",
-      // Stripe returns the session object (session.id, session.url, ect. )
       return_url: `http://localhost:3000/complete?session_id={CHECKOUT_SESSION_ID}`,
-
     });
     
     // sends res back to front end 
     res.json({ clientSecret: session.client_secret });
     console.log("✅ Created session:", session.id);
+
   } catch (err) {
     console.error("❌ Error creating sesion: ",  err);
     res.status(500).json({ error: err.message });
   }
-
 });
 
-// final truth check 
 // since my broweser can talk to stripes secret API directly , server must do it and report bakc a safe summary
 // the browser needs to knwo if the donation succeeeded, right now only stripe knows. and only server wuth the secret key can securley cas stripe for the real ressult
 app.get("/session-status", async (req, res) => {

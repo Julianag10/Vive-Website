@@ -1,5 +1,4 @@
  // ------- UI Resources -------
- // VISUAL ICONS FOR STATUS MESSAGES
  // SHOW USER WEATHER PAYMENT SUCCEEDED OR FAILED or INFO
 
 const SuccessIcon =
@@ -62,13 +61,10 @@ function setSessionDetails(session) {
     document.querySelector("#intent-id").textContent = session.payment_intent_id;
 
     // checkout session's object payment status
-    // tells you if the overall payment succeded (was recived)
     // unpaid, paid, no_payment required
     document.querySelector("#payment-intent-status").textContent = session.payment_status;
     
-    
     // PatmentInents object status
-    // exact state of the payment inetnt
     // requires_payment_method , requires_confirmation, proccessing, requires action, succeeded, canceled
     document.querySelector("#session-status").textContent = session.payment_intent_status;
 
@@ -106,7 +102,6 @@ async function initialize(){
 
     if (!sessionId) {
         console.log("No session ID found");
-        // 
         setErrorState();
         return;
     }
@@ -119,8 +114,6 @@ async function initialize(){
     // server returns session object as a response
     const session = await response.json();
 
-
     // updates the UI with specific sessoin details
-    
     setSessionDetails(session);
 }

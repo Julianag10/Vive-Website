@@ -1,9 +1,3 @@
-
-//listen for live validation errors as the user typesin the card fields
-// card.on("change", (event) => {
-//   showError(event.error ? event.error.message : "");
-// });
-
 // creates element manager object, creating secure input fields, 
 // captures card info without exposing raw card numbers to your site's JS
 // const elements = stripe.elements();
@@ -13,17 +7,12 @@
 // ====================================================================================
 
 // = Stripe.js client created with publishable key
-// can initi checkout adn create and mount elemets
 let stripe; 
 
-// chekcout instance returned by stripe.intiCheckout(...)
-// can create UI elements and listene for session changes
 let checkout;
 
 // actions object that comes from checkout.loadACtins()
-// these actions are methods that operate ni teh live checkout session
 let actions;
-
 
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -34,23 +23,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     // initalise stripe.js with publushable key
     // gives me a stripe client object, with methods i call in the browser
     stripe = Stripe(publishableKey);
-
     
-    // instead stripe waits for user input forpirce ids
+    // instead stripe waits for user input for price ids
     document.querySelectorAll(".donate-btn").forEach (btn => {
-        // e give access to event object, specifically what button was clicked
+        // e give access to event object, e contains details about what triggereed the event (what button was clicked)
         btn.addEventListener("click", async(e) => {
-            // e contins detials about what triggereed the event 
-            // e.target the acualt HTML eke that was clicked 
+            // e.target the acualt HTML ele that was clicked 
             // .dataset an object that holds all data-* attributes on that elemetn
             // HTML attribute that starts with data- becomes available automatically under that element’s .dataset
             const priceID = e.target.dataset.priceId;
-            //const email = document.getElementById("email").value || "donor@example.com";
 
             console.log(`Clicked fixed amount button for ${priceID}`);
 
             initializeCheckout(priceID, null);
-            // initializeCheckout(priceID, null, email);
         });
     });
 
@@ -64,11 +49,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const amountCents = Math.round(amountValue * 100);
-        //const email = document.getElementById("email").value || "donor@example.com";
 
         console.log('cusotome donation: $${amountValue} (${amountCents} cents)');
         initializeCheckout(null, amountCents);
-        // initializeCheckout(null, amountCents, email);
     });
 });
 
@@ -77,42 +60,32 @@ const emailInput = document.getElementById("email");
 const emailErrors = document.getElementById("email-errors");
 
 const validateEmail = async (email) => {
-    // actions.updateEmail(email) is checkout session method 
     // updateEmail(email) tries to attach the emial to the checkout session
-    // updateRedult will be the object returned by actions.updateEmail(email)
     const updateResult = await actions.updateEmail(email);
-    // returns
-    // case: 1 SUcess
+    // object returned by actions.updateEmail(email)
+    // case 1: SUCCESS
     // {    type: "sucess",
     //      session: { stripe session object, with update email field}  }
-    //
-    // case 2 error 
+    // case 2: ERROR 
     // {    type: "error",
     //      error: {
     //      message: "Invalid email address" }
-    // }
 
     const isValid = updateResult.type !== "error";
     return { isValid, message: !isValid ? updateResult.error.message : null };
 };
 
-
 // stops sensitive card info form beign sent as an HTTP request to teh url in the foroms action attribute
 document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
 
-
-// async function initializeCheckout(priceID = null, amountCents = null, email = null){
 async function initializeCheckout(priceID = null, amountCents = null){
-
     // ask backend to create a checkout session
-    // client(donation.js) sends an HTTP POST request to server.js
     const res = await fetch("/create-checkout-session" , {
         // sending a json message to server
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
         body: JSON.stringify({ priceID, amountCents})
-        // body: JSON.stringify({ priceID, amountCents, email})
     });
 
     // gets keys from server
@@ -125,7 +98,6 @@ async function initializeCheckout(priceID = null, amountCents = null){
     };
 
     // init checkout session obeject w/ clientSecert, to specify what checkout session we are working wiht 
-    // checkout session object is like a shopping cart + order tracker
     checkout =  await stripe.initCheckout({
         clientSecret, 
         elementsOptions: {appearance},
@@ -166,7 +138,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
         });
     }
     // collecr the cusotmers emial
-    // as the user types ("input"), clear andy previous error and remove error styleing
+    // as the user types, clear andy previous error and remove error styleing
     emailInput.addEventListener("input", () => {
         // Clear any validation errors
         emailErrors.textContent = "";
@@ -266,7 +238,7 @@ function setLoading(isLoading){
     const spinner = document.querySelector("#spinner");
     const text = document.querySelector("#button-text");
 
-    //HTML form controls like <button> & <input> have builtin BOOLEAN property called DISABLED
+    // HTML form controls like <button> & <input> have builtin BOOLEAN property called DISABLED
     // if disabled = true, button is disabled, broser ignores it 
     btn.disabled = isLoading;
 
@@ -276,4 +248,3 @@ function setLoading(isLoading){
     spinner.classList.toggle("hidden", !isLoading);
     text.classList.toggle("hidden", !isLoading);
 }
-
