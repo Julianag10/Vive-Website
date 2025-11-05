@@ -144,6 +144,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // status(open, complete, ect)
     // checkout.on('change', (session) => {
         // Handle changes to the checkout session
+        // dynamically enable or disable the “Pay” button depending on whether session.canConfirm is true
     // });
 
     // after calling initcheckout use loadActions() to access methods for reading and manipulating CheckoutSession
@@ -161,6 +162,22 @@ async function initializeCheckout(priceID = null, amountCents = null){
 
         document.querySelector("#button-text").textContent =
         `Pay $${(cents/100).toFixed(2)} now`;
+
+        // isten for real-time updates to the checkout session
+        checkout.on("change", (session) => {
+            console.log("Checkout session changed:", session);
+
+            const payButton = document.getElementById("submit");
+
+            // Enable or disable the button based on canConfirm
+            if (session.canConfirm) {
+                payButton.disabled = false;
+                payButton.classList.remove("disabled");
+            } else {
+                payButton.disabled = true;
+                payButton.classList.add("disabled");
+            }
+        });
     }
     // collecr the cusotmers emial
     // as the user types ("input"), clear andy previous error and remove error styleing
@@ -194,6 +211,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // CREATE PAYMENT ELEMTN
     const paymentElement = checkout.createPaymentElement();
     paymentElement.mount("#payment-element");
+    // You can customize the appearance of all Elements by passing elementsOptions.appearance when initializing Checkout on the front end.
 }
 
 // handel any immediate errors
@@ -209,24 +227,26 @@ async function handleSubmit(e) {
         const email = emailInput.value;
         const {isValid, message} = await validateEmail(email);
         if(!isValid){
-            emailInput.classList.add("error");
-            emailErrors.textContent = message;
+            // emailInput.classList.add("error");
+            // emailErrors.textContent = message;
             showMessage(message);
             setLoading(false);
             return;
         }
 
         // Check if Stripe is ready to confirm
-        const canConfirm = await loadActionsResult.actions.canConfirm();
-        if (!canConfirm) {
-            showMessage("Please fill in all required fields before paying.");
+        const session = actions.getSession();
+        if (!session.canConfirm) {
+            showMessage("Please complete all required fields before paying.");
             setLoading(false);
             return;
         }
 
-        // CONFIRM THE PAYMENT with actions.confirm() on stripes end
+        // CONFIRM THE PAYMENT INTENT with actions.confirm() already exsts in checkout session
         // confirm() tells me weather the payment element loaded succefullly
-        // confirm() tells stirpe, customer entered all info, now try to complete the PaymentIntent.”
+        // confirm() tells stirpe, customer entered all info, now try to complete/proccess the PaymentIntent.”
+        // moves the payment intetnt's stauts(staemachine):
+        //requires_payment_method → requires_confirmation → processing → succeeded
         // stripe will attempt to charge the payment method
         // if it fails immeditaly (invalid card, expired, etc.), it throws an error object right there.
         // otherwise custmer will be redirect to return url

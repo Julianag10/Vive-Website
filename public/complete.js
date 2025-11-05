@@ -1,4 +1,7 @@
  // ------- UI Resources -------
+ // VISUAL ICONS FOR STATUS MESSAGES
+ // SHOW USER WEATHER PAYMENT SUCCEEDED OR FAILED or INFO
+
 const SuccessIcon =
 `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g transform="translate(0,2)">
@@ -19,11 +22,12 @@ const InfoIcon =
 </svg>`;
 
 function setSessionDetails(session) {
-    // INITALIZING
+    // initalizing defaults
     let statusText = "Something went wrong, please try again.";
     let iconColor = "#DF1B41";
     let icon = ErrorIcon;
 
+    // if fethc from server didnt returna valid checkout session
     if (!session) {
         console.log("No session found");
         setErrorState();
@@ -102,13 +106,14 @@ async function initialize(){
 
     if (!sessionId) {
         console.log("No session ID found");
+        // 
         setErrorState();
         return;
     }
 
     // sends get req to sever endpoint /session-status, passing the session_id
     // so that server can use the session id to get return the session obejct
-    const response = await fetch('/session-status?session_id=${sessionId}');
+    const response = await fetch(`/session-status?session_id=${sessionId}`);
     
     // server will retrive the session object by calling stripe API with secrete key
     // server returns session object as a response
