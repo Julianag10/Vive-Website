@@ -1,5 +1,5 @@
 
-//listen for live validation errors as the user typesint the card fril s
+//listen for live validation errors as the user typesin the card fields
 // card.on("change", (event) => {
 //   showError(event.error ? event.error.message : "");
 // });
@@ -13,7 +13,7 @@
 // ====================================================================================
 
 // = Stripe.js client created with publishable key
-// can initi checkout adn create and ount elemets
+// can initi checkout adn create and mount elemets
 let stripe; 
 
 // chekcout instance returned by stripe.intiCheckout(...)
@@ -133,20 +133,6 @@ async function initializeCheckout(priceID = null, amountCents = null){
 
     console.log("Stripe object:", Stripe);
 
-    // LISTEN TO CHECOUTSESSION UPDATES
-    // Whenever any of these inside of checkout session changes 
-    // chechout seeesion object is liek a record of the whrolw chekout flow it contains:
-    // what items the custm is buying
-    // how much it costs
-    // what payment methids are emabled
-    // the cust emil
-    // blling Address
-    // status(open, complete, ect)
-    // checkout.on('change', (session) => {
-        // Handle changes to the checkout session
-        // dynamically enable or disable the “Pay” button depending on whether session.canConfirm is true
-    // });
-
     // after calling initcheckout use loadActions() to access methods for reading and manipulating CheckoutSession
     const loadActionsResult = await checkout.loadActions();
     // loadActions() returns:
@@ -155,7 +141,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // on success tge actions: object provides methods to interact with the checout session
 
     if(loadActionsResult.type === "success"){
-        // displays ttotal to UI
+        // displays total to UI
         actions = loadActionsResult.actions;
         const session = actions.getSession();
         const cents = session.total.total.amount;
@@ -215,7 +201,6 @@ async function initializeCheckout(priceID = null, amountCents = null){
 }
 
 // handel any immediate errors
-// validate the email input 
 // confirmthe paymetn wit stripe through payment elemtn 
 // show a spinner. disable button while confirming
 async function handleSubmit(e) {
@@ -243,10 +228,8 @@ async function handleSubmit(e) {
         }
 
         // CONFIRM THE PAYMENT INTENT with actions.confirm() already exsts in checkout session
-        // confirm() tells me weather the payment element loaded succefullly
         // confirm() tells stirpe, customer entered all info, now try to complete/proccess the PaymentIntent.”
-        // moves the payment intetnt's stauts(staemachine):
-        //requires_payment_method → requires_confirmation → processing → succeeded
+        // moves the payment intetnt's stauts(staemachine)  → processing
         // stripe will attempt to charge the payment method
         // if it fails immeditaly (invalid card, expired, etc.), it throws an error object right there.
         // otherwise custmer will be redirect to return url
@@ -255,6 +238,7 @@ async function handleSubmit(e) {
         // This point will only be reached if there is an immediate error when confirming the payment
         // if .confirm() didnt redirect show error immediatly
         if (error) showMessage(error.message);
+
     } catch(err){ // cathc netwrok/runtime.Javascript erros 
         console.error("Error in handleSubmit:", err);
         showMessage("Something went wrong. Please try again.");
