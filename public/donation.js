@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     stripe = Stripe(publishableKey);
 
     
-    // instead stripe waits for user inout forpirce ids
+    // instead stripe waits for user input forpirce ids
     document.querySelectorAll(".donate-btn").forEach (btn => {
         // e give access to event object, specifically what button was clicked
         btn.addEventListener("click", async(e) => {
@@ -45,11 +45,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             // .dataset an object that holds all data-* attributes on that elemetn
             // HTML attribute that starts with data- becomes available automatically under that element’s .dataset
             const priceID = e.target.dataset.priceId;
-            const email = document.getElementById("email").value || "donor@example.com";
+            //const email = document.getElementById("email").value || "donor@example.com";
 
             console.log(`Clicked fixed amount button for ${priceID}`);
 
-            initializeCheckout(priceID, null, email);
+            initializeCheckout(priceID, null);
+            // initializeCheckout(priceID, null, email);
         });
     });
 
@@ -63,14 +64,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const amountCents = Math.round(amountValue * 100);
-        const email = document.getElementById("email").value || "donor@example.com";
+        //const email = document.getElementById("email").value || "donor@example.com";
 
         console.log('cusotome donation: $${amountValue} (${amountCents} cents)');
-        initializeCheckout(null, amountCents, email);
+        initializeCheckout(null, amountCents);
+        // initializeCheckout(null, amountCents, email);
     });
-    // TODO: intergrate price id for cusotme button
-    // TODO how will this impact the load actions where: document.querySelector("#button-text").textContent =
-    //    `Pay $${(cents/100).toFixed(2)} now`;, wond i have o add a new query selvto here that changes the button or will and hwo will the cousomt donatin amount get pushed into the button text, cents
 });
 
 // CAHCE EMAIL WITH DOM NODES
@@ -98,11 +97,13 @@ const validateEmail = async (email) => {
 };
 
 
-// stops sensitive card info form beign sen tto as an HTTP request to teh url in the foroms action attribute
+// stops sensitive card info form beign sent as an HTTP request to teh url in the foroms action attribute
 document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
 
 
-async function initializeCheckout(priceID = null, amountCents = null, email = null){
+// async function initializeCheckout(priceID = null, amountCents = null, email = null){
+async function initializeCheckout(priceID = null, amountCents = null){
+
     // ask backend to create a checkout session
     // client(donation.js) sends an HTTP POST request to server.js
     const res = await fetch("/create-checkout-session" , {
@@ -110,7 +111,8 @@ async function initializeCheckout(priceID = null, amountCents = null, email = nu
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
-        body: JSON.stringify({ priceID, amountCents, email})
+        body: JSON.stringify({ priceID, amountCents})
+        // body: JSON.stringify({ priceID, amountCents, email})
     });
 
     // gets keys from server
@@ -131,7 +133,6 @@ async function initializeCheckout(priceID = null, amountCents = null, email = nu
 
     console.log("Stripe object:", Stripe);
 
-
     // LISTEN TO CHECOUTSESSION UPDATES
     // Whenever any of these inside of checkout session changes 
     // chechout seeesion object is liek a record of the whrolw chekout flow it contains:
@@ -145,7 +146,7 @@ async function initializeCheckout(priceID = null, amountCents = null, email = nu
         // Handle changes to the checkout session
     // });
 
-    //after calling initcheckout use loadActions() to access methods for reading and manipulating Checkout Sessions
+    // after calling initcheckout use loadActions() to access methods for reading and manipulating CheckoutSession
     const loadActionsResult = await checkout.loadActions();
     // loadActions() returns:
     // {type: "error", error: { message: string }}
@@ -153,6 +154,7 @@ async function initializeCheckout(priceID = null, amountCents = null, email = nu
     // on success tge actions: object provides methods to interact with the checout session
 
     if(loadActionsResult.type === "success"){
+        // displays ttotal to UI
         actions = loadActionsResult.actions;
         const session = actions.getSession();
         const cents = session.total.total.amount;
@@ -194,28 +196,50 @@ async function initializeCheckout(priceID = null, amountCents = null, email = nu
     paymentElement.mount("#payment-element");
 }
 
-
+// handel any immediate errors
+// validate the email input 
+// confirmthe paymetn wit stripe through payment elemtn 
 // show a spinner. disable button while confirming
 async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true); // START LOADING 
 
-    // double check the email before sconfirmation
-    const email = emailInput.value;
-    const {isValid, message} = await validateEmail(email);
-    if(!isValid){
-        emailInput.classList.add("error");
-        emailErrors.textContent = message;
-        showMessage(message);
-        setLoading(false);
-        return;
+    try{
+        // double check the email before confirmation
+        const email = emailInput.value;
+        const {isValid, message} = await validateEmail(email);
+        if(!isValid){
+            emailInput.classList.add("error");
+            emailErrors.textContent = message;
+            showMessage(message);
+            setLoading(false);
+            return;
+        }
+
+        // Check if Stripe is ready to confirm
+        const canConfirm = await loadActionsResult.actions.canConfirm();
+        if (!canConfirm) {
+            showMessage("Please fill in all required fields before paying.");
+            setLoading(false);
+            return;
+        }
+
+        // CONFIRM THE PAYMENT with actions.confirm() on stripes end
+        // confirm() tells me weather the payment element loaded succefullly
+        // confirm() tells stirpe, customer entered all info, now try to complete the PaymentIntent.”
+        // stripe will attempt to charge the payment method
+        // if it fails immeditaly (invalid card, expired, etc.), it throws an error object right there.
+        // otherwise custmer will be redirect to return url
+        const { error } = await actions.confirm();   // ← use saved actions
+
+        // This point will only be reached if there is an immediate error when confirming the payment
+        // if .confirm() didnt redirect show error immediatly
+        if (error) showMessage(error.message);
+    } catch(err){ // cathc netwrok/runtime.Javascript erros 
+        console.error("Error in handleSubmit:", err);
+        showMessage("Something went wrong. Please try again.");
     }
-
-    //COMPLET THE PAYMENT with .confirm
-    const { error } = await actions.confirm();   // ← use saved actions
-    // This point will only be reached if there is an immediate error when confirming the payment
-    if (error) showMessage(error.message);
-
+    // restores button state
     setLoading(false);  // STOP LOADING 
 }
 
@@ -248,6 +272,4 @@ function setLoading(isLoading){
     spinner.classList.toggle("hidden", !isLoading);
     text.classList.toggle("hidden", !isLoading);
 }
-
-
 

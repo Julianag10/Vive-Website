@@ -84,7 +84,8 @@ app.get("/config", (req, res) => {
 app.post("/create-checkout-session" , async (req, res) =>  {
   try {
     // req.body = donation info sent from your frontend
-    const { priceID, amountCents, email} = req.body || {};
+    // const { priceID, amountCents, email} = req.body || {};
+    const { priceID, amountCents} = req.body || {};
 
     let lineItem;
 
@@ -113,7 +114,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
     // calls stripes API to create a checkout session
     const session = await stripe.checkout.sessions.create({
       ui_mode: "custom",
-      customer_email: email,
+      //customer_email: email,
       billing_address_collection: 'auto',
       line_items: [lineItem],
       mode: "payment",
