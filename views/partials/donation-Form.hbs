@@ -8,9 +8,12 @@
     <button type="button" class="donate-btn" data-price-id="price_1SJNckLiN9ZtVTjradEOWpf8">$25</button>
     <button type="button" class="donate-btn" data-price-id="price_1SO9JcLiN9ZtVTjrZ8dCrL1o">$100</button>
     {{!-- cusome amoutn --}}
-    <div>
-        <input type="number" id="custom-amount" placeholder="Custom amount ($)">
-        <button type="button" id="custom-donate-btn" > Donate Custom </button>
+    <div class="custom-donation">
+        <label for="custom-amount">Custom amount ($)</label>
+        <div class="custom-input-group">
+            <input type="number" id="custom-amount" placeholder="Enter amount">
+            <button type="button" id="custom-donate-btn">Donate Custom</button>
+        </div>
     </div>
 
     <label for="email">
@@ -20,12 +23,14 @@
     <div id="email-errors">
             {{!-- This empty <div> is where you display validation errors dynamically. --}}
     </div>
-
     
     <h4>Billing Address</h4>
     <div id="billing-address-element">
         <!--Stripe.js injects the Address Element-->
     </div>
+
+    <!-- Stand-alone Apple Pay/Google Pay button -->
+    <div id="payment-request-button" style="margin-bottom: 12px;"></div>
 
     <h4>Payment</h4>
     <div id="payment-element">
@@ -35,6 +40,7 @@
         <div class="spinner hidden" id="spinner"></div>
         <span id="button-text">Pay now</span>
     </button>
+
 
     <div id="payment-message" class="hidden"></div>
 

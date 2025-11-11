@@ -9,9 +9,15 @@
 // = Stripe.js client created with publishable key
 let stripe; 
 
+// checkout obejct is my controller that operates on the STIPES CHECKPUT SESISON OBJECT
+// it lets me inetract with stipes checkoursession object with the methods in actions
+// or by adding payment elemnts and pamymetn methods
 let checkout;
 
-// actions object that comes from checkout.loadACtins()
+// holds the Actions API (methods like updateEmail(), confirm(), ect)
+// actions is an object full of methods BOUND TO THE ACTIVE CHECKOUT SESSION
+// actions object that comes from checkout.loadActions()
+// actions allows us to interact with the checkout session object
 let actions;
 
 
@@ -50,12 +56,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const amountCents = Math.round(amountValue * 100);
 
-        console.log('cusotome donation: $${amountValue} (${amountCents} cents)');
+        console.log(`custom donation: $${amountValue} (${amountCents} cents)`);
         initializeCheckout(null, amountCents);
     });
-});
 
-// CAHCE EMAIL WITH DOM NODES
+    // stops sensitive card info form beign sent as an HTTP request to teh url in the foroms action attribute
+    document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+});
+// grabe email input and error container immediatley
 const emailInput = document.getElementById("email");
 const emailErrors = document.getElementById("email-errors");
 
@@ -71,12 +79,12 @@ const validateEmail = async (email) => {
     //      error: {
     //      message: "Invalid email address" }
 
-    const isValid = updateResult.type !== "error";
+    const isValid = updateResult.type !== "error"; // put true or false into isValid
+
+    // returns the mesaa
+    // (condition ? A : B) returns A if the condition is true, else B
     return { isValid, message: !isValid ? updateResult.error.message : null };
 };
-
-// stops sensitive card info form beign sent as an HTTP request to teh url in the foroms action attribute
-document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
 
 async function initializeCheckout(priceID = null, amountCents = null){
     // ask backend to create a checkout session
@@ -97,14 +105,66 @@ async function initializeCheckout(priceID = null, amountCents = null){
         theme:'stripe',
     };
 
-    // init checkout session obeject w/ clientSecert, to specify what checkout session we are working wiht 
+    // init checkout session obeject w/ clientSecert
+    // in server created a and linked a checkout and session and an payment intetn , and thrn strip sends back the client secret that specfies with checkout session object we are workign with
+    // then in front end use that client secrete so we can use the same checkout session we created in server
+    // because they were created adn linked but onyl in stripes servers, so fron end dosent know yet which checkout session belongs to it
     checkout =  await stripe.initCheckout({
         clientSecret, 
         elementsOptions: {appearance},
     });
+    //STRIPE CHECKOUT SESSION PBJEct CONTROLLER
+    // interacts with stripes CheckoutSession Object
+    // allows me to talk to stirpe's API about the session
+    // checkout = {
+    //     clientSecret: "...",
+    //     on(event, callback) {...},
+    //     loadActions: async () => {...},
+    //     createPaymentElement: () => {...},
+    //     // (internal Stripe state)
+    // }
+
+    // actions = {
+    //     getSession: () => session{...},      // reads the live Checkout Session object
+    //     updateEmail: (email) => {...},// sets customer email
+    //     confirm: () => {...},         // tells Stripe to confirm the PaymentIntent
+    //     cancel: () => {...},          // (optional)
+    //     // etc.
+    // }
+
+
+    // DATA -STRipes CHECOUT SESSION OBJECT RECORD
+    // session is A BROWSER COOPY OF STRIPESCHEKOUT SESSION OBJECT
+    // session = {
+    //     object: "checkout.session",
+    //     id: "cs_test_123",
+    //     status: "open",          // open | complete | expired
+    //     currency: "usd",
+    //     total: {
+    //         total: {
+    //         amount: 2500,        // in cents
+    //         currency: "usd"
+    //         }
+    //     },
+    // BECUASE ACTION.CANCONFIRM WORKS ON SESSION WHICH IS A COPY OF STRIPES SESSION OBEJCT, 
+    //     canConfirm: false,       // becomes true when form complete
+    //     payment_intent: "pi_abc123",
+    //     customer_email: "user@example.com"
+    // }
+
+    // paymentIntent = {
+    //     object: "payment_intent",
+    //     id: "pi_abc123",
+    //     amount: 2500,
+    //     currency: "usd",
+    //     status: "requires_confirmation", // or "processing", "succeeded", etc.
+    //     payment_method: "pm_card_visa",
+    // }
 
     console.log("Stripe object:", Stripe);
+    console.log("Stripe instance:", stripe);
 
+    // Loads the Actions API(methods)
     // after calling initcheckout use loadActions() to access methods for reading and manipulating CheckoutSession
     const loadActionsResult = await checkout.loadActions();
     // loadActions() returns:
@@ -113,20 +173,26 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // on success tge actions: object provides methods to interact with the checout session
 
     if(loadActionsResult.type === "success"){
-        // displays total to UI
+        // loads the methods into actions object
         actions = loadActionsResult.actions;
+        // fetches the Checkout Session snapshot from Stripe.
         const session = actions.getSession();
-        const cents = session.total.total.amount;
+        // grab total in cents from the first (and only) line item
+        const amountDisplay = session.lineItems[0].total.amount;
 
-        document.querySelector("#button-text").textContent =
-        `Pay $${(cents/100).toFixed(2)} now`;
+        // displays total to UI
+        const buttonText = document.querySelector("#button-text")
+        buttonText.textContent =`Pay ${amountDisplay} now`;
 
-        // isten for real-time updates to the checkout session
+        // if osomethings  changes on stripes side, (update email, ect)
+        // checkout.on("change") event sends you a new updated snapshot == send you a new session obejct
         checkout.on("change", (session) => {
             console.log("Checkout session changed:", session);
 
             const payButton = document.getElementById("submit");
 
+            // if after 
+            // canConfirm checks if the session has all the inputs it needs for confirming the paymetn intent
             // Enable or disable the button based on canConfirm
             if (session.canConfirm) {
                 payButton.disabled = false;
@@ -141,6 +207,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // as the user types, clear andy previous error and remove error styleing
     emailInput.addEventListener("input", () => {
         // Clear any validation errors
+        // 
         emailErrors.textContent = "";
         emailInput.classList.remove("error");
     });
@@ -148,12 +215,12 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // "blur" fires when input looses focus, when "blur" validate via actions.update email 
     emailInput.addEventListener("blur", async () => {
         const newEmail = emailInput.value;
-        // checking if email is valid after loosing focus
         if(!newEmail){ 
             // if the new email feild is empty do nothng 
             return;
         }
 
+        // checking if email is valid after loosing focus
         const { isValid, message } = await validateEmail(newEmail);
         if(!isValid){
             emailInput.classList.add("error");
@@ -177,7 +244,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
 // show a spinner. disable button while confirming
 async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true); // START LOADING 
+    setLoading(true); // START LOADING when submit button is pressed
 
     try{
         // double check the email before confirmation

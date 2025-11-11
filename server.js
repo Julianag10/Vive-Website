@@ -105,7 +105,8 @@ app.post("/create-checkout-session" , async (req, res) =>  {
         return res.status(400).json({ error: "Must provide priceId or amount" });
     }
 
-    // calls stripes API to create a checkout session
+    // calls stripes API to create a checkout session object on stripes servers
+    // strip automatically links a paymetn inetnt
     const session = await stripe.checkout.sessions.create({
       ui_mode: "custom",
       billing_address_collection: 'auto',
