@@ -3,11 +3,86 @@ import Stripe from "stripe";
 import { engine } from "express-handlebars";
 import dotenv from "dotenv";
 
+// import email function
+import { sendConfirmationEmail } from "./sendReceipt.js";
+
 // load environment variables
 dotenv.config();
 
-// create express app
-const app = express(); // creates express server
+// create express app/creates express server
+const app = express(); 
+
+// ---------- Stripe setup ----------
+// lets your server talk to Stripe’s API (create PaymentIntents, verify webhooks, etc.)
+// creats a strip client(server side)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+
+// -----------------------------------------
+// WEBHOOK ROUTE + SETUP — MUST COME BEFORE JSON
+// -----------------------------------------
+
+// express.raw({ type: "application/json" }) is middleware just for this route.
+// express.raw(...) tells Express: do not parse the body into JSON yet.
+// instead keep req.body as the raw body so that stripes signatiure check dosent fail 
+app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) =>{
+  console.log("Webhook secret:", process.env.STRIPE_WEBHOOK_SECRET);
+
+  // in stripes req is header called "stripe-signature"
+  const signature = req.headers["stripe-signature"]; 
+
+  // Need signatre to verify the event was really signed by Stripe
+  let event; // will holds verified event
+
+  // TRY BLOCK : Verifying the webhook is really from Stripe
+  try{
+    // stripe's helper .constructEvent() checks if signature matches what stripe expects
+    // thows an error if payload(req.body) was modified
+    // throws an erro if signatire is missing/wrnog
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+      console.error("❌ Webhook signature verification failed:", err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  // after TRY BLOCK, event is now a trusted, parsed Stripe event object.
+
+  // STRIPE REQ.BODY
+  //  { "type": "checkout.session.completed",
+  // "data": { "object": { ... checkout session ... } } }
+
+  // handel the event
+  // event.type tells you what just happened
+  // checkout.session.completed is an event type checkout session finsihed and payment successful
+  if (event.type === "checkout.session.completed") {
+    // event.data.object is actualy thing the event is about
+    // for this event.type the event is about Checkout Session object
+    const session = event.data.object;
+    console.log("✅ Payment completed for:", session.customer_details.email);
+    // checkout session object has porperites 
+    const name = session.customer_details?.name;
+    const email = session.customer_details?.email;
+    const amount = session.amount_total / 100; 
+
+    console.log("🔔 Sending receipt email to:", email);
+
+    try {
+      await sendConfirmationEmail({ name, email, amount });
+      console.log("✅ Email sent");
+    } catch (err) {
+      console.error("❌ Error sending email:", err);
+    }
+  }
+  // sends stipe a HTTPS 200 so stripe know s the weebhook was succesully porcessed
+  res.status(200).send("Received"); 
+});
+
+// -------------------------------------------------------
+
+// ----------- Middleware -----------
 //express.json() middleware automatically parses JSON request bodies into req.body.
 app.use(express.json()); // lets backend read JSON from requesets
 
@@ -17,13 +92,8 @@ app.set("view engine", "hbs");
 app.set("views", "./views");
 
 // ---------- Static files ----------
-// serve static files in /public (index.html, success.html, cancel.html)
+// serve static files in /public folder
 app.use(express.static("public"));
-
-// ---------- Stripe setup ----------
-// lets your server talk to Stripe’s API (create PaymentIntents, verify webhooks, etc.)
-// creats a strip client(server side)
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ---------- Logging middleware ----------
 // log every request
@@ -108,6 +178,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
     // calls stripes API to create a checkout session object on stripes servers
     // strip automatically links a paymetn inetnt
     const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
       ui_mode: "custom",
       billing_address_collection: 'auto',
       line_items: [lineItem],
@@ -139,13 +210,22 @@ app.get("/session-status", async (req, res) => {
   );
 
   res.json({
+    // status of the checkoutsession
     status: session.status,
-    payment_status: session.payment_status,
+    // paymentStatus Only present when session.type=complete
+    // session.type=complete -> (Checkout Session is complete. Payment processing may still be in progres)
+    payment_status: session.payment_status, // shoudlnt this be diffrent
+    // payment_status: session.paymentStatus,
     payment_intent_id: session.payment_intent.id,
-    payment_intent_status: session.payment_intent.status
+    payment_intent_status: session.payment_intent.status // STATUS OF THE PAYMENT INTETN
   });
 
 });
+
+
+
+
+
 
 // -------------------- Start server --------------------
 const PORT = 3000;

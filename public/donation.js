@@ -9,6 +9,7 @@
 // = Stripe.js client created with publishable key
 let stripe; 
 
+// the checkout contriller i get for teh checkouts essin i created on my server
 // checkout obejct is my controller that operates on the STIPES CHECKPUT SESISON OBJECT
 // it lets me inetract with stipes checkoursession object with the methods in actions
 // or by adding payment elemnts and pamymetn methods
@@ -164,13 +165,61 @@ async function initializeCheckout(priceID = null, amountCents = null){
     console.log("Stripe object:", Stripe);
     console.log("Stripe instance:", stripe);
 
-    // Loads the Actions API(methods)
-    // after calling initcheckout use loadActions() to access methods for reading and manipulating CheckoutSession
+        // if the user clicks a $1 button twice:
+    // 🧹 Clear old Elements
+    // document.querySelector("#payment-element").innerHTML = "";
+    // document.querySelector("#express-checkout-element").innerHTML = "";
+
+    // CREATE PAYMENT ELEMTN
+    const paymentElement = checkout.createPaymentElement();
+    paymentElement.mount("#payment-element");
+    // You can customize the appearance of all Elements by passing elementsOptions.appearance when initializing Checkout on the front end.
+
+    // Create and mount the Express Checkout Element
+    const expressCheckoutElement = checkout.createExpressCheckoutElement({
+        paymentMethods: {
+            applePay: "always",
+            googlePay: "always"
+        }
+    });
+    expressCheckoutElement.mount('#express-checkout-element');
+
+    // 👇 Add this *immediately after* mounting:
+    const expressCheckoutDiv = document.getElementById('express-checkout-element');
+
+    // Hide it at first so the user doesn’t see a blank box
+    expressCheckoutDiv.classList.add("hidden");
+
+    // Listen for the "ready" event (fires when Stripe finishes wallet checks)
+    expressCheckoutElement.on('ready', ({ availablePaymentMethods }) => {
+        console.log('Wallet availability:', availablePaymentMethods);
+    // When Stripe emits the "ready" event, it sends:
+    // availablePaymentMethods = { 
+    //      applePay: true/false
+    //      googlePay: true/false
+    // }
+
+    // If at least one fast-pay method is available, show the element
+    // Object is a built-in global object that gives you utility functions for working with objects, Object.values()
+    // Object.values(anyObject) → [true, false, true] returns an array of all the property values from that object
+    // Array.prototype.some() is an array method.
+    // It checks whether at least one element in the array passes a test (returns true)
+        if (availablePaymentMethods && Object.values(availablePaymentMethods).some(Boolean)) {
+            expressCheckoutDiv.classList.remove("hidden");
+        } else {
+            expressCheckoutDiv.classList.add("hidden");
+            console.log('No express checkout wallets available on this device.');
+        }
+    });
+
+    // You ask the checkout controller for the Actions API bound to the active Checkout Session(created in server)
     const loadActionsResult = await checkout.loadActions();
-    // loadActions() returns:
+    // checkout.loadActions() returns a object w/ functions bound to my checkout Session:
     // {type: "error", error: { message: string }}
     // {type: "success", actions: object }
-    // on success tge actions: object provides methods to interact with the checout session
+    // actions.getSession() → gives you the session snapshot.
+    // actions.updateEmail() → edits that session’s email.
+    // actions.updateEmail() → edits that session’s email.
 
     if(loadActionsResult.type === "success"){
         // loads the methods into actions object
@@ -178,20 +227,19 @@ async function initializeCheckout(priceID = null, amountCents = null){
         // fetches the Checkout Session snapshot from Stripe.
         const session = actions.getSession();
         // grab total in cents from the first (and only) line item
-        const amountDisplay = session.lineItems[0].total.amount;
-
+        // const amountDisplay = session.lineItems[0].total.amount;
+        const amountDisplay = session.total.total.amount
         // displays total to UI
         const buttonText = document.querySelector("#button-text")
         buttonText.textContent =`Pay ${amountDisplay} now`;
 
-        // if osomethings  changes on stripes side, (update email, ect)
+        // if something changes on stripes side, (update email, ect)
         // checkout.on("change") event sends you a new updated snapshot == send you a new session obejct
         checkout.on("change", (session) => {
             console.log("Checkout session changed:", session);
 
             const payButton = document.getElementById("submit");
 
-            // if after 
             // canConfirm checks if the session has all the inputs it needs for confirming the paymetn intent
             // Enable or disable the button based on canConfirm
             if (session.canConfirm) {
@@ -201,6 +249,17 @@ async function initializeCheckout(priceID = null, amountCents = null){
                 payButton.disabled = true;
                 payButton.classList.add("disabled");
             }
+        });
+
+        // Express Checkout Element (wallet button) is an event emitter
+        // When shopper approves ApplePay/GooglePay in the native sheet, the Element emits a confirm event
+        // expressCheckoutElement collects & authorizes the wallet payment → fires confirm
+        expressCheckoutElement.on('confirm', (event) => {
+            // tells Stripe: “Use the wallet result u just gave me (event) to confirm the PaymentIntent that’s attached to this Checkout Session.”
+            // the event object is {expressCheckoutConfirmEvent: event}}
+            // Passing { expressCheckoutConfirmEvent: event } binds that specific wallet authorization to the session’s PaymentIntent
+            // Stripe then completes the payment (server-side), and will either redirect or or update the embedded UI.
+            loadActionsResult.actions.confirm({expressCheckoutConfirmEvent: event});
         });
     }
     // collecr the cusotmers emial
@@ -233,10 +292,6 @@ async function initializeCheckout(priceID = null, amountCents = null){
         }
     });
 
-    // CREATE PAYMENT ELEMTN
-    const paymentElement = checkout.createPaymentElement();
-    paymentElement.mount("#payment-element");
-    // You can customize the appearance of all Elements by passing elementsOptions.appearance when initializing Checkout on the front end.
 }
 
 // handel any immediate errors
