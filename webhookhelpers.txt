@@ -1,0 +1,24 @@
+async function handleDonationSuccess(session) {
+  console.log("💰 SUCCESS:", session.id);
+  // send email, log DB
+}
+
+async function handleDonationFailed(pi) {
+  console.log("❌ FAILED:", pi.id, pi.last_payment_error?.message);
+  // send failure email
+}
+
+async function handleDonationRefund(refund) {
+  console.log("↩️ REFUND:", refund.id);
+  // email donor, update DB
+}
+
+async function handleDonationDispute(dispute) {
+  console.log("⚠️ DISPUTE:", dispute.id);
+  // freeze donation, notify admin
+}
+
+async function handleSessionExpired(session) {
+  console.log("⌛ EXPIRED:", session.id);
+  // optional email
+}

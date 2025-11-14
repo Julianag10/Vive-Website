@@ -49,7 +49,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
       return res.status(400).send(`Webhook Error: ${err.message}`);
   }
   // after TRY BLOCK, event is now a trusted, parsed Stripe event object.
-
+  console.log("📩 Webhook Event Received:", event.type)
   // STRIPE REQ.BODY
   //  { "type": "checkout.session.completed",
   // "data": { "object": { ... checkout session ... } } }
@@ -148,6 +148,7 @@ app.get("/config", (req, res) => {
 
 app.post("/create-checkout-session" , async (req, res) =>  {
   try {
+    console.log("📥 Body received:", req.body);
     // req.body = donation info sent from your frontend
     const { priceID, amountCents} = req.body || {};
 

@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import nodemailer from "nodemailer";
 
 // nodemailer creats a transporter object
@@ -7,7 +9,7 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
     // host -> Mailtrap’s SMTP server.
     host: "sandbox.smtp.mailtrap.io",
-    port: 587,
+    port: 2525,
     // auth.user & auth.pass -> your Mailtrap credentials from .env
     auth: {
         user: process.env.MAILTRAP_USER,
