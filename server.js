@@ -2,150 +2,92 @@ import express from "express";
 import Stripe from "stripe";
 import { engine } from "express-handlebars";
 import dotenv from "dotenv";
+import path from "path"; // builds safe file paths 
+import { fileURLToPath } from "url"; // used to recreate __dirname
+// import webhook router
+import webhookRouter from "./routes/webhook.js";
 
-// import email function
-import { sendConfirmationEmail } from "./sendReceipt.js";
 
 // load environment variables
 dotenv.config();
 
-// create express app/creates express server
+// ---------- EXPRESS SETUP ----------------------------------------
+// create express app/server
 const app = express(); 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// ---------- Stripe setup ----------
-// lets your server talk to Stripe’s API (create PaymentIntents, verify webhooks, etc.)
-// creats a strip client(server side)
+// ---------- STRIPE SETUP ----------------------------------------
+// Creates Stripe API client using your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// ---------- WEBHOOK ROUTER -------------------------------
+// must come before JSON
+// wehooks needs keep req.body as the raw body so that stripes signatiure check dosent fail 
+// mount webhook route(POST /webhook) as a path(webhookRouter)
+// POST /webhook -> gose to webhookRouter -> router.post("/") 
+app.use("/webhook", webhookRouter);
 
-// -----------------------------------------
-// WEBHOOK ROUTE + SETUP — MUST COME BEFORE JSON
-// -----------------------------------------
+// ---------- NORMAL MIDDLEWARE -------------------------------
+// express.json() middleware automatically parses JSON request bodies into req.body.
+app.use(express.json()); // allows backend read JSON body from requesets
+app.use(express.urlencoded({ extended: true })); // allow HTML form bodies from requesrs
+app.use(express.static(path.join(__dirname, "public"))); // serve static files in /public folder
 
-// express.raw({ type: "application/json" }) is middleware just for this route.
-// express.raw(...) tells Express: do not parse the body into JSON yet.
-// instead keep req.body as the raw body so that stripes signatiure check dosent fail 
-app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) =>{
-  console.log("Webhook secret:", process.env.STRIPE_WEBHOOK_SECRET);
-
-  // in stripes req is header called "stripe-signature"
-  const signature = req.headers["stripe-signature"]; 
-
-  // Need signatre to verify the event was really signed by Stripe
-  let event; // will holds verified event
-
-  // TRY BLOCK : Verifying the webhook is really from Stripe
-  try{
-    // stripe's helper .constructEvent() checks if signature matches what stripe expects
-    // thows an error if payload(req.body) was modified
-    // throws an erro if signatire is missing/wrnog
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (err) {
-      console.error("❌ Webhook signature verification failed:", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-  // after TRY BLOCK, event is now a trusted, parsed Stripe event object.
-  console.log("📩 Webhook Event Received:", event.type)
-  // STRIPE REQ.BODY
-  //  { "type": "checkout.session.completed",
-  // "data": { "object": { ... checkout session ... } } }
-
-  // handel the event
-  // event.type tells you what just happened
-  // checkout.session.completed is an event type checkout session finsihed and payment successful
-  if (event.type === "checkout.session.completed") {
-    // event.data.object is actualy thing the event is about
-    // for this event.type the event is about Checkout Session object
-    const session = event.data.object;
-    console.log("✅ Payment completed for:", session.customer_details.email);
-    // checkout session object has porperites 
-    const name = session.customer_details?.name;
-    const email = session.customer_details?.email;
-    const amount = session.amount_total / 100; 
-
-    console.log("🔔 Sending receipt email to:", email);
-
-    try {
-      await sendConfirmationEmail({ name, email, amount });
-      console.log("✅ Email sent");
-    } catch (err) {
-      console.error("❌ Error sending email:", err);
-    }
-  }
-  // sends stipe a HTTPS 200 so stripe know s the weebhook was succesully porcessed
-  res.status(200).send("Received"); 
-});
-
-// -------------------------------------------------------
-
-// ----------- Middleware -----------
-//express.json() middleware automatically parses JSON request bodies into req.body.
-app.use(express.json()); // lets backend read JSON from requesets
-
-// ---------- Handlebars setup ----------
+// ---------- HANDELBARS VIEW ENGINE --------------------
 app.engine("hbs", engine({ extname: ".hbs" }));
 app.set("view engine", "hbs");
-app.set("views", "./views");
+// path.join(__dirname, "views") == ./Vview folder
+app.set("views", path.join(__dirname, "views"));
 
-// ---------- Static files ----------
-// serve static files in /public folder
-app.use(express.static("public"));
-
-// ---------- Logging middleware ----------
+// ---------- LOGGIN MIDDLEWARE ------------------------------
 // log every request
 app.use((req, res, next) => {
-  console.log("➡️ Request:", req.method, req.url);
+  console.log("➡️ ", req.method, req.url);
   next();
 });
 
-// ---------- Routes ------------------------------
-
-// Home page
+// ---------- PAGE ROUTES ----------------------------------------
+// HOME PAGE
 app.get("/", (req, res) => {
-  // "home" name of the .hbs file that will be turned into a html file 
+  // "home" name of .hbs file that will turn into .html file 
   // then send that HTML back to the browser
-  // express will look for views/donate.hbs and render it inside my layout mian.hbs
+  // express looks for views/donate.hbs and renders it inside main.hbs {{{body}}}
   res.render("home", {
     title: "Home",
     stylesheet: "home.css",
-    stripe: true,
     donation: true
   });
 });
 
-// donate page
+// DONATE PAGE
 app.get("/donate", (req, res) => {
   res.render("donate", {
     title: "Donate",
     stylesheet: "donate.css",
-    stripe: true,
     donation: true
   });
 });
 
-// complete page
+// COMPLETE PAGE
 app.get("/complete", (req, res) => {
   res.render("complete", {
     title: "Payment Complete",
     stylesheet: "complete.css",
     script: "complete.js",
-    stripe: true,
-    complete: true
   });
 });
 
+// ---------- STRIPE API ENPOINTS --------------------
 
-// ---------- API ENPOINTS --------------------
-
-// publishable key to front end
+// SEND publishable key to frontend
 app.get("/config", (req, res) => {
-  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY});
+  res.json({ 
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+  });
 });
 
+// CREATE CHECKOUT SESSION
 app.post("/create-checkout-session" , async (req, res) =>  {
   try {
     console.log("📥 Body received:", req.body);
@@ -155,18 +97,11 @@ app.post("/create-checkout-session" , async (req, res) =>  {
     let lineItem;
 
     if(priceID) {
-      // donor clicked a fixed button wiht a strip price Id
-      lineItem = {
-        price: priceID,
-        quantity: 1,
-      };
+      lineItem = { price: priceID, quantity: 1};
     } else if (amountCents) {
-      // donor type d a cousome amont
       lineItem = {
         price_data: {
-          product_data: {
-            name: "custom donation", 
-          }, 
+          product_data: { name: "custom donation" }, 
           currency: "USD",
           unit_amount: amountCents,
         },
@@ -187,7 +122,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
       return_url: `http://localhost:3000/complete?session_id={CHECKOUT_SESSION_ID}`,
     });
     
-    // sends res back to front end 
+    // sends res back to frontend 
     res.json({ clientSecret: session.client_secret });
     console.log("✅ Created session:", session.id);
 
@@ -197,6 +132,7 @@ app.post("/create-checkout-session" , async (req, res) =>  {
   }
 });
 
+// CONFIRMS PAYMENT STATUS, SESSION STATUS 
 // since my broweser can talk to stripes secret API directly , server must do it and report bakc a safe summary
 // the browser needs to knwo if the donation succeeeded, right now only stripe knows. and only server wuth the secret key can securley cas stripe for the real ressult
 app.get("/session-status", async (req, res) => {
@@ -220,15 +156,9 @@ app.get("/session-status", async (req, res) => {
     payment_intent_id: session.payment_intent.id,
     payment_intent_status: session.payment_intent.status // STATUS OF THE PAYMENT INTETN
   });
-
 });
 
-
-
-
-
-
-// -------------------- Start server --------------------
+// ---------- START SERVER --------------------
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

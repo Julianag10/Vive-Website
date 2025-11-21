@@ -1,18 +1,11 @@
-// creates element manager object, creating secure input fields, 
-// captures card info without exposing raw card numbers to your site's JS
-// const elements = stripe.elements();
 
-// ====================================================================================
-// QUESTIONS ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ 
-// ====================================================================================
-
-// = Stripe.js client created with publishable key
+// Stripe.js client created with publishable key
 let stripe; 
 
-// the checkout contriller i get for teh checkouts essin i created on my server
+// the checkout controller for the checkoutsession i created on my server
 // checkout obejct is my controller that operates on the STIPES CHECKPUT SESISON OBJECT
 // it lets me inetract with stipes checkoursession object with the methods in actions
-// or by adding payment elemnts and pamymetn methods
+// or by adding payment elemnts, express checkout element and pamymetn methods
 let checkout;
 
 // holds the Actions API (methods like updateEmail(), confirm(), ect)
@@ -21,7 +14,58 @@ let checkout;
 // actions allows us to interact with the checkout session object
 let actions;
 
+const customInput = document.getElementById("custom-amount");
+const customDonationErrMsg = document.getElementById("custom-error");
 
+const payButton = document.getElementById("submit");
+const buttonText = document.querySelector("#button-text")
+
+const emailInput = document.getElementById("email");
+const emailErrors = document.getElementById("email-errors");
+
+let selectedPriceID = null;
+let customAmountCents = null;
+
+// ==============================================================================================
+// update payButton text live as user type custom amount, or decides to do a fixed donation
+// call when user clicks a preset amount, or types a custom amountm or fomr resets
+function updatePayButton(){
+    if(selectedPriceID){ 
+        // finds teh buttont ht visuallt has the .selected class
+        const selectedBtn = document.querySelector(".donate-btn.selected");
+        if (selectedBtn) { // Stripe Elements remounting can clear DOM state
+            // const session = actions.getSession();
+            // const amountDisplay = session.total.total.amount
+            const selectedAmount = selectedBtn.innerText.replace("$", "");
+            buttonText.textContent = `Pay $${selectedAmount} now`;
+        }
+    } else if (customAmountCents) {
+        // const session = actions.getSession();
+        // const amountDisplay = session.total.total.amount
+        buttonText.textContent  = `Pay $${(customAmountCents / 100).toFixed(2)} now`;
+    } else {
+        buttonText.textContent = "Pay now";
+    }
+}
+// ==============================================================================================
+async function validateEmail(email) {
+    // updateEmail(email) ATTEMPTS to attach emial to STRIPE checkout session
+    const updateResult = await actions.updateEmail(email);
+    // object returned by actions.updateEmail(email)
+    // case 1: SUCCESS
+    // {    type: "sucess",
+    //      session: { stripe session object, with update email field}  }
+    // case 2: ERROR 
+    // {    type: "error",
+    //      error: { message: "Invalid email address" } }
+
+    const isValid = updateResult.type !== "error"; // put true or false into isValid
+
+    // returns the error: message from Stripes JSON responce
+    // (condition ? A : B) returns A if the condition is true, else B
+    return { isValid, message: !isValid ? updateResult.error.message : null };
+};
+// ==============================================================================================
 document.addEventListener("DOMContentLoaded", async () => {
     // asks server for the publishable key( safe to expose)
     const configRes = await fetch("/config"); 
@@ -31,74 +75,80 @@ document.addEventListener("DOMContentLoaded", async () => {
     // gives me a stripe client object, with methods i call in the browser
     stripe = Stripe(publishableKey);
     
-    // instead stripe waits for user input for price ids
-    document.querySelectorAll(".donate-btn").forEach (btn => {
-        // e give access to event object, e contains details about what triggereed the event (what button was clicked)
-        btn.addEventListener("click", async(e) => {
-            // e.target the acualt HTML ele that was clicked 
+    // ----------- FIXED AMOUNT BUTTONS --------------
+    document.querySelectorAll(".donate-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            // Clear custom input if a fixed amount button is pressed
+            customInput.value = "";
+            customAmountCents = null; // for server body
+            customDonationErrMsg.style.display = "none";
+            customInput.classList.remove("invalid");
+            
+            // unselect any selected buttons
+            document.querySelectorAll(".donate-btn").forEach(b => b.classList.remove("selected"));
+            // highlight the selected button
+            btn.classList.add("selected");
+
             // .dataset an object that holds all data-* attributes on that elemetn
             // HTML attribute that starts with data- becomes available automatically under that element’s .dataset
-            const priceID = e.target.dataset.priceId;
+            selectedPriceID = btn.dataset.priceId;
 
-            console.log(`Clicked fixed amount button for ${priceID}`);
-
-            initializeCheckout(priceID, null);
+            // Update Pay button text each time user clicks a new fixed amount button
+            updatePayButton();
+            // Create / refresh Checkout Session for this fixed amount
+            initializeCheckout();
         });
     });
 
-    document.getElementById('custom-donate-btn').addEventListener("click", async(e) => {
-        const amountInput = document.getElementById("custom-amount");
-        const amountValue = Number(amountInput.value);
+    // ----------- CUSSTOM AMOUNT INPUT  --------------
+    customInput.addEventListener("input", () => {
+        const customValue = Number(customInput.value);
 
-        if (!amountValue || amountValue <= 0) {
-            alert("Please enter a valid custom donation amount");
+        // Reset preset buttons
+        document.querySelectorAll(".donate-btn").forEach (btn => {
+            btn.classList.remove("selected");
+        });
+
+        // Need to clear fixed amount selected so 
+        selectedPriceID = null; 
+
+        // invalid value
+        if (!customValue || customValue < 1) {
+            customAmountCents = null; // sends to updatePayButton()
+            customInput.classList.add("invalid");
+            customDonationErrMsg.style.display = "block";
+            updatePayButton();
             return;
         }
 
-        const amountCents = Math.round(amountValue * 100);
+        // Valid custom amount
+        customInput.classList.remove("invalid");
+        customDonationErrMsg.style.display = "none";
+        customAmountCents = Math.round(customValue* 100);
 
-        console.log(`custom donation: $${amountValue} (${amountCents} cents)`);
-        initializeCheckout(null, amountCents);
+        console.log(`custom donation: $${customValue} (${customAmountCents} cents)`);
+        updatePayButton();
+        initializeCheckout();
     });
 
     // stops sensitive card info form beign sent as an HTTP request to teh url in the foroms action attribute
-    document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+    document.querySelector("#payment-form")
+    .addEventListener("submit", handleSubmit);
 });
-// grabe email input and error container immediatley
-const emailInput = document.getElementById("email");
-const emailErrors = document.getElementById("email-errors");
-
-const validateEmail = async (email) => {
-    // updateEmail(email) tries to attach the emial to the checkout session
-    const updateResult = await actions.updateEmail(email);
-    // object returned by actions.updateEmail(email)
-    // case 1: SUCCESS
-    // {    type: "sucess",
-    //      session: { stripe session object, with update email field}  }
-    // case 2: ERROR 
-    // {    type: "error",
-    //      error: {
-    //      message: "Invalid email address" }
-
-    const isValid = updateResult.type !== "error"; // put true or false into isValid
-
-    // returns the mesaa
-    // (condition ? A : B) returns A if the condition is true, else B
-    return { isValid, message: !isValid ? updateResult.error.message : null };
-};
-
-async function initializeCheckout(priceID = null, amountCents = null){
-    // ask backend to create a checkout session
+// ==============================================================================================
+async function initializeCheckout(){
+    // sending a json message to server, sending correct session payload
     const res = await fetch("/create-checkout-session" , {
-        // sending a json message to server
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
-        body: JSON.stringify({ priceID, amountCents})
+        body: JSON.stringify({ 
+            priceID: selectedPriceID, 
+            amountCents: customAmountCents 
+        })
     });
 
-    // gets keys from server
-    // take the HTTP response (JSON text) and parse it back into JS object
+    // clientSecret ties your front-end Stripe Elements to the backend-created Checkout Session.
     const { clientSecret } = await res.json();
 
     // CUSTOMEIXE THE PAYMENT ELEMETN UI 
@@ -106,15 +156,21 @@ async function initializeCheckout(priceID = null, amountCents = null){
         theme:'stripe',
     };
 
-    // init checkout session obeject w/ clientSecert
-    // in server created a and linked a checkout and session and an payment intetn , and thrn strip sends back the client secret that specfies with checkout session object we are workign with
+    // Clear old Elements if user changes amount or if user clicks $1 button twice
+    const paymentElementContainer = document.getElementById("payment-element");
+    const expressContainer = document.getElementById("express-checkout-element");
+    paymentElementContainer.innerHTML = "";
+    expressContainer.innerHTML = "";
+
+    // init checkout browser session obeject w/ clientSecert
+    // in server created and linked a checkout: session: payment intetn, and thrn strip sends back the client secret that specfies with checkout session object we are workign with
     // then in front end use that client secrete so we can use the same checkout session we created in server
-    // because they were created adn linked but onyl in stripes servers, so fron end dosent know yet which checkout session belongs to it
+    // because they were created adn linked but onyl in stripes servers, so front end dosent know yet which checkout session belongs to it
     checkout =  await stripe.initCheckout({
         clientSecret, 
         elementsOptions: {appearance},
     });
-    //STRIPE CHECKOUT SESSION PBJEct CONTROLLER
+    // STRIPE CHECKOUT SESSION PBJEct CONTROLLER
     // interacts with stripes CheckoutSession Object
     // allows me to talk to stirpe's API about the session
     // checkout = {
@@ -132,7 +188,6 @@ async function initializeCheckout(priceID = null, amountCents = null){
     //     cancel: () => {...},          // (optional)
     //     // etc.
     // }
-
 
     // DATA -STRipes CHECOUT SESSION OBJECT RECORD
     // session is A BROWSER COOPY OF STRIPESCHEKOUT SESSION OBJECT
@@ -163,32 +218,29 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // }
 
     console.log("Stripe object:", Stripe);
-    console.log("Stripe instance:", stripe);
+    console.log("Stripe instance:", stripe);  
 
-        // if the user clicks a $1 button twice:
-    // 🧹 Clear old Elements
-    // document.querySelector("#payment-element").innerHTML = "";
-    // document.querySelector("#express-checkout-element").innerHTML = "";
-
-    // CREATE PAYMENT ELEMTN
+    // ---------- PAYMENT ELEMENT ----------
+    // Creates the secure card entry UI
+    // Handles CVC checks, expiration, card brand detection
+    // Automatically validates fields
     const paymentElement = checkout.createPaymentElement();
     paymentElement.mount("#payment-element");
     // You can customize the appearance of all Elements by passing elementsOptions.appearance when initializing Checkout on the front end.
 
-    // Create and mount the Express Checkout Element
+    // ---------- EXPRESS CHEKOUTOUT ELEMENT ----------
     const expressCheckoutElement = checkout.createExpressCheckoutElement({
         paymentMethods: {
             applePay: "always",
-            googlePay: "always"
-        }
+            googlePay: "always",
+        },
     });
     expressCheckoutElement.mount('#express-checkout-element');
 
-    // 👇 Add this *immediately after* mounting:
+    // express checkout ele is imitally hidden unitl stripe confirms avaliablity
     const expressCheckoutDiv = document.getElementById('express-checkout-element');
-
-    // Hide it at first so the user doesn’t see a blank box
-    expressCheckoutDiv.classList.add("hidden");
+    // expressCheckoutDiv.classList.add("hidden");
+    expressCheckoutDiv.style.visibility = "hidden";
 
     // Listen for the "ready" event (fires when Stripe finishes wallet checks)
     expressCheckoutElement.on('ready', ({ availablePaymentMethods }) => {
@@ -196,7 +248,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // When Stripe emits the "ready" event, it sends:
     // availablePaymentMethods = { 
     //      applePay: true/false
-    //      googlePay: true/false
+    //      googlePay: true/false  
     // }
 
     // If at least one fast-pay method is available, show the element
@@ -204,7 +256,7 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // Object.values(anyObject) → [true, false, true] returns an array of all the property values from that object
     // Array.prototype.some() is an array method.
     // It checks whether at least one element in the array passes a test (returns true)
-        if (availablePaymentMethods && Object.values(availablePaymentMethods).some(Boolean)) {
+        if (Object.values(availablePaymentMethods).some(Boolean)) {
             expressCheckoutDiv.classList.remove("hidden");
         } else {
             expressCheckoutDiv.classList.add("hidden");
@@ -212,33 +264,32 @@ async function initializeCheckout(priceID = null, amountCents = null){
         }
     });
 
-    // You ask the checkout controller for the Actions API bound to the active Checkout Session(created in server)
+    // ---------- LOAD ACTIONS ----------
+    // Ask checkout controller for Actions API bound to active Checkout Session(created in server)
     const loadActionsResult = await checkout.loadActions();
-    // checkout.loadActions() returns a object w/ functions bound to my checkout Session:
+    // checkout.loadActions() returns a object w/ functions bound to checkout Session:
     // {type: "error", error: { message: string }}
     // {type: "success", actions: object }
     // actions.getSession() → gives you the session snapshot.
-    // actions.updateEmail() → edits that session’s email.
     // actions.updateEmail() → edits that session’s email.
 
     if(loadActionsResult.type === "success"){
         // loads the methods into actions object
         actions = loadActionsResult.actions;
+
+        // Keep payment button disabled until Stripe session is says Ok
+        // user must fill email, card info
+        payButton.disabled = true;
+
         // fetches the Checkout Session snapshot from Stripe.
-        const session = actions.getSession();
-        // grab total in cents from the first (and only) line item
-        // const amountDisplay = session.lineItems[0].total.amount;
-        const amountDisplay = session.total.total.amount
-        // displays total to UI
-        const buttonText = document.querySelector("#button-text")
-        buttonText.textContent =`Pay ${amountDisplay} now`;
+        // const session = actions.getSession();
+        
+        setupEmailValidation();
 
         // if something changes on stripes side, (update email, ect)
         // checkout.on("change") event sends you a new updated snapshot == send you a new session obejct
         checkout.on("change", (session) => {
             console.log("Checkout session changed:", session);
-
-            const payButton = document.getElementById("submit");
 
             // canConfirm checks if the session has all the inputs it needs for confirming the paymetn intent
             // Enable or disable the button based on canConfirm
@@ -259,14 +310,17 @@ async function initializeCheckout(priceID = null, amountCents = null){
             // the event object is {expressCheckoutConfirmEvent: event}}
             // Passing { expressCheckoutConfirmEvent: event } binds that specific wallet authorization to the session’s PaymentIntent
             // Stripe then completes the payment (server-side), and will either redirect or or update the embedded UI.
-            loadActionsResult.actions.confirm({expressCheckoutConfirmEvent: event});
+            loadActionsResult.actions.confirm({
+                expressCheckoutConfirmEvent: event
+            });
         });
     }
+}
+// ==============================================================================================
+function setupEmailValidation() {
     // collecr the cusotmers emial
-    // as the user types, clear andy previous error and remove error styleing
+    // as the user types, clear any previous error and remove error styleing
     emailInput.addEventListener("input", () => {
-        // Clear any validation errors
-        // 
         emailErrors.textContent = "";
         emailInput.classList.remove("error");
     });
@@ -274,10 +328,8 @@ async function initializeCheckout(priceID = null, amountCents = null){
     // "blur" fires when input looses focus, when "blur" validate via actions.update email 
     emailInput.addEventListener("blur", async () => {
         const newEmail = emailInput.value;
-        if(!newEmail){ 
-            // if the new email feild is empty do nothng 
-            return;
-        }
+        if(!newEmail)
+            return; // if the new email feild is empty do nothng
 
         // checking if email is valid after loosing focus
         const { isValid, message } = await validateEmail(newEmail);
@@ -287,16 +339,12 @@ async function initializeCheckout(priceID = null, amountCents = null){
             // put the eroor messae in the <div id="emailErrors">
             emailErrors.textContent = message;
             showMessage(message);
-            setLoading(false);
-            return;
         }
     });
-
 }
-
+// ==============================================================================================
 // handel any immediate errors
 // confirmthe paymetn wit stripe through payment elemtn 
-// show a spinner. disable button while confirming
 async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true); // START LOADING when submit button is pressed
@@ -340,9 +388,8 @@ async function handleSubmit(e) {
     // restores button state
     setLoading(false);  // STOP LOADING 
 }
-
 // -------------HELPERS-------------
-
+// ==============================================================================================
 function showMessage(messageText){
     const el = document.querySelector("#payment-message");
     el.classList.remove("hidden");
@@ -353,20 +400,18 @@ function showMessage(messageText){
         el.textContent = "";
     }, 4000);
 }
-
-// Toggles the submit button disabled state, shows/hides a spinner, swaps button label visibility.
+// ==============================================================================================
 function setLoading(isLoading){
-    const btn = document.querySelector("#submit");
-    const spinner = document.querySelector("#spinner");
-    const text = document.querySelector("#button-text");
-
     // HTML form controls like <button> & <input> have builtin BOOLEAN property called DISABLED
-    // if disabled = true, button is disabled, broser ignores it 
-    btn.disabled = isLoading;
+    payButton.disabled = isLoading
 
     // .toggle(className, optional boolean)
     // if optional boolean = true => forces the class to be added
     // if optional boolean = false => forces the class to be removed
+    const spinner = document.querySelector("#spinner");
+    // spinner visable only when loading
     spinner.classList.toggle("hidden", !isLoading);
-    text.classList.toggle("hidden", !isLoading);
+
+    // hides button text if loading
+    buttonText.classList.toggle("hidden", isLoading);
 }

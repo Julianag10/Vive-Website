@@ -4,28 +4,25 @@
     <meta charset="UTF-8">
     <title>{{title}} | Vive Wellness</title>
 
-    <!-- Google Font: ADLaM Display -->
+    <!-- GOOGLE FONT: ADLaM Display -->
     <link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&display=swap" rel="stylesheet">
     <!-- Google Font: Varela Round-->
     <link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Varela+Round&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/global.css" />
 
+    {{!-- PAGE SPECFIC CSS, ONE STYLESHEET per pafe --}}
     {{#if stylesheet}}
         <link rel="stylesheet" href="/{{stylesheet}}" />
     {{/if}}
 
-    
-    {{#if stripe}}
-        <script src="https://js.stripe.com/clover/stripe.js"></script>
-    {{/if}}
-
+    {{!-- PARTIAL SPECIFIC CSS --}}
+    {{!-- donation form styles + STRIPE only on pages that use donationform --}}
+    {{!-- partial = componets, components can load in the heaf because they dont depend on the rest of the page --}}
     {{#if donation}}
-        <script src="/donation.js" defer></script>
-    {{/if}}
-
-    {{#if complete}}
-        <script src="/complete.js" defer></script>
+        <link rel="stylesheet" href="/donation-form.css" />
+        <script src="https://js.stripe.com/clover/stripe.js"></script>
+        <script src="/checkout.js" defer></script>
     {{/if}}
 
 </head>
@@ -39,8 +36,10 @@
     {{> footer}}   <!-- reusable footer -->
 
 
+    {{!-- Extra page-specific script (e.g., complete.js) --}}
+    {{!-- for eac page its ONLY its oage specific script loads --}}
     {{#if script}}
-        <script src="/{{script}}"></script>
+        <script src="/{{script}}" defer></script>
     {{/if}}
 </body>
 </html>
