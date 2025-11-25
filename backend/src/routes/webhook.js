@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import { stripe } from "../utils/stripe.js";
-import { prisma } from "../utils/prisma.js";
 import { 
     sendConfirmationEmail,
     sendPaymentFailedEmail,

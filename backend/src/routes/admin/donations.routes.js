@@ -6,7 +6,6 @@
 // avoids importing the entire Express object
 // only importing the one function you need (Router)
 import { Router } from "express";
-import prisma from "../../utils/prisma.js";
 
 const router = Router();
 
