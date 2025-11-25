@@ -1,4 +1,3 @@
-
 // Stripe.js client created with publishable key
 let stripe; 
 

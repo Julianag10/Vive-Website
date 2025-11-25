@@ -1,6 +1,7 @@
 import express from "express";
-import Stripe from "stripe";
 import dotenv from "dotenv";
+import { stripe } from "../utils/stripe.js";
+import { prisma } from "../utils/prisma.js";
 import { 
     sendConfirmationEmail,
     sendPaymentFailedEmail,
@@ -14,10 +15,8 @@ dotenv.config();
 // router is a mini express app
 // "routers" handels a subset of routes
 const router = express.Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ---------------- STRIPE WEBHOOK ENDPOINT----------------------------------
-
 // express.raw({ type: "application/json" }) is middleware just for this route.
 // express.raw(...) tells Express: do not parse the body into JSON yet.
 // instead keep req.body as the raw body so that stripes signatiure check dosent fail 
@@ -60,6 +59,9 @@ router.post(
         try {
             // SUCCESSFUL CHECKOUT SESSION
             if (event.type === "checkout.session.completed") {
+                console.log("📩 Webhook event:", event.type);
+                console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
+
                 // const dataObject = event.data.object
                 // event.data.object is the actual thing the event is about
                 // for event.type == checkout.session.completed, the event is about Checkout Session object
@@ -79,10 +81,23 @@ router.post(
                     console.error("❌ Error sending email:", err);
                 }
                 // TODO: DB → save donation record
+                await prisma.donation.create({
+                    data: {
+                        sessionId: session.id,
+                        amount: amount,
+                        email: email,
+                        name: name,
+                        status: "completed"
+                    }
+                });
+
             }
 
             // PAYMENT FAILED AFTER LEAVING CHECOUT
             else if (event.type === "payment_intent.payment_failed") {
+                console.log("📩 Webhook event:", event.type);
+                console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
+
                 // Stripe PaymnetIntent object:
                 // "object": {
                 //     "id": "pi_123",
@@ -96,13 +111,13 @@ router.post(
                 // 3 possible locations of the donors email, depending on why the paymetn failed
                 const email =
                     // possible location 1: email is in donatin form some where: elements( expressHcekoutelemnt, payment element)
-                    pi.last_payment_error?.payment_method?.billing_details?.email ||
+                    paymentIntent.last_payment_error?.payment_method?.billing_details?.email ||
                     // possible location 2: Stripe attaches Charge object to PaymentIntent
-                    pi.charges?.data?.[0]?.billing_details?.email ||
-                    pi.receipt_email;
+                    paymentIntent.charges?.data?.[0]?.billing_details?.email ||
+                    paymentIntent.receipt_email;
 
                 const reason =
-                    pi.last_payment_error?.message || "No Stripe last payment error message was found so, Your payment could not be completed.";
+                    paymentIntent.last_payment_error?.message || "No Stripe last payment error message was found so, Your payment could not be completed.";
 
                 const retryUrl =
                     (process.env.BASE_URL || "http://localhost:3000") + "/donate";
@@ -120,6 +135,9 @@ router.post(
                 event.type === "charge.refunded" ||
                 event.type === "charge.refund.updated"
             ) {
+                console.log("📩 Webhook event:", event.type);
+                console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
+
                 const charge = dataObject;
 
                 const email = charge.billing_details?.email;
@@ -135,6 +153,9 @@ router.post(
             }
             // DISPUTE
             else if (event.type === "charge.dispute.created") {
+                console.log("📩 Webhook event:", event.type);
+                console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
+
                 const dispute = dataObject;
 
                 const chargeId = dispute.charge;
@@ -149,6 +170,9 @@ router.post(
             }
             // ABANDOND CHECKOUT
             else if (event.type === "checkout.session.expired") {
+                console.log("📩 Webhook event:", event.type);
+                console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
+
                 const session = dataObject;
 
                 const email = session.customer_details?.email;
