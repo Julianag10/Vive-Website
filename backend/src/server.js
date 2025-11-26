@@ -1,27 +1,29 @@
 // backend/src/server.js
 import express from "express";
-import { engine } from "express-handlebars";
 import dotenv from "dotenv";
 import path from "path"; // builds safe file paths 
 import { fileURLToPath } from "url"; // used to recreate __dirname
+import { engine } from "express-handlebars";
 
-// Routers
-import webhookRouter from "./routes/webhook.js";
+// ROUTERS
+import webhookRouter from "./routes/webhook.routes.js";
 import checkoutRouter from "./routes/checkout.routes.js"
 
-// Admin Routers
+// ADMIN ROUTERS
 import adminDonationsRouter from "./routes/admin/donations.routes.js";
 import adminResourcesRouter from "./routes/admin/resources.routes.js";
 import adminWorkflowsRouter from "./routes/admin/workflows.routes.js";
 
-// load environment variables
-dotenv.config();
+// dotenv.config();
 
 // ---------- EXPRESS SETUP ----------------------------------------
 // create express app/server
 const app = express(); 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// load environment variables
+dotenv.config({ path: path.join(__dirname, "../.env") });
 
 // ---------- STRIP WEEBHOOK API -------------------------------
 // must come before JSON
@@ -57,7 +59,7 @@ app.use((req, res, next) => {
 // ---------- API ROUTES --------------------------------------------
 app.use("/checkout", checkoutRouter); // reutens pure JSON
 
-// ---------- ADMIN ROUTES ----------------------------------------
+// ---------- ADMIN API ROUTES ----------------------------------------
 app.use("/admin/donations", adminDonationsRouter);
 app.use("/admin/resources", adminResourcesRouter);
 app.use("/admin/workflows", adminWorkflowsRouter);

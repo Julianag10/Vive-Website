@@ -1,13 +1,8 @@
-// backend/src/routes/checkoutRoutes.js
-
 // contains ONLY server-side logic.
-import express from "express";
+import { Router } from "express";
 import { stripe } from "../utils/stripe.js";
-import dotenv from "dotenv";
 
-dotenv.config();
-
-const router = express.Router();
+const router = Router();
 
 // ---------- STRIPE API ENPOINTS --------------------
 // SEND publishable key to frontend

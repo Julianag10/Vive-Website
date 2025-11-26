@@ -1,5 +1,6 @@
 import express from "express";
-import dotenv from "dotenv";
+import { Router } from "express";
+import { db } from "../db/db.js";
 import { stripe } from "../utils/stripe.js";
 import { 
     sendConfirmationEmail,
@@ -9,11 +10,9 @@ import {
     sendAbandonedCheckoutEmail
 } from "../utils/email.js";
 
-dotenv.config();
-
 // router is a mini express app
 // "routers" handels a subset of routes
-const router = express.Router();
+const router = Router();
 
 // ---------------- STRIPE WEBHOOK ENDPOINT----------------------------------
 // express.raw({ type: "application/json" }) is middleware just for this route.
@@ -29,7 +28,7 @@ router.post(
         // Need signatre to verify the event was really signed by Stripe
         let event; // will hold the verified event
 
-        // VERIFY WEEBHOOK IS FROM STRIPE/ VERIFY WEBHOOK SIGNATRE
+        // -------------- 1. VERIFY WEEBHOOK IS FROM STRIPE/ VERIFY WEBHOOK SIGNATRE -------
         try{
             // stripe's helper .constructEvent() checks if:
             // signature matches what stripe expects
@@ -46,7 +45,7 @@ router.post(
             return res.status(400).send(`Webhook Error: ${err.message}`);
         }
         // after TRY BLOCK, event is now a trusted, parsed Stripe event object.
-        // STRIPE REQ.BODY. 
+        // STRIPE REQ.BODY:
         // "type": "checkout.session.completed",
         // "data": { "object": { ... checkout session ... } } 
         console.log("📩 Webhook Event Received:", event.type)
@@ -54,9 +53,9 @@ router.post(
         // GET OBJECT FROM EVENT
         const dataObject = event.data.object;
 
-        // HANDELS EACH EVENT TYPE
+        // -------------- 2. HANDELS EACH EVENT TYPE --------------
         try {
-            // SUCCESSFUL CHECKOUT SESSION
+            // -------------- SUCCESSFUL CHECKOUT SESSION --------------
             if (event.type === "checkout.session.completed") {
                 console.log("📩 Webhook event:", event.type);
                 console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
@@ -79,20 +78,19 @@ router.post(
                 } catch (err) {
                     console.error("❌ Error sending email:", err);
                 }
-                // TODO: DB → save donation record
-                await prisma.donation.create({
-                    data: {
-                        sessionId: session.id,
-                        amount: amount,
-                        email: email,
-                        name: name,
-                        status: "completed"
-                    }
-                });
+                // INSERT DOnTION INTO DB
+                // .none bc not expexting any returned rows 
+                await db.none(
+                    `INSERT INTO donations (session_id, email, name, amount, status)
+                    VALUES ($1, $2, $3, $4, $5)
+                    ON CONFLICT(session_id) DO NOTHING`,
+                    [session.id, email, name, amount, "completed"]
+                );
 
+                console.log("💾 Saved donation to DB:", session.id);
             }
 
-            // PAYMENT FAILED AFTER LEAVING CHECOUT
+            // -------------- PAYMENT FAILED AFTER LEAVING CHECOUT -------
             else if (event.type === "payment_intent.payment_failed") {
                 console.log("📩 Webhook event:", event.type);
                 console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
@@ -129,7 +127,7 @@ router.post(
 
                 // TODO: DB → record failure
             }
-            // REFUND CREATED OR UPDATED
+            // -------------- REFUND CREATED OR UPDATED --------------
             else if (
                 event.type === "charge.refunded" ||
                 event.type === "charge.refund.updated"
@@ -150,7 +148,7 @@ router.post(
 
                 // TODO: DB → update donation refund status
             }
-            // DISPUTE
+            // -------------- DISPUTE ----------------------------
             else if (event.type === "charge.dispute.created") {
                 console.log("📩 Webhook event:", event.type);
                 console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
@@ -167,7 +165,7 @@ router.post(
 
                 // TODO: DB → log dispute
             }
-            // ABANDOND CHECKOUT
+            // -------------- ABANDOND CHECKOUT --------------
             else if (event.type === "checkout.session.expired") {
                 console.log("📩 Webhook event:", event.type);
                 console.log("🧾 Webhook data object keys:", Object.keys(event.data.object));
@@ -187,13 +185,14 @@ router.post(
 
                 // TODO: DB → log abandoned session
             }
-            // DEFAULT
+            // -------------- DEFAULT/UNHANDELED EVENTS ---------------------
             else {
                 console.log("ℹ️ Unhandled event:", event.type);
             }
 
             // sends stipe a HTTPS 200 so stripe know s the weebhook was succesully porcessed
             res.status(200).send("Webhook Received & proccssed"); 
+
         } catch (err) {
             console.error("❌ Webhook handling error:", err);
             // Still return 200 so Stripe does not retry infinitely

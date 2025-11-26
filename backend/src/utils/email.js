@@ -2,9 +2,6 @@
 // EMAIL UTILITY — sends all email types from webhook + checkout
 // =============================================================
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 // Create Nodemailer transporter using Mailtrap (dev environment)
 // nodemailer creats a transporter object
