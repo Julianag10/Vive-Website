@@ -6,3 +6,7 @@ node_modules/
 
 # Don't track MacOS Finder junk files
 .DS_Store
+
+# Prisma generated files (if not using Prisma)
+prisma/
+src/generated/prisma
