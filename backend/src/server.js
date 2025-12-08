@@ -41,13 +41,13 @@ app.use(
 // express.json() middleware automatically parses JSON request bodies into req.body.
 app.use(express.json()); // allows backend read JSON body from requesets
 app.use(express.urlencoded({ extended: true })); // allow HTML form bodies from requesrs
-app.use(express.static(path.join(__dirname, "../frontend/public"))); // serve static files in /public folder
+app.use(express.static(path.join(__dirname, "../../frontend/public"))); // serve static files in /public folder
 
 // ---------- HANDELBARS VIEW ENGINE --------------------
 app.engine("hbs", engine({ extname: ".hbs" }));
 app.set("view engine", "hbs");
 // path.join(__dirname, "views") == ./Vview folder
-app.set("views", path.join(__dirname, "../frontend/views"));
+app.set("views", path.join(__dirname, "../../frontend/views"));
 
 // ---------- LOGGIN MIDDLEWARE ------------------------------
 // log every request
