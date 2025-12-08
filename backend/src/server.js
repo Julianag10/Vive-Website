@@ -1,9 +1,9 @@
-// backend/src/server.js
 import express from "express";
 import dotenv from "dotenv";
 import path from "path"; // builds safe file paths 
 import { fileURLToPath } from "url"; // used to recreate __dirname
 import { engine } from "express-handlebars";
+// import { db } from "./utils/db.js"; // optional
 
 // ROUTERS
 import webhookRouter from "./routes/webhook.routes.js";
