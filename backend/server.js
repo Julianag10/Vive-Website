@@ -44,8 +44,9 @@ app.use((req, res, next) => {
 
 // ---------- CORS CONFIG ----------------------------------------
 const allowedOrigins = [
-  "https://non-profit-frontend.onrender.com", // <-- your live frontend
-  "http://localhost:3000" // <-- dev environment
+    "https://non-profit-frontend.onrender.com", // <-- your live frontend
+    "http://localhost:5173",   // React dev server
+    "http://localhost:3000" // <-- dev environment
 ];
 
 app.use(
