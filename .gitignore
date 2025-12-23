@@ -1,12 +1,10 @@
 # Don't track installed libraries
 node_modules/ 
 
-# Don't track secret environment variables
+# Don't track secret environment 
+**/.env
 .env
 
 # Don't track MacOS Finder junk files
 .DS_Store
 
-# Prisma generated files (if not using Prisma)
-prisma/
-src/generated/prisma

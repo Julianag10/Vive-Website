@@ -1,6 +1,4 @@
-// backend/src/utils/stripe.js
 import Stripe from "stripe";
-
 
 // Defines the Stripe client
 // Exports it for the rest of your backend
