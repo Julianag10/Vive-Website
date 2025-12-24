@@ -1,3 +1,11 @@
+/* 
+CSS reset / normalization
+Base styles applied once
+Things that should never change per page 
+
+the equivalent of a browser reset + defaults
+*/
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

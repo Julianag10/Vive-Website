@@ -1,18 +1,29 @@
+/*
+== layouts/main.hbs
+layout + routing 
+
+Header
+↓
+Which page should render?
+↓
+Footer
+
+*/
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
 import { useMemo } from "react";
 
-import Home from "./Home";
-import CheckoutForm from "./CheckoutForm";
-import Complete from "./Complete";
-import "./App.css";
+import Home from "./pages/Home";
+import CheckoutForm from "./components/DonationForm";
+import Complete from "./pages/Complete";
+import "./styles/App.css";
 
 const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 );
 
-// Helper component so we can access route state
+// Helper component so we can access route state before initalizing stripe checkout 
 function CheckoutWrapper() {
   const location = useLocation();
   const priceID = location.state?.priceID;
