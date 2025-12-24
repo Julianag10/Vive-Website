@@ -45,13 +45,18 @@ export async function createCheckoutSession({ priceID, amountCents }) {
     // calls stripes API to create a checkout session object on stripes servers
     // strip automatically links a paymetn inetnt
     const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
+        // payment_method_types: ['card'],
         ui_mode: "custom",
+        mode: "payment",
+
         billing_address_collection: 'auto',
         line_items: [lineItem],
-        mode: "payment",
+
         return_url: `${process.env.BASE_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
+        // return_url: "http://localhost:5173/complete?session_id={CHECKOUT_SESSION_ID}",
+
     });
+    // console.log("SESSION CLIENT SECRET:", session.client_secret);
 
     // sends res back to frontend 
     return {
@@ -75,6 +80,7 @@ export async function getCheckoutSessionStatus(sessionId) {
         // exand tells stripe "inline the fill Payment INtent objecgt right in teh response"
         {expand: ["payment_intent"]},
     );
+
 
     return {
         status: session.status,

@@ -1,10 +1,33 @@
-# Don't track installed libraries
+# NODE / JS
 node_modules/ 
 
-# Don't track secret environment 
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ENV FILES
 **/.env
 .env
 
-# Don't track MacOS Finder junk files
-.DS_Store
+.env.*
+!.env.example
 
+# BUILD OUTPUTS
+frontend/dist/
+backend/dist/
+
+# VITE
+frontend/.vite/
+
+
+# OS / EDITOR
+.DS_Store
+.vscode/
+.idea/
+
+# LOGS
+*.log
+
+# TEMP / MISC
+tmp/
+.temp/
