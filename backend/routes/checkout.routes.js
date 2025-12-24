@@ -2,7 +2,7 @@
 import { Router } from "express";
 
 import {
-    getCheckoutConfig,
+    // getCheckoutConfig,
     createCheckoutSessionController,
     getSessionStatusController,
 } from "../controllers/checkout.controller.js";
@@ -13,7 +13,7 @@ const router = Router();
 
 // SEND Stripe publishable key to frontend
 // GET /checkout/config
-router.get("/config", getCheckoutConfig);
+// router.get("/config", getCheckoutConfig);
 
 
 // CREATE Stripe checkout session

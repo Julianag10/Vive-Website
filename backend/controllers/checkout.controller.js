@@ -11,15 +11,15 @@
 // - Sends JSON
 
 import { 
-    getStripeConfig, 
+    // getStripeConfig, 
     createCheckoutSession,
     getCheckoutSessionStatus,
 } from "../services/stripe.service.js";
 
 // GET /checkout/config
-export function getCheckoutConfig(req, res) {
-    res.json(getStripeConfig());
-}
+// export function getCheckoutConfig(req, res) {
+//     res.json(getStripeConfig());
+// }
 
 // POST /checkout/create-checkout-session
 export async function createCheckoutSessionController(req, res) {
