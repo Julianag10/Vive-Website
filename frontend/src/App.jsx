@@ -25,48 +25,48 @@ const stripePromise = loadStripe(
 
 // Helper component so we can access route state before initalizing stripe checkout 
 function CheckoutWrapper() {
-  const location = useLocation();
-  const priceID = location.state?.priceID;
+    const location = useLocation();
+    const priceID = location.state?.priceID;
 
-  const clientSecretPromise = useMemo(() => {
-    if (!priceID) return null;
+    const clientSecretPromise = useMemo(() => {
+        if (!priceID) return null;
 
-    return fetch("/checkout/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceID }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.clientSecret) {
-          throw new Error(data.error || "No clientSecret returned");
-        }
-        return data.clientSecret;
-      });
-  }, [priceID]);
+        return fetch("/checkout/create-checkout-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ priceID }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data.clientSecret) {
+                    throw new Error(data.error || "No clientSecret returned");
+                }
+                return data.clientSecret;
+            });
+    }, [priceID]);
 
-  if (!clientSecretPromise) {
-    return <p>No donation selected.</p>;
-  }
+    if (!clientSecretPromise) {
+        return <p>No donation selected.</p>;
+    }
 
-  return (
-    <CheckoutProvider
-      stripe={stripePromise}
-      options={{ clientSecret: clientSecretPromise }}
-    >
-      <CheckoutForm />
-    </CheckoutProvider>
-  );
+    return (
+        <CheckoutProvider
+            stripe={stripePromise}
+            options={{ clientSecret: clientSecretPromise }}
+        >
+            <CheckoutForm />
+        </CheckoutProvider>
+    );
 }
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/checkout" element={<CheckoutWrapper />} />
-        <Route path="/complete" element={<Complete />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/checkout" element={<CheckoutWrapper />} />
+                <Route path="/complete" element={<Complete />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }

@@ -9,7 +9,7 @@ const router = Router();
 // DELETE /admin/resources/:id → delete
 // GET /resources → public listing
 router.get("/", (req, res) => {
-  res.json({ message: "resources admin API ready" });
+    res.json({ message: "resources admin API ready" });
 });
 
 export default router;

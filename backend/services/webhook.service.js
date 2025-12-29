@@ -9,7 +9,6 @@ import {
 } from "../utils/email.js";
 
 
-
 // --------------  HANDELS EACH EVENT TYPE --------------
 
 // GET OBJECT FROM EVENT:

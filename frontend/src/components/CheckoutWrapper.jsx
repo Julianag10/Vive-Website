@@ -52,31 +52,31 @@ import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
 import StripePayment from "./StripePayment";
 
 const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+    import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 );
 
 export default function CheckoutWrapper({ priceID }) {
-  const clientSecretPromise = useMemo(() => {
-    return fetch("/checkout/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceID }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (!data.clientSecret) {
-          throw new Error(data.error || "No client secret returned");
-        }
-        return data.clientSecret;
-      });
-  }, [priceID]);
+    const clientSecretPromise = useMemo(() => {
+        return fetch("/checkout/create-checkout-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ priceID }),
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.clientSecret) {
+                    throw new Error(data.error || "No client secret returned");
+                }
+                return data.clientSecret;
+            });
+    }, [priceID]);
 
-  return (
-    <CheckoutProvider
-      stripe={stripePromise}
-      options={{ clientSecret: clientSecretPromise }}
-    >
-      <StripePayment />
-    </CheckoutProvider>
-  );
+    return (
+        <CheckoutProvider
+            stripe={stripePromise}
+            options={{ clientSecret: clientSecretPromise }}
+        >
+            <StripePayment />
+        </CheckoutProvider>
+    );
 }

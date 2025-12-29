@@ -10,3 +10,4 @@ const pgp = pgPromise();
 
 // allows every route to write SQL like db.any();
 export const db = pgp(process.env.DATABASE_URL);
+

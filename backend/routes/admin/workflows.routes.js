@@ -10,7 +10,7 @@ const router = Router();
     // Backend runs rules
     
 router.get("/", (req, res) => {
-  res.json({ message: "workflows admin API ready" });
+    res.json({ message: "workflows admin API ready" });
 });
 
 export default router;

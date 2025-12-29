@@ -11,7 +11,6 @@
 // - Tests
 // - Background jobs
 
-
 import { stripe } from "../utils/stripe.js";
 
 // PUBLIC config for frontend

@@ -2,7 +2,6 @@
 import { Router } from "express";
 
 import {
-    // getCheckoutConfig,
     createCheckoutSessionController,
     getSessionStatusController,
 } from "../controllers/checkout.controller.js";
@@ -10,11 +9,6 @@ import {
 const router = Router();
 
 // ---------- STRIPE API ENPOINTS --------------------
-
-// SEND Stripe publishable key to frontend
-// GET /checkout/config
-// router.get("/config", getCheckoutConfig);
-
 
 // CREATE Stripe checkout session
 // POST /checkout/create-checkout-session

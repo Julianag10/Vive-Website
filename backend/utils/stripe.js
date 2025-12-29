@@ -6,3 +6,4 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // call from any where in the backend
 // const stripe = require("../utils/stripe.js");
+

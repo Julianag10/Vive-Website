@@ -138,3 +138,4 @@ export async function sendAbandonedCheckoutEmail({ email, resumeUrl }) {
 
     console.log("📧 Sent abandoned session email to:", email);
 }
+
