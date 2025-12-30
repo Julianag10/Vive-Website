@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { PaymentElement, useCheckout } from "@stripe/react-stripe-js/checkout";
 
-export default function StripePayment({ onPaymentError }) {
+export default function StripePayment({ amount }) {
     // This hook works only because:
         // You wrapped this component in <CheckoutProvider>
         // That provider was given a valid clientSecret
@@ -35,29 +35,30 @@ export default function StripePayment({ onPaymentError }) {
         if (result.type === "error") {
             setError(result.error.message);
             setLoading(false);
-
-            // hand control back up, retunr to doantion form 
-            onPaymentError(); 
         }
     };
 
     return (
+        // intercept submit -> calls checkout.confirm()
         <form onSubmit={handleSubmit}>
-        <label>Email</label>
-        <input
-            required
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-        />
+            <label>Email</label>
+            <input
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
 
-        <PaymentElement />
+            {/* renders card input, validation, wallets */}
+            <PaymentElement />
 
-        <button disabled={loading}>
-            {loading ? "Processing…" : "Donate"}
-        </button>
+            <button disabled={loading}>
+                {loading 
+                    ? "Processing…"
+                    : `Donate $${amount}`}
+            </button>
 
-        {error && <p>{error}</p>}
+            {error && <p>{error}</p>}
         </form>
     );
 }
