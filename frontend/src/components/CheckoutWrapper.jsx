@@ -70,19 +70,20 @@ export default function CheckoutWrapper({ priceID, amountCents,  amount }) {
     // want fetch to run only when inputs(session params, priceIS, amountCents) change
     // useMemo ->Cache this computed value so React doesn’t redo it on every rerender
     const clientSecretPromise = useMemo(() => {
-        // backend creates a stripe checkoutsession
-        // stripe creats paymetn intent
-        // retuns client secret
+        // backend creates a stripe checkoutsession 
+        // stripe creats payment intent
+        // backend retuns client secret
         return fetch("/checkout/create-checkout-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            // fetch only runs when these inputs (session params) change
+            // IF inputs dont change -> THEN correct checkoutsession dosen't change
             body: JSON.stringify({ 
                 priceID,
                 amountCents,
             }),
         })  
-
-            // fetch returns a promise -. "ill give you the reuslt later"
+            // fetch returns a promise(client sectert) -> "ill give you the reuslt later"
             // .then runs when promise finishes
             .then((res) => res.json())
             .then((data) => {
@@ -91,22 +92,28 @@ export default function CheckoutWrapper({ priceID, amountCents,  amount }) {
                 }
                 return data.clientSecret;
             });
-        // Only recompute the memoized value if priceID OR amountCents changed since last render.
+        // Only recompute the memoized value (priceID OR amountCents) changed since last render
         // compares current priceID & amountCents to previous priceID & amountCents
-        // -> if both priceID and amountCents are the same, return the previous cached clnetSecret, dont run the useMemo function again
-        // -> if they did change runt eh useEMO funtin again -> create a new checkout session
+        // -> IF both priceID and amountCents are the same -> return the previous cached clnetSecret, dont run the useMemo function again
+        // -> IF change run useMemo() again -> create a new checkout session
         // dependency array -> runs only when compnent mounts, if user changes amount and remounts
     }, [priceID, amountCents]);
 
     return (
         // initalizes stripes embeded checkout
-        // stripe locks onto a checkoeut session, as long as client sectre dosent change, the component is not unmounted
-        // because a remounting wuld cuase a new client secrete/ new cheout session (whcih isnt bad unless is more than one checkout session per client secrtr)
+        // stripe locks onto a checkoeut session
+        // as long as client sectre dosent change || the component is not unmounted
+        // remounting -> new client secret / new cheout session (whcih isnt bad unless is more than one checkout session per client secrtr)
         // stripe breaks if:
-        // ❌ Create a new clientSecret while old Elements are mounted
-        // ❌ Mount CheckoutProvider twice for same payment
+        // ❌ Create NEW SECTRET while OLD ELEMENTS are MOUNTED
+        // ❌ MOUNT <CHECKOUT PROVIDER> TWICE for SAME PAYMENT
         // ❌ Recreate checkout session on every render
         // ❌ Let user click “Pay” twice before lock
+
+        // sends stripe client secret that matches checkoutsession 
+        // payment elemnt -> connected to the session
+        // stripe session -> created once per intent
+        // paymetn UI -> tied to the session
         <CheckoutProvider
             stripe={stripePromise}
             options={{ clientSecret: clientSecretPromise }}

@@ -51,9 +51,8 @@ export default function DonationForm() {
     const [showCheckout, setShowCheckout] = useState(false);
     const [error, setError] = useState(null);
 
-    // This function represents the boundary between UI and money
+    // boundary between UI and money
     // guarantees CheckoutWrapper mounts exactly once per flow
-    // Prevents Stripe from loading too early
     // Ensures checkout only starts after user intent
     // Guarantees checkout is tied to one price
     function handleDonateClick() {
@@ -71,15 +70,15 @@ export default function DonationForm() {
         setShowCheckout(true);
     }
 
-    // every time a prestn button is clicked ... triiger rerender
+    // every time a prestn button is clicked ... trigger rerender
     function selectPresetAmount(amount, priceID) {
         // ... changes the amount
         setAmount(amount);
         // .. changes teh price id
         setPriceID(priceID);
 
-        // IMPORTANT: reset checkout if user changes mind
-        // ...if stripe was already mounted -> unmount it 
+        // RESET CHECKOUT IF USER CHANGES MIND
+        // ...if stripe was already mounted -> unmount it(remove checkotwrapper from tree)
         // {showCheckout && <CheckoutWrapper ... />} -> now false -> unmount subtree from DOM/JSX tree
         setShowCheckout(false);
         // .. clears errros
@@ -139,14 +138,14 @@ export default function DonationForm() {
             ------------------------------
             */}
 
-            {/* 
-                Error if Donate clicked too early 
-                If error === null → renders nothing
-                If error has text → <p> appears
-            */}
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {/* ERROR IF DONTE CLICKED TO QUICKLY*/}
+            {error && (
+                // If error === null → renders nothing
+                // If error has text → <p> appears
+                <p style={{ color: "red" }}>{error}</p>
+            )}
 
-            {/* First donate button */}
+            {/* FIRST DONATE BUTTON */}
             {!showCheckout && (
                 <button onClick={handleDonateClick}>
                     Donate {amount ? `$${amount}` : ""}
@@ -156,7 +155,11 @@ export default function DonationForm() {
             
             
             {showCheckout && (
-                // showCheckout == true -> checkout wrapper is mounted -> stripe checkoutsession created
+                // showCheckout == false:
+                // removes chkout wrpper from tree
+
+                // showCheckout == true:
+                // checkout wrapper is mounted -> stripe checkoutsession created
                 <CheckoutWrapper
                     priceID={priceID}
                     amountCents={amount ? amount * 100 : null}

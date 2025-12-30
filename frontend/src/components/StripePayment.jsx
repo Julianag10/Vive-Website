@@ -39,7 +39,10 @@ export default function StripePayment({ amount }) {
     };
 
     return (
-        // intercept submit -> calls checkout.confirm()
+        // intercept submit (NO RELOAD)-> calls checkout.confirm()
+        // HTML <form> browser default:
+        // - send HTTP reuest
+        // - navigate / RELOAD page
         <form onSubmit={handleSubmit}>
             <label>Email</label>
             <input
