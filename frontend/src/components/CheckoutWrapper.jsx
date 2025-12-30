@@ -1,6 +1,6 @@
 /*
 
-==express eoute ccreating session
+== express route: creating session
 
 stripes checkoutprovider API:
 <CheckoutProvider
@@ -46,6 +46,10 @@ function CheckoutWrapper() {
 CheckoutWrapper = what Express used to do before rendering
 */
 
+// create session
+// provide Stripe context
+// render StripePayment
+
 import { useMemo } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
@@ -55,28 +59,31 @@ const stripePromise = loadStripe(
     import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 );
 
-export default function CheckoutWrapper({ priceID }) {
+export default function CheckoutWrapper({ priceID, amountCents, onPaymentError }) {
     const clientSecretPromise = useMemo(() => {
         return fetch("/checkout/create-checkout-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ priceID }),
+            body: JSON.stringify({ 
+                priceID,
+                amountCents,
+            }),
         })
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
                 if (!data.clientSecret) {
                     throw new Error(data.error || "No client secret returned");
                 }
                 return data.clientSecret;
             });
-    }, [priceID]);
+    }, [priceID, amountCents]);
 
     return (
         <CheckoutProvider
             stripe={stripePromise}
             options={{ clientSecret: clientSecretPromise }}
         >
-            <StripePayment />
+            <StripePayment onPaymentError={onPaymentError}/>
         </CheckoutProvider>
     );
 }

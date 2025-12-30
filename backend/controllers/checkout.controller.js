@@ -34,7 +34,6 @@ export async function createCheckoutSessionController(req, res) {
 export async function getSessionStatusController(req, res) {
     try {
         const { session_id } = req.query;
-        // const session_id  = req.query.session_id;
 
         if (!session_id) {
             return res.status(400).json({ error: "session_id required" });

@@ -82,7 +82,6 @@ app.get("/api/health", (req, res) => {
     });
 });
 
-
 // ---------- START SERVER --------------------
 
 app.listen(PORT, () => {

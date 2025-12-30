@@ -53,16 +53,13 @@ export async function createCheckoutSession({ priceID, amountCents }) {
 
         return_url: `${process.env.BASE_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
         // return_url: "http://localhost:5173/complete?session_id={CHECKOUT_SESSION_ID}",
-
     });
-    // console.log("SESSION CLIENT SECRET:", session.client_secret);
 
     // sends res back to frontend 
     return {
         clientSecret: session.client_secret,
-        sessionId: session.id,
+        // sessionId: session.id,
     };
-
 }
 
 // GET checkout + payment status 

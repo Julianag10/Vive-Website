@@ -2,34 +2,44 @@
 import { useState } from "react";
 import { PaymentElement, useCheckout } from "@stripe/react-stripe-js/checkout";
 
-export default function StripePayment() {
+export default function StripePayment({ onPaymentError }) {
+    // This hook works only because:
+        // You wrapped this component in <CheckoutProvider>
+        // That provider was given a valid clientSecret
     const checkoutState = useCheckout();
+    
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    if (checkoutState.type === "loading") return <p>Loading payment…</p>;
-    if (checkoutState.type === "error") return <p>{checkoutState.error.message}</p>;
+    if (checkoutState.type === "loading") 
+        return <p>Loading payment…</p>;
+    if (checkoutState.type === "error") 
+        return <p>{checkoutState.error.message}</p>;
 
     const { checkout } = checkoutState;
 
-    const handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
 
-    const emailResult = await checkout.updateEmail(email);
-    if (emailResult.type === "error") {
-        setError(emailResult.error.message);
-        setLoading(false);
-        return;
-    }
+        const emailResult = await checkout.updateEmail(email);
+        if (emailResult.type === "error") {
+            setError(emailResult.error.message);
+            setLoading(false);
+            return;
+        }
 
-    const result = await checkout.confirm();
-    if (result.type === "error") {
-        setError(result.error.message);
-        setLoading(false);
-    }
-  };
+        const result = await checkout.confirm();
+
+        if (result.type === "error") {
+            setError(result.error.message);
+            setLoading(false);
+
+            // hand control back up, retunr to doantion form 
+            onPaymentError(); 
+        }
+    };
 
     return (
         <form onSubmit={handleSubmit}>

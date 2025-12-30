@@ -43,7 +43,6 @@ export async function handleStripeWebhook(req, res) {
     // for event.type == checkout.session.completed, the event is about Checkout Session object
 
     // -------------- 2. HANDELS EACH EVENT TYPE --------------
-
     try {
         switch (event.type) {
             case "checkout.session.completed":
@@ -85,4 +84,3 @@ export async function handleStripeWebhook(req, res) {
         res.status(200).send("Webhook handler error");
     }
 }
-
