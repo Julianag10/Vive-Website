@@ -8,7 +8,7 @@ const stripePromise = loadStripe(
     import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 );
 
-export default function CheckoutWrapper({ priceID, amountCents,  amount }) {
+export default function CheckoutWrapper({ priceID, amountCents,  amount, onError }) {
     // creating a checkout session is a SIDE EFFECT:
     // - compnet is changing something other than the returned JSX
     // - it talks to backend 
@@ -47,21 +47,38 @@ export default function CheckoutWrapper({ priceID, amountCents,  amount }) {
             // .then runs when promise finishes(after the HTTP request completes)
             .then((res) => res.json())
             .then((data) => {
+                // data is the actual JS object frmo BACKEND
+                // Backend has validation for !priceId, ect.
+                // so errror mesage comes from backend 
                 if (!data.clientSecret) {
-                    throw new Error(data.error || "No client secret returned");
+                    // creates an error obejct and THROW it
+                    throw new Error(data.error || "No client secret returned, failed to create checoutsessoin");
                 }
-                // client secrete uniquly indentifies:
+                // client secret uniquly indentifies:
                 // - ONE checkotu session
                 // - ONE payment Intent
                 // - ONE paymetn Attempt
                 return data.clientSecret;
+            })
+            .catch((err) => {
+                // err is error object from THROW OR a NETWROK error from fetch()
+                // so render the error UI and never mount stripe -> triggers a re-render
+
+                // calling the fucntion passed from parent 
+                onError?.(err.message); // PARETN ERROR 
+
+                // return so that clientSecrtePromise resolves to null
+                return null;
             });
         // DEPENDENCY ARRAY
         // runs only when compnent mounts, ONLY IF user changes inputs and remounts
         // Only recompute the memoized value (priceID OR amountCents) IF values changed since last render
         // -> IF both priceID and amountCents are unchanged -> return the previous cached clnetSecret, dont run the useMemo function again
         // -> IF eihter changes run useMemo() again -> create a new checkout session
-    }, [priceID, amountCents]);
+    }, [priceID, amountCents, onError]);
+
+    if (!clientSecretPromise) return null;
+
 
     // STRIPE CHECKOUT PROVIDER 
     // <CheckoutProvider> is stripes secure container

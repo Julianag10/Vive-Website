@@ -1,34 +1,4 @@
-// import { useState } from "react";
-// import { DONATION_TIERS } from "../config/donations";
-// import CheckoutWrapper from "./CheckoutWrapper";
-
-// export default function DonationForm() {
-//     // 🧠 React state: remembers which tier is selected
-//     const [selectedPriceID, setSelectedPriceID] = useState(null);
-
-//     return (
-//         <section>
-//             <h2>Support ViVe</h2>
-
-//             {!selectedPriceID && (
-//                 <div>
-//                     {DONATION_TIERS.map((tier) => (
-//                         <button
-//                             key={tier.priceID}
-//                             onClick={() => setSelectedPriceID(tier.priceID)}
-//                         >
-//                             Donate {tier.label}
-//                         </button>
-//                     ))}
-//                 </div>
-//             )}
-
-//         {selectedPriceID && (
-//             <CheckoutWrapper priceID={selectedPriceID} />
-//         )}
-//         </section>
-//     );
-// }
+import { DONATION_TIERS } from "../config/donations";
 import { useState } from "react";
 import CheckoutWrapper from "./CheckoutWrapper";
 
@@ -71,11 +41,12 @@ export default function DonationForm() {
     }
 
     // every time a preset button is clicked ... trigger rerender
-    function selectPresetAmount(amount, priceID) {
-        // ... changes the amount
-        setAmount(amount);
+    function selectPresetAmount(priceID, amountCents) {
         // .. changes teh price id
         setPriceID(priceID);
+        
+        // ... changes the amount
+        setAmount(amountCents / 100);
 
         // RESET CHECKOUT IF USER CHANGES MIND
         // ...if stripe was already mounted -> unmount it's subtree(remove checkotwrapper JSX tree)
@@ -84,6 +55,13 @@ export default function DonationForm() {
         setError(null);
     }
 
+    // called IF <CheckoutWrapper> fails to create a chcekout sesison
+    function handleCheckoutError(message) {
+        setError(message || "Something went wrong. Please try again.");
+
+        // unmounts <CheckoutWrapper> so stripe dosetn load -> triggers a re-render -> start over donatino process
+        setShowCheckout(false); 
+    }
 
     // RENDER OUTPUT (JSX -> DOM)
     return (
@@ -92,15 +70,20 @@ export default function DonationForm() {
 
             {/* PRESET DONATION BUTTONS */}
             <div>
-                <button onClick={() => selectPresetAmount(
-                    5,
-                    "price_1SO9JALiN9ZtVTjrF2ayHDHt"
-                )}>$5</button>
-
-                <button onClick={() => selectPresetAmount(
-                    25,
-                    "price_1SJNckLiN9ZtVTjradEOWpf8"
-                )}>$25</button>
+                {DONATION_TIERS.map((tier) => (
+                    <button
+                        key={tier.priceID}
+                        className={priceID === tier.priceID ? "selected" : ""}
+                        onClick={() => 
+                            selectPresetAmount(
+                                tier.priceID,
+                                tier.amount
+                            )
+                        }
+                    >
+                        Donate {tier.label}
+                    </button>
+                ))}
             </div>
 
             {/* CUSTOM DONATION AMOUNT */}
@@ -127,11 +110,18 @@ export default function DonationForm() {
             {error && (
                 // If error === null → renders nothing
                 // If error has text → <p> appears
-                <p style={{ color: "red" }}>{error}</p>
+                <div style={{ color: "red" }}>
+                    <p>{error}</p>
+                    <button onClick={() => {
+                        setError(null);
+                    }}>
+                    Try again
+                    </button>
+                </div>
             )}
 
             {/* DONATE BUTTON */}
-            {!showCheckout && (
+            {!showCheckout && !error &&(
                 <button onClick={handleDonateClick}>
                     Donate {amount ? `$${amount}` : ""}
                 </button>
@@ -139,7 +129,7 @@ export default function DonationForm() {
             
             
             {/* STRIPE CEHKOUT (conditional MOUNT) */}
-            {showCheckout && (
+            {showCheckout &&  (
                 // showCheckout == false:
                 // CheckoutWRpper UNMOUNTED 
                 // Stirpe UI and SESSION are destryed INTETNTIOALLLY
@@ -151,6 +141,11 @@ export default function DonationForm() {
                     priceID={priceID}
                     amountCents={amount ? amount * 100 : null}
                     amount={amount}
+                    // passing a function down as a prop
+                    // giving child component a functino to fun if somthign goes wrong
+                    // child recivves it as a param in 
+                    // now inside child callinf onError("...") will run the parents handeltChckoutError("...")
+                    onError={handleCheckoutError}
                 />
             )}
         </div>
