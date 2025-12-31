@@ -3,26 +3,61 @@ import { useState } from "react";
 import { PaymentElement, useCheckout } from "@stripe/react-stripe-js/checkout";
 
 export default function StripePayment({ amount }) {
-    // This hook works only because:
-        // You wrapped this component in <CheckoutProvider>
-        // That provider was given a valid clientSecret
+    // useCheckout() works only because:
+    // - <CheckoutProvider> wraps this compnonet
+    // - That provider was intialized with a client sectret
+
+    // useCheckout() gives access(via controller object) to the CURRENT STRIPE CHECKOUT SESSION
+    // returns a controllerobject:
+    // {
+    //      type : "ready" || "erroor" || "loading"
+    //      error ?: { messge: "..."}
+    //      checkout?: { updateEmail(), confirm(), ... }
+    // }
+
+
+    // if <StripePayment> is remounted inside <CheckoutProvider> useCheckout() reconnects it to the same session
+    // useCHEKOUT ALWAYS REFERES TO THE SAME SESSION (as long as checkoutProvider stays mounted)
+    // useCheckout() DOSENT IMMEDITALY GIVE YOU A USABLE CHECKOUT CONTROLLER 
     const checkoutState = useCheckout();
     
+    // states reset if StripePayment() UNMOUNTS (new paymetn attempt)
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // BRANCH ON checkouState.type REQUIRED
+    // prevents:
+    // - referencing / using checkout beofore it exists  
+    // - calling checkout.confirm() before stripe is ready
+    // - rendering PAymentELemnt before striep is ready
+
+    // returns -> component renders a different JSX sub tree
+    // .type is part of the checkout session controller object  
     if (checkoutState.type === "loading") 
         return <p>Loading payment…</p>;
     if (checkoutState.type === "error") 
         return <p>{checkoutState.error.message}</p>;
 
+    // subtrees from brancing on checoutState.type unmounted from JSX when component re-renders
+    // when a rerender finally hapens where the if statements are passed:
+    // - know that stripe is ready -> get checkout objects from stripe (email validation card inputs) to use
     const { checkout } = checkoutState;
 
+    // <StripePayment> can rerender saftly bc:
+    // - rerenders do not unmount components 
+    // - the <PaymentELment> iFrane stays mounted as long as <CheckoutProvider> remiand mounted w/ the smae client secrt
+    // rerenders never call this, only triggered byt user sction
+    // submitting form is just an EVENT -> donse not chngae the react tree
     async function handleSubmit(e) {
-        e.preventDefault();
+        // keeps react state + tree alive
+        // keeps streip iframe alive -> keep ssession intact
+        e.preventDefault(); 
+        
         setLoading(true);
 
+        // atach email to checkout session
+        // stripe validates email server side
         const emailResult = await checkout.updateEmail(email);
         if (emailResult.type === "error") {
             setError(emailResult.error.message);
@@ -30,8 +65,14 @@ export default function StripePayment({ amount }) {
             return;
         }
 
+        // AT THIS POITN NO PAYMETN ATTEMP HAPPENED
+
+        // stripe checks card complete, email set
+        // stripe creats/updates payment intent
+        // stripe ATTEMPTS to charge the payment method
         const result = await checkout.confirm();
 
+        // only catches IMMEDIATE ERRORS (invlaid card, ..)
         if (result.type === "error") {
             setError(result.error.message);
             setLoading(false);
@@ -39,7 +80,7 @@ export default function StripePayment({ amount }) {
     };
 
     return (
-        // intercept submit (NO RELOAD)-> calls checkout.confirm()
+        // intercept submit (NO RELOAD)
         // HTML <form> browser default:
         // - send HTTP reuest
         // - navigate / RELOAD page
@@ -52,7 +93,10 @@ export default function StripePayment({ amount }) {
                 onChange={(e) => setEmail(e.target.value)}
             />
 
-            {/* renders card input, validation, wallets */}
+            {/* 
+            STRIPE INJECTS iframe + SECURE FIELDS
+            live outside JS: renders card input, validation, wallets 
+            */}
             <PaymentElement />
 
             <button disabled={loading}>

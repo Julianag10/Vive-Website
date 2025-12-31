@@ -1,11 +1,3 @@
-// // == donation-form.hbs
-// // Partial: donation amount buttons + form
-
-// // Show donation buttons
-// // Let user choose an amount
-// // Ask backend for a checkout session
-// // Hand the result to PARENT
-
 // import { useState } from "react";
 // import { DONATION_TIERS } from "../config/donations";
 // import CheckoutWrapper from "./CheckoutWrapper";
@@ -41,36 +33,44 @@ import { useState } from "react";
 import CheckoutWrapper from "./CheckoutWrapper";
 
 export default function DonationForm() {
-    // REACT STATE
-    // useState returns an array:
+    // REACT STATE (only thign that causes a rerender)
+    // updating state with setX() -> trigger RERENDER
+    // 1. react reruns donation form 
+    // 2. react compares old JSX vs new JSX
+    // 3. DOM updates only if JSX output changed
+
+    // RE-RENDER != REMOUNT
+    // REMOUNT -> compponet runs again(changes)
+    // REMOUTN -> COMPONENT is destoryed, and recreated
+
+    // useState() returns an array:
     // amount     ->  the current state value
     // setAmount  ->  function that updates it
-    // only thing that causes a re-render: setX() -> updates state + triggers rerender
     const [amount, setAmount] = useState(null);
     const [priceID, setPriceID] = useState(null); 
     const [showCheckout, setShowCheckout] = useState(false);
     const [error, setError] = useState(null);
 
-    // boundary between UI and money
-    // guarantees CheckoutWrapper mounts exactly once per flow
-    // Ensures checkout only starts after user intent
+    // BOUNDRY between UI(safe to rerender) and stripe (rerender only delibertlay )
+    // guarantees CheckoutWrapper mounts exactly once per user intent
+    // Ensures checkout only starts after UI intent complete
     // Guarantees checkout is tied to one price
     function handleDonateClick() {
         // if user clicks donte too early 
         if (!amount && !priceID) {
-            // updates state --> rerender will include the error messge
+            // updates state -> rerender (JSX) will include the error messge
             setError("Please select or enter a donation amount.");
             return;
         }
 
-        // STARTING CHECKOUT
-        // UI intent is complete -> stripe allowed to load -> new branch in tree
+        // UI INTETNT COMPLETE -> STARTING CHECKOUT
+        // UI intent is complete -> new branch in tree (CheckoutWrapper will mount)
         // DOM wont update immediatly
         setError(null);
         setShowCheckout(true);
     }
 
-    // every time a prestn button is clicked ... trigger rerender
+    // every time a preset button is clicked ... trigger rerender
     function selectPresetAmount(amount, priceID) {
         // ... changes the amount
         setAmount(amount);
@@ -78,28 +78,19 @@ export default function DonationForm() {
         setPriceID(priceID);
 
         // RESET CHECKOUT IF USER CHANGES MIND
-        // ...if stripe was already mounted -> unmount it(remove checkotwrapper from tree)
-        // {showCheckout && <CheckoutWrapper ... />} -> now false -> unmount subtree from DOM/JSX tree
+        // ...if stripe was already mounted -> unmount it's subtree(remove checkotwrapper JSX tree)
         setShowCheckout(false);
         // .. clears errros
         setError(null);
     }
 
-    // hand control UP to parent
-    // Hey parent — I’m done. You take it from here.”
-    // PARENT: <DonationForm onClientSecret={setClientSecret} />
-    // CHILD: onClientSecret === setClientSecret
-    // Parent state updates
-    // Parent re-renders
-    // UI switches from DonationForm → CheckoutWrapper
-    // onClientSecret(data.clientSecret);
 
-    // RENDER OUTPUT
+    // RENDER OUTPUT (JSX -> DOM)
     return (
         <div style={{ padding: "2rem", border: "1px solid #ccc" }}>
             <h2>Support ViVe</h2>
 
-            {/* PRESET BUTTONS */}
+            {/* PRESET DONATION BUTTONS */}
             <div>
                 <button onClick={() => selectPresetAmount(
                     5,
@@ -121,7 +112,7 @@ export default function DonationForm() {
                 onChange={(e) => {
                     // ... updates amounts
                     setAmount(Number(e.target.value));
-                    // ...clears presetns
+                    // ...clears preset choice
                     setPriceID(null); 
 
                     // ... forces stripe to unmount/reset checkout
@@ -130,22 +121,16 @@ export default function DonationForm() {
                 }}
             />
 
-            {/* 
-            ------------------------------
-            CONDITIONAL RENDERING
-            20 && (<JSX>) 
-            result: <JSX>
-            ------------------------------
-            */}
+            {/* CONDITIONAL RENDERING */}
 
-            {/* ERROR IF DONTE CLICKED TO QUICKLY*/}
+            {/* ERROR MESSAGE (conditonal RENDERING)*/}
             {error && (
                 // If error === null → renders nothing
                 // If error has text → <p> appears
                 <p style={{ color: "red" }}>{error}</p>
             )}
 
-            {/* FIRST DONATE BUTTON */}
+            {/* DONATE BUTTON */}
             {!showCheckout && (
                 <button onClick={handleDonateClick}>
                     Donate {amount ? `$${amount}` : ""}
@@ -153,13 +138,15 @@ export default function DonationForm() {
             )}
             
             
-            
+            {/* STRIPE CEHKOUT (conditional MOUNT) */}
             {showCheckout && (
                 // showCheckout == false:
-                // removes chkout wrpper from tree
+                // CheckoutWRpper UNMOUNTED 
+                // Stirpe UI and SESSION are destryed INTETNTIOALLLY
 
                 // showCheckout == true:
-                // checkout wrapper is mounted -> stripe checkoutsession created
+                // CheckoutWrapper is MOUNTED -> stripe checkoutsession created
+                // Stripe UI is initalize ONCE
                 <CheckoutWrapper
                     priceID={priceID}
                     amountCents={amount ? amount * 100 : null}
