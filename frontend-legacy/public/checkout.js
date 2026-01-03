@@ -140,7 +140,7 @@ async function initializeCheckout(){
     const res = await fetch("/create-checkout-session" , {
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
-        // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text
+        // taking a js object ({amount:2500}) adn turn it into a JSON string, because HTTPS requests only send text(JSPN)
         body: JSON.stringify({ 
             priceID: selectedPriceID, 
             amountCents: customAmountCents 

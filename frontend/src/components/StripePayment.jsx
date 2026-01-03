@@ -26,6 +26,25 @@ export default function StripePayment({ amount }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState(null);
+
+    
+    function onEmailChange(e) {
+        setEmail(e.target.value);
+        setEmailError(null); // clear as they type (your old input listener)
+    }
+
+    // Validate email with Stripe when input loses focus (old blur logic)
+    async function onEmailBlur() {
+        if (!email) return; // if the new email feild is empty do nothng
+
+        const res = await checkout.updateEmail(email);
+        if (res.type === "error") {
+            setEmailError(res.error.message);
+        }
+    }
+
     // BRANCH ON checkouState.type REQUIRED
     // prevents:
     // - referencing / using checkout beofore it exists  
@@ -60,6 +79,7 @@ export default function StripePayment({ amount }) {
         // stripe validates email server side
         const emailResult = await checkout.updateEmail(email);
         if (emailResult.type === "error") {
+            // message is the error.message from updateEmail(email)
             setError(emailResult.error.message);
             setLoading(false);
             return;
@@ -90,8 +110,14 @@ export default function StripePayment({ amount }) {
                 required
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                // onChange={(e) => setEmail(e.target.value)}
+                onChange={ onEmailChange}
+                onBlur={onEmailBlur}
+                className={emailError ? "error" : ""}
             />
+
+            {emailError && <p style={{ color: "red" }}>{emailError}</p>}
+
 
             {/* 
             STRIPE INJECTS iframe + SECURE FIELDS

@@ -1,10 +1,7 @@
 import "./config/env.js";
-
 import express from "express";
 import cors from "cors";
 
-
-// import { db } from "./utils/db.js"; // optional
 
 // ROUTERS
 import webhookRouter from "./routes/webhook.routes.js";

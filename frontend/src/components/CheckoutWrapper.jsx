@@ -118,8 +118,17 @@ export default function CheckoutWrapper({ priceID, amountCents,  amount, onError
             stripe={stripePromise}
             options={{ clientSecret: clientSecretPromise }}
         >
-            
             <StripePayment amount={amount} />
         </CheckoutProvider>
     );
 }
+
+/*
+
+dom 
+|
+CheckoutProvider(stripePromise, options)
+|
+
+
+*/

@@ -21,6 +21,31 @@ export default function DonationForm() {
     const [showCheckout, setShowCheckout] = useState(false);
     const [error, setError] = useState(null);
 
+    const [amountInput, setAmountInput] = useState("");
+    const [amountError, setAmountError] = useState(null);
+
+    function onCustomAmountChange(e) {
+        const raw = e.target.value;
+        setAmountInput(raw);
+
+        const val = Number(raw);
+
+        // invalid
+        if (!raw || Number.isNaN(val) || val < 1) {
+            setAmount(null);
+            setPriceID(null);
+            setAmountError("Minimum donation is $1.");
+            setShowCheckout(false); // reset Stripe if it was open
+            return;
+        }
+
+        // valid
+        setAmount(val);
+        setPriceID(null);
+        setAmountError(null);
+        setShowCheckout(false);
+    }
+
     // BOUNDRY between UI(safe to rerender) and stripe (rerender only delibertlay )
     // guarantees CheckoutWrapper mounts exactly once per user intent
     // Ensures checkout only starts after UI intent complete
@@ -90,19 +115,23 @@ export default function DonationForm() {
             <input
                 type="number"
                 min="1"
-                placeholder="Custom Donation Amount"
+                value={amountInput}
+                placeholder="Custom Donation"
+                onChange={onCustomAmountChange}
+                className={amountError ? "invalid" : ""}
                 // every key stroke ... triggers a rerender
-                onChange={(e) => {
-                    // ... updates amounts
-                    setAmount(Number(e.target.value));
-                    // ...clears preset choice
-                    setPriceID(null); 
+                // onChange={(e) => {
+                //     // ... updates amounts
+                //     setAmount(Number(e.target.value));
+                //     // ...clears preset choice
+                //     setPriceID(null); 
 
-                    // ... forces stripe to unmount/reset checkout
-                    setShowCheckout(false);
-                    setError(null);
-                }}
+                //     // ... forces stripe to unmount/reset checkout
+                //     setShowCheckout(false);
+                //     setError(null);
+                // }}
             />
+            {amountError && <p style={{ color: "red" }}>{amountError}</p>}
 
             {/* CONDITIONAL RENDERING */}
 
