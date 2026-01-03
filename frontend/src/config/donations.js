@@ -11,7 +11,8 @@ export const DONATION_TIERS = [
     },
     {
         label: "$25",
-        priceID: "price_1SJNckLiN9ZtVTjradEOWpf8",
+        // priceID: "price_1SJNckLiN9ZtVTjradEOWpf8",
+        priceID: "price_fake",
         amount: 2500,
     },
     {

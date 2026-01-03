@@ -1,16 +1,22 @@
-import { useMemo } from "react";
+import { useCallback, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
-import StripePayment from "./StripePayment";
-import { stripeAppearance } from "../styles/stripeAppearance";
-
+import { 
+    EmbeddedCheckoutProvider,
+    EmbeddedCheckout 
+} from "@stripe/react-stripe-js";
 
 // returns a Stripe instance == loads STripe.js and publishable key 
 const stripePromise = loadStripe(
     import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 );
 
-export default function CheckoutWrapper({ priceID, amountCents,  amount, onError }) {
+export default function CheckoutWrapper({ priceID, amountCents, onError }) {
+    // onError is a variable, that holds a function passed from parent
+    // calling onError() calls the parent function
+
+    // Local error state ONLY for session creation
+    const [sessionError, setSessionError] = useState(null);
+
     // creating a checkout session is a SIDE EFFECT:
     // - compnet is changing something other than the returned JSX
     // - it talks to backend 
@@ -26,64 +32,74 @@ export default function CheckoutWrapper({ priceID, amountCents,  amount, onError
     // MUST NOT create a new checkoutsesison on EVERY RE-RENDER:
 
     // want fetch to run only when inputs(session params, priceIS, amountCents) change
-    // useMemo() -> Cache a computed value so React doesn’t redo it on every rerender
-    // useMemo() -> reruns fetch (creates a checkout session) only when dependecies change
-    // useMemo() -> DOSENT prevent RE-RENDERING
-    // useMemo() -> prevents RE-MOUNTING bc react only remounts if the JSX changes (if client secrte changes)
-    // useMemo() -> wont run on normal rerenders 
-    const clientSecretPromise = useMemo(() => {
-        // backend creates a stripe checkoutsession 
-        // stripe creats payment intent
-        // backend retuns client secret
-        return fetch("/checkout/create-checkout-session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            // fetch only runs when these inputs (session params) change
-            // IF inputs dont change -> client secret wont change -> checkoutsession dosen't change
-            body: JSON.stringify({ 
-                priceID,
-                amountCents,
-            }),
-        })  
-            // fetch() returns a promise(client sectert) -> "ill give you the reuslt later"
-            // .then runs when promise finishes(after the HTTP request completes)
-            .then((res) => res.json())
-            .then((data) => {
-                // data is the actual JS object frmo BACKEND
-                // Backend has validation for !priceId, ect.
-                // so errror mesage comes from backend 
-                if (!data.clientSecret) {
-                    // creates an error obejct and THROW it
-                    throw new Error(data.error || "No client secret returned, failed to create checoutsessoin");
-                }
-                // client secret uniquly indentifies:
+    // useCallback() ensures the function identity is stable unless depedencies change
+    const fetchClientSecret = useCallback(async () => {
+        try{
+            // backend creates a stripe checkoutsession 
+            // stripe creats payment intent
+            // backend retuns client secret
+            const response = await fetch("/checkout/create-checkout-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                // fetch only runs when these inputs (session params) change
+                // IF inputs(session params)dont change 
+                // -> new clientSecret wont be fetched -> checkoutsession dosen't change
+                body: JSON.stringify({ priceID, amountCents }),
+            }); 
+
+            // data is the actual JS object frmo BACKEND
+            // Backend has validation for !priceId, ect.
+            // so errror mesage comes from backend 
+            const data = await response.json();
+            
+            // Handle backend / Stripe error
+            // creates an error obejct and THROW it
+            if (!response.ok || !data.clientSecret) {
+              throw new Error(data.error || "Failed to create checkout session");
+            }
+
+            // client secret uniquly indentifies:
                 // - ONE checkotu session
                 // - ONE payment Intent
                 // - ONE paymetn Attempt
-                return data.clientSecret;
-            })
-            .catch((err) => {
-                // err is error object from THROW OR a NETWROK error from fetch()
-                // so render the error UI and never mount stripe -> triggers a re-render
+            return data.clientSecret;
 
-                // calling the fucntion passed from parent 
-                onError?.(err.message); // PARETN ERROR 
+        } catch (err) { // catches errors from fetch(error message sent from backend) or from throw above
 
-                // return so that clientSecrtePromise resolves to null
-                return null;
-            });
+            // err is not gguaranteed to be an Error object:
+            // throw new Error("Bad price");    // Error object
+            // throw "Bad price";               // string
+            // throw { code: 500 };             // plain object
+            // throw null;     
+            const message =
+                // Checks if err is an instance of Error (if err is an Error object)
+                // IF yes -> safe to read and use err.message
+                // IF no -> fallback to a SAFE message
+                // guaruntees The UI always gets a string
+                err instanceof Error
+                ? err.message
+                : "Checkout failed. Please try again.";
+
+            // 1️⃣ Store locally so this component can render fallback UI
+            setSessionError(message);
+
+            // 2️⃣ Notify parent ( UI owner) so it can reset the flow n
+            // If the parent gave a onError function, call it with message
+            onError?.(message);
+
+            // abrot stripe inti
+            throw err;
+        }
         // DEPENDENCY ARRAY
         // runs only when compnent mounts, ONLY IF user changes inputs and remounts
         // Only recompute the memoized value (priceID OR amountCents) IF values changed since last render
         // -> IF both priceID and amountCents are unchanged -> return the previous cached clnetSecret, dont run the useMemo function again
         // -> IF eihter changes run useMemo() again -> create a new checkout session
     }, [priceID, amountCents, onError]);
-
-    if (!clientSecretPromise) return null;
-
+            
 
     // STRIPE CHECKOUT PROVIDER 
-    // <CheckoutProvider> is stripes secure container
+    // <CheckoutProvider> is stripe secure container
     // MUST be mounted exactly once per clientSecret
     // MUST remain unmouted during user input -> lost input
     // 
@@ -116,15 +132,11 @@ export default function CheckoutWrapper({ priceID, amountCents,  amount, onError
         // paymetn UI -> tied to the session
         // AS LONG AS CHECKUT PORVIDER STAYS MLUNTED -> client sectret DOSE NOT chANGE
         // <StripePayment> renders inside that provider -> provider instnace now exists in memory 
-        <CheckoutProvider
+        <EmbeddedCheckoutProvider
             stripe={stripePromise}
-            options={{ 
-                clientSecret: clientSecretPromise,
-                elementsOptions: {appearance: stripeAppearance, },
-            }}
+            options={{fetchClientSecret}}
         >
-            <StripePayment amount={amount} />
-        </CheckoutProvider>
+           <EmbeddedCheckout />
+        </EmbeddedCheckoutProvider>
     );
 }
-

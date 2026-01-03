@@ -13,13 +13,6 @@
 
 import { stripe } from "../utils/stripe.js";
 
-// PUBLIC config for frontend
-export function getStripeConfig() {
-    return {
-        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
-    };
-}
-
 // CREATE A STRIPE CHECKOUTSESSION 
 // req.body = donation info sent from your frontend
 export async function createCheckoutSession({ priceID, amountCents }) {
@@ -44,22 +37,16 @@ export async function createCheckoutSession({ priceID, amountCents }) {
     // calls stripes API to create a checkout session object on stripes servers
     // strip automatically links a paymetn inetnt
     const session = await stripe.checkout.sessions.create({
-        // payment_method_types: ['card'],
-        ui_mode: "custom",
+        ui_mode: "embedded",
         mode: "payment",
-
         billing_address_collection: 'auto',
         line_items: [lineItem],
-
         return_url: `${process.env.BASE_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
         // return_url: "http://localhost:5173/complete?session_id={CHECKOUT_SESSION_ID}",
     });
 
     // sends res back to frontend 
-    return {
-        clientSecret: session.client_secret,
-        // sessionId: session.id,
-    };
+    return {clientSecret: session.client_secret};
 }
 
 // GET checkout + payment status 
@@ -77,12 +64,10 @@ export async function getCheckoutSessionStatus(sessionId) {
         {expand: ["payment_intent"]},
     );
 
-
     return {
         status: session.status,
         payment_status: session.payment_status,
         payment_intent_id: session.payment_intent?.id,
         payment_intent_status: session.payment_intent?.status, // STATUS OF THE PAYMENT INTETN
     };
-
 }
