@@ -22,17 +22,16 @@ export default function StripePayment({ amount }) {
     const checkoutState = useCheckout();
     
     // states reset if StripePayment() UNMOUNTS (new paymetn attempt)
-    const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    // const [email, setEmail] = useState("");
+    const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState(null);
 
     
     function onEmailChange(e) {
         setEmail(e.target.value);
-        setEmailError(null); // clear as they type (your old input listener)
+        // clear as they type (your old input listener)
+        setEmailError(null); 
     }
 
     // Validate email with Stripe when input loses focus (old blur logic)
@@ -51,16 +50,16 @@ export default function StripePayment({ amount }) {
     // - calling checkout.confirm() before stripe is ready
     // - rendering PAymentELemnt before striep is ready
 
-    // returns -> component renders a different JSX sub tree
+    // returns -> component renders a different JSX sub tree( eihter the loading state or the error meassage HTML)
     // .type is part of the checkout session controller object  
     if (checkoutState.type === "loading") 
         return <p>Loading payment…</p>;
     if (checkoutState.type === "error") 
         return <p>{checkoutState.error.message}</p>;
 
-    // subtrees from brancing on checoutState.type unmounted from JSX when component re-renders
-    // when a rerender finally hapens where the if statements are passed:
-    // - know that stripe is ready -> get checkout objects from stripe (email validation card inputs) to use
+    // subtrees from brancing on checkoutState.type unmounted from JSX when component re-renders
+    // when a rerender finally hapens (when stripe is ready) where the if statements are passed:
+    // -> know that stripe is ready -> get checkout objects from stripe (email validation, card inputs) to use
     const { checkout } = checkoutState;
 
     // <StripePayment> can rerender saftly bc:
@@ -85,7 +84,7 @@ export default function StripePayment({ amount }) {
             return;
         }
 
-        // AT THIS POITN NO PAYMETN ATTEMP HAPPENED
+        // AT THIS POITN NO PAYMENT ATTEMP HAPPENED
 
         // stripe checks card complete, email set
         // stripe creats/updates payment intent
@@ -110,7 +109,6 @@ export default function StripePayment({ amount }) {
                 required
                 type="email"
                 value={email}
-                // onChange={(e) => setEmail(e.target.value)}
                 onChange={ onEmailChange}
                 onBlur={onEmailBlur}
                 className={emailError ? "error" : ""}

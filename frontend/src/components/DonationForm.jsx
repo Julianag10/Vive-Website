@@ -1,6 +1,8 @@
 import { DONATION_TIERS } from "../config/donations";
 import { useState } from "react";
 import CheckoutWrapper from "./CheckoutWrapper";
+// import "./donationForm.css";
+
 
 export default function DonationForm() {
     // REACT STATE (only thign that causes a rerender)
@@ -112,27 +114,24 @@ export default function DonationForm() {
             </div>
 
             {/* CUSTOM DONATION AMOUNT */}
-            <input
-                type="number"
-                min="1"
-                value={amountInput}
-                placeholder="Custom Donation"
-                onChange={onCustomAmountChange}
-                className={amountError ? "invalid" : ""}
-                // every key stroke ... triggers a rerender
-                // onChange={(e) => {
-                //     // ... updates amounts
-                //     setAmount(Number(e.target.value));
-                //     // ...clears preset choice
-                //     setPriceID(null); 
+            <div className="donation-field">
+                <input
+                    type="number"
+                    min="1"
+                    value={amountInput}
+                    placeholder="Custom Donation"
+                    onChange={onCustomAmountChange}
+                    className={`stripe-like-input ${amountError ? "error" : ""}`}
+                />
 
-                //     // ... forces stripe to unmount/reset checkout
-                //     setShowCheckout(false);
-                //     setError(null);
-                // }}
-            />
-            {amountError && <p style={{ color: "red" }}>{amountError}</p>}
+                {amountError && (
+                    <div className="stripe-error-text">
+                        {amountError}
+                    </div>
+                )}
+            </div>
 
+            
             {/* CONDITIONAL RENDERING */}
 
             {/* ERROR MESSAGE (conditonal RENDERING)*/}

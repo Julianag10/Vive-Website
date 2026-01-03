@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { CheckoutProvider } from "@stripe/react-stripe-js/checkout";
 import StripePayment from "./StripePayment";
+import { stripeAppearance } from "../styles/stripeAppearance";
+
 
 // returns a Stripe instance == loads STripe.js and publishable key 
 const stripePromise = loadStripe(
@@ -116,19 +118,13 @@ export default function CheckoutWrapper({ priceID, amountCents,  amount, onError
         // <StripePayment> renders inside that provider -> provider instnace now exists in memory 
         <CheckoutProvider
             stripe={stripePromise}
-            options={{ clientSecret: clientSecretPromise }}
+            options={{ 
+                clientSecret: clientSecretPromise,
+                elementsOptions: {appearance: stripeAppearance, },
+            }}
         >
             <StripePayment amount={amount} />
         </CheckoutProvider>
     );
 }
 
-/*
-
-dom 
-|
-CheckoutProvider(stripePromise, options)
-|
-
-
-*/

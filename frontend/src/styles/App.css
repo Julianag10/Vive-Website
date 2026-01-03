@@ -49,3 +49,53 @@ Shared classes
   color: #888;
 }
 
+/* 
+STRIPE APREANCE API HAS 3 MAINPARTS:
+const appearance = {
+  theme,
+  variables,
+  rules,
+}; 
+
+theme: "stripe"   // default, clean
+theme: "night"    // dark mode
+theme: "flat"     // minimal, less shadow
+
+variables: {
+  fontFamily: '"Inter", system-ui, sans-serif',
+
+  Focus border, selected states
+  colorPrimary: "#5469d4",
+
+  Input background
+  colorBackground: "#ffffff",
+
+  Input text color
+  colorText: "#30313d",
+
+  Error borders + messages
+  colorDanger: "#df1b41",
+
+  Input rounding
+  borderRadius: "6px",
+
+  Internal padding scale
+  spacingUnit: "4px",
+}
+
+
+Rules let you target specific internal elements:
+rules == Stripe-approved CSS selectors
+
+rules: {
+  ".Input": {
+    padding: "12px",
+  },
+  ".Input:focus": {
+    borderColor: "#5469d4",
+  },
+  ".Label": {
+    fontWeight: "500",
+  },
+}
+*/
