@@ -1,4 +1,6 @@
-import { stripe } from "../utils/stripe.js";
+// import { stripe } from "../utils/stripe.js";
+import { getStripe } from "../utils/stripe.js";
+
 import {
     handleCheckoutCompleted,
     handlePaymentFailed,
@@ -8,6 +10,7 @@ import {
 } from "../services/webhook.service.js";
 
 export async function handleStripeWebhook(req, res) {
+    const stripe = getStripe();
     // in stripes req is header called "stripe-signature"
     const signature = req.headers["stripe-signature"];
 

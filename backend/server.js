@@ -1,4 +1,6 @@
-import "./config/env.js";
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 
@@ -9,7 +11,6 @@ import checkoutRouter from "./routes/checkout.routes.js";
 
 import adminDonationsRouter from "./routes/admin/donations.routes.js";
 import adminResourcesRouter from "./routes/admin/resources.routes.js";
-import adminWorkflowsRouter from "./routes/admin/workflows.routes.js";
 
 // ---------- EXPRESS APP SETUP ----------------------------------------
 const app = express(); 
@@ -63,7 +64,6 @@ app.use("/checkout", checkoutRouter); // reutens pure JSON
 
 app.use("/admin/donations", adminDonationsRouter);
 app.use("/admin/resources", adminResourcesRouter);
-app.use("/admin/workflows", adminWorkflowsRouter);
 
 // ---------- HEALTH API ROUTE ----------------------------------------
 // checks :

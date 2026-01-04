@@ -1,5 +1,4 @@
-import { db } from "../db/db.js";
-
+import { pool } from "../db/db.js";
 import {
     sendConfirmationEmail,
     sendPaymentFailedEmail,
@@ -32,7 +31,7 @@ export async function handleCheckoutCompleted(session) {
 
     // INSERT DONATION INTO DB
     // .none bc not expexting any returned rows 
-    await db.none(
+    await pool.none(
         `INSERT INTO donations (session_id, email, name, amount, status)
         VALUES ($1, $2, $3, $4, $5)
         ON CONFLICT(session_id) DO NOTHING`,

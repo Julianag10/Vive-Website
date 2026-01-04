@@ -11,11 +11,16 @@
 // - Tests
 // - Background jobs
 
-import { stripe } from "../utils/stripe.js";
+import { getStripe } from "../utils/stripe.js";
+// const stripe = getStripe();
+
+// import { stripe } from "../utils/stripe.js";
 
 // CREATE A STRIPE CHECKOUTSESSION 
 // req.body = donation info sent from your frontend
 export async function createCheckoutSession({ priceID, amountCents }) {
+
+    const stripe = getStripe();
 
     let lineItem;
 
@@ -54,6 +59,8 @@ export async function createCheckoutSession({ priceID, amountCents }) {
 // since my broweser can talk to stripes secret API directly , server must do it and report bakc a safe summary
 // the browser needs to knwo if the donation succeeeded, right now only stripe knows. and only server wuth the secret key can securley cas stripe for the real ressult
 export async function getCheckoutSessionStatus(sessionId) {
+    const stripe = getStripe();
+
     // stripe.checkout.sessions.retrieve(...) server calls stripes APU using secret key(already configured in stripe client) to fetch the checkout session object for that session id
     const session = await stripe.checkout.sessions.retrieve(
         // req.query.session_id reads the session_id query param from the URL 
@@ -64,12 +71,12 @@ export async function getCheckoutSessionStatus(sessionId) {
         {expand: ["payment_intent"]},
     );
 
-    if (session.payment_status !== 'paid') {
-        return res.status(400).json({ error: 'Payment not completed' });
-    }
+    // if (session.payment_status !== 'paid') {
+    //     return res.status(400).json({ error: 'Payment not completed' });
+    // }
 
-    // return stable response:
-    return res.json({ success: true });
+    // // return stable response:
+    // return res.json({ success: true });
 
 
     return {
