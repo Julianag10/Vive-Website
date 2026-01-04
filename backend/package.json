@@ -15,9 +15,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "express-handlebars": "^8.0.4",
     "nodemailer": "^7.0.10",
-    "pg-promise": "^12.3.0",
+    "pg":"^8.11.5",
     "stripe": "^20.0.0"
   }
 }

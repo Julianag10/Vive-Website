@@ -64,6 +64,14 @@ export async function getCheckoutSessionStatus(sessionId) {
         {expand: ["payment_intent"]},
     );
 
+    if (session.payment_status !== 'paid') {
+        return res.status(400).json({ error: 'Payment not completed' });
+    }
+
+    // return stable response:
+    return res.json({ success: true });
+
+
     return {
         status: session.status,
         payment_status: session.payment_status,
