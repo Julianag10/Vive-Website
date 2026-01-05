@@ -1,12 +1,18 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import pkg from 'pg';
 
 const { Pool } = pkg;
+
+console.log("DB connection string seen by pg:", process.env.DATABASE_URL);
 
 // allows every route to write SQL like db.any();
 // this pool is the source of DB access
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
+
 
 // Now anywhere in the backend can import:
 // import { pool } from "../db/db.js";
@@ -36,7 +42,7 @@ brew services start postgresql@16
 2. verify postgres server is running RUN:
 pg_isready
 
-3. connect to psql shell RUN:
+3. connect to psql shell RUN(enter/connect to posgress ):
 psql postgres
 
 4. list databases RUN:
@@ -51,7 +57,7 @@ psql postgres
 7. quit psql shell RUN:
 \q
 
-9. rerun you db test:
+9. PROVE CONNECTIVITY:rerun you db test:
 node backend/test-db.js
 --------------------
 check postgres server status RUN:   

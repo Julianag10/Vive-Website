@@ -15,7 +15,6 @@ import adminResourcesRouter from "./routes/admin/resources.routes.js";
 // ---------- EXPRESS APP SETUP ----------------------------------------
 const app = express(); 
 
-const PORT = process.env.PORT || 3000;
 
 // ---------- STRIPE WEBHOOK API -------------------------------
 // must come before JSON
@@ -80,6 +79,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // ---------- START SERVER --------------------
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log("🚀 Server started");
