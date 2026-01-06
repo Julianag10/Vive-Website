@@ -4,6 +4,7 @@ import { listActivePrograms } from "../services/programs.service.js";
 import { registerForProgram } from "../services/registrations.service.js";
 
 // List active programs (public)
+// _req
 export async function listProgramsController(_req, res) {
     const programs = await listActivePrograms();
     res.json(programs);
@@ -19,4 +20,6 @@ export async function registerController(req, res) {
 
   res.json(registration);
 }
+
+
 

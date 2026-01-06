@@ -2,10 +2,16 @@
 // (HTTP → service translation for admin)
 
 import {
+  listAllPrograms,
   createProgram,
   updateProgram,
   toggleProgramActive,
 } from "../../services/admin/programs.service.js";
+
+export async function listAdminProgramsController(_req, res) {
+  const programs = await listAllPrograms();
+  res.json(programs);
+}
 
 export async function createProgramController(req, res) {
   const program = await createProgram(req.body);
@@ -24,4 +30,3 @@ export async function toggleProgramController(req, res) {
   );
   res.json(program);
 }
-

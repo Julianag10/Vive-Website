@@ -1,6 +1,17 @@
-// ADMIN WRITE
+// ADMIN READS + WRITE
 
 import { pool } from "../../db/db.js";
+
+// list all programs
+export async function listAllPrograms() {
+    const {rows} = await pool.query(`
+        SELECT *
+        FROM programs
+        ORDER BY created_at DESC;
+    `);
+    return rows;
+}
+
 
 // Create a new program
 export async function createProgram({
@@ -62,5 +73,4 @@ export async function toggleProgramActive(id, isActive) {
 
   return rows[0];
 }
-
 

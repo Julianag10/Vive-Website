@@ -2,12 +2,18 @@
 
 import express from "express";
 import {
+  listAdminProgramsController,
   createProgramController,
   updateProgramController,
   toggleProgramController,
 } from "../../controllers/admin/programs.controller.js";
 
+import { listProgramRegistrationsController } from "../../controllers/admin/registrations.controller.js";
+
 const router = express.Router();
+
+// GET /admin/programs
+router.get("/", listAdminProgramsController);
 
 // POST = create somthing new
 // no :id -> create a NEW program 
@@ -24,6 +30,9 @@ router.put("/:id", updateProgramController);
 // PATCH /admin/programs/:id/active
 // :id -> change 1 field in  THIS program 
 router.patch("/:id/active", toggleProgramController);
+
+// GET 
+router.get("/:id/registrations", listProgramRegistrationsController);
 
 export default router;
 

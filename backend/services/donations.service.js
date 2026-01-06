@@ -1,4 +1,4 @@
-// PUBLIC WRITE
+// PUBLIC WRITE + STATUS UPDATES
 
 import { pool } from "../db/db.js";
 

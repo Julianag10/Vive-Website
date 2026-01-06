@@ -7,11 +7,13 @@ import cors from "cors";
 
 // ROUTERS
 import webhookRouter from "./routes/webhook.routes.js";
+
 import checkoutRouter from "./routes/checkout.routes.js";
+import programsRouter from "./routes/programs.routes.js";
 
 import adminDonationsRouter from "./routes/admin/donations.routes.js";
-import programsRouter from "./routes/programs.routes.js";
 import adminProgramsRouter from "./routes/admin/programs.routes.js";
+// import adminRegistrationsRouter from "./routes/admin/registrations.routes.js";
 
 // ---------- EXPRESS APP SETUP ----------------------------------------
 const app = express(); 
@@ -56,19 +58,15 @@ app.use(
 
 
 // ---------- API ROUTES(JSON ONLY) --------------------------------------------
-// These routes must:
-// - return JSON only
-// - contain business logic
-// - be usable by React, admin, or any client
-app.use("/checkout", checkoutRouter); // reutens pure JSON
-
-app.use("/admin/donations", adminDonationsRouter);
 
 // Public
+app.use("/checkout", checkoutRouter); // reutens pure JSON
 app.use("/programs", programsRouter);
 
 // Admin
+app.use("/admin/donations", adminDonationsRouter);
 app.use("/admin/programs", adminProgramsRouter);
+// app.use("/admin/registrations", adminRegistrationsRouter);
 
 // ---------- HEALTH API ROUTE ----------------------------------------
 // checks :

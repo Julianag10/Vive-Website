@@ -3,7 +3,7 @@
 import { listDonations} from "../../services/admin/donations.service.js";
 
 // GET /admin/donations → return/list all donations from db
-export async function listDonationsController(req, res) {
+export async function listDonationsController(_req, res) {
     try {
         // Lists all donations
         const donations = await listDonations();
