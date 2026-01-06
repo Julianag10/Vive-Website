@@ -5,35 +5,28 @@ import pkg from 'pg';
 
 const { Pool } = pkg;
 
-console.log("DB connection string seen by pg:", process.env.DATABASE_URL);
+// THIS FILE is the database connection manager
+// db.js creates 1 db connection → every file reuses it
 
-// allows every route to write SQL like db.any();
 // this pool is the source of DB access
+// allows every route to write SQL like pool.any();
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-
 // Now anywhere in the backend can import:
 // import { pool } from "../db/db.js";
 
-// THIS FILE is the database connection manager
-// db.js creates 1 db connection → every file reuses it
 
 
 /*------------------------------------------------
-1. Postgres is a server, like MySQL
-2. Postgress must be running to accept connections
-    To start Postgres locally:
-    1. Open terminal
-    2. Run: pg_ctl -D /usr/local/var/postgres start
-    3. To stop: pg_ctl -D /usr/local/var/postgres stop
-3. The Pool object manages multiple connections to the DB
-4. The Pool uses the connection string to connect to the right DB
-5. The connection string is stored in the .env file as DATABASE_URL
-
-6. a data base is just a named container of tables inside postgres server
-7. libraries like pg only connects to 1 EXISTING database at a time
+1. Postgres is a SERVER, like MySQL
+2. Postgress must be RUNNING to accept CONNECTIONS
+3. The Pool object manages multiple CONNECTION to the DB
+4. The Pool uses the CONNECTION STRING to connect to the right DB 
+5. The CONNECTION STRING = DATABASE_URL
+6. a DATA BASE is just a named container of TABLES inside POSTGRES SERVER
+7. LIBRARIES like PG only CONNECT to 1 existing DATABASE at a time
 
 --------------------------------------------------
 1. start posergresSQL RUN:

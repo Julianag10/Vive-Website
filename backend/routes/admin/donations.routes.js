@@ -1,10 +1,10 @@
+// ADMIN READ
+
 // avoids importing the entire Express object
 // only importing the one function you need (Router)
+
 import { Router } from "express";
-import {
-    listDonations,
-    donationStats,
-} from "../../controllers/admin/donations.controller.js";
+import {listDonationsController} from "../../controllers/admin/donations.controller.js";
 
 const router = Router();
 
@@ -14,10 +14,9 @@ const router = Router();
 // ---------- Admin Endpoints (READ Donations) ---------
 
 // GET /admin/donations → return/list all donations from db
-router.get("/", listDonations);
+router.get("/", listDonationsController);
 
-// GET /admin/donations/stats → charts + insights
-router.get("/stats", donationStats);
 
+//
 export default router;
 

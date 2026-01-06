@@ -1,21 +1,24 @@
+// ADMIN READ
+
 import { pool } from "../../db/db.js";
 
-
-// READ all donations
-export async function getAllDonations() {
-    return pool.any(`
-        SELECT *
-        FROM donations
-        ORDER BY created_at DESC
-    `);
+// ADMIN READ 
+// STRIPE INDEPENDENT
+export async function listDonations() {
+  const { rows } = await pool.query(`
+    SELECT
+      id,
+      amount_cents,
+      currency,
+      status,
+      donor_email,
+      created_at
+    FROM donations
+    ORDER BY created_at DESC;
+  `);
+  return rows;
 }
 
-// READ donation stats
-export async function getDonationStats() {
-    return pool.one(`
-        SELECT
-            COUNT(*) AS total_count,
-            SUM(amount) AS total_amount
-        FROM donations
-    `);
-}
+// WHERE status != 'succeeded' → idempotent
+// retrying dose nothing if already succeeded
+// safe to call mulitle times 

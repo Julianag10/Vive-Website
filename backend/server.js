@@ -10,7 +10,8 @@ import webhookRouter from "./routes/webhook.routes.js";
 import checkoutRouter from "./routes/checkout.routes.js";
 
 import adminDonationsRouter from "./routes/admin/donations.routes.js";
-import adminResourcesRouter from "./routes/admin/resources.routes.js";
+import programsRouter from "./routes/programs.routes.js";
+import adminProgramsRouter from "./routes/admin/programs.routes.js";
 
 // ---------- EXPRESS APP SETUP ----------------------------------------
 const app = express(); 
@@ -62,7 +63,12 @@ app.use(
 app.use("/checkout", checkoutRouter); // reutens pure JSON
 
 app.use("/admin/donations", adminDonationsRouter);
-app.use("/admin/resources", adminResourcesRouter);
+
+// Public
+app.use("/programs", programsRouter);
+
+// Admin
+app.use("/admin/programs", adminProgramsRouter);
 
 // ---------- HEALTH API ROUTE ----------------------------------------
 // checks :

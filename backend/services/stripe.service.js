@@ -1,20 +1,10 @@
-// Extract business logic into a service
+// BUINESS LOGIC FOR STRIPE
 // Because “how to create a checkout session” is not an HTTP concern.
-
-// No req
-// No res
-// No Express
-
-// This file could be reused by:
-// - API
-// - Admin scripts
-// - Tests
-// - Background jobs
+// no req 
+// no res
 
 import { getStripe } from "../utils/stripe.js";
 // const stripe = getStripe();
-
-// import { stripe } from "../utils/stripe.js";
 
 // CREATE A STRIPE CHECKOUTSESSION 
 // req.body = donation info sent from your frontend
@@ -39,50 +29,48 @@ export async function createCheckoutSession({ priceID, amountCents }) {
         throw new Error("Must provide priceID or amountCents");
     }
 
-    // calls stripes API to create a checkout session object on stripes servers
-    // strip automatically links a paymetn inetnt
+    // 1. calls stripes API to create a CHECKOUT SESSION OBJECT on STRIPE servers
+    // 2. stripe automatically creates + links a PAYMETN INTENT to the checkout session
+    // 3. stripe genreates a CLIENT SECRET linked to the checkout session + payment intent
+    // 4. stripe returns the checkout session object to my server
     const session = await stripe.checkout.sessions.create({
         ui_mode: "embedded",
         mode: "payment",
         billing_address_collection: 'auto',
         line_items: [lineItem],
+        // after payment, stripe redirects user to this URL
         return_url: `${process.env.BASE_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
-        // return_url: "http://localhost:5173/complete?session_id={CHECKOUT_SESSION_ID}",
     });
 
-    // sends res back to frontend 
-    return {clientSecret: session.client_secret};
+    // returns what the controller needs to send back to frontend
+    return {
+        // clinetSecret is used by frontend to confirm payment + render payment form
+        clientSecret: session.client_secret,
+        session, // expose session to controller
+    };
 }
 
-// GET checkout + payment status 
-// CONFIRMS PAYMENT STATUS, SESSION STATUS 
-// since my broweser can talk to stripes secret API directly , server must do it and report bakc a safe summary
-// the browser needs to knwo if the donation succeeeded, right now only stripe knows. and only server wuth the secret key can securley cas stripe for the real ressult
+// AFTER CHECKOUT IS COMPLETE (PAYMENT IS ATTEMPTED) fetch session + payment status from stripe 
+// GETS FROM STIRPE payment + session status + chekout session status
+// My browser(fronend) needs to knwo if the donation succeeeded, right now only stripe knows
+// BUT only server with the stripe secret key can securley call stripe for the real status
 export async function getCheckoutSessionStatus(sessionId) {
+    // getStripe() returns the stripe client configured with my secret key
+    // strpe client talks to stripe servers
     const stripe = getStripe();
 
-    // stripe.checkout.sessions.retrieve(...) server calls stripes APU using secret key(already configured in stripe client) to fetch the checkout session object for that session id
+    // stripe.checkout.sessions.retrieve(...) server calls stripes API using secret key(already configured in stripe client) to fetch the checkout session object for that session id
     const session = await stripe.checkout.sessions.retrieve(
-        // req.query.session_id reads the session_id query param from the URL 
-        // req query param is set in complete.js
         sessionId, 
-        // expand: ["payment_intent"]sesion.paymetn_intetn woudljust be an ID string
-        // exand tells stripe "inline the fill Payment INtent objecgt right in teh response"
+        // expand: ["payment_intent"] -> expands the payment_intent field to be the full payment intent object instead of just the payment_intent id string
         {expand: ["payment_intent"]},
     );
 
-    // if (session.payment_status !== 'paid') {
-    //     return res.status(400).json({ error: 'Payment not completed' });
-    // }
-
-    // // return stable response:
-    // return res.json({ success: true });
-
-
     return {
-        status: session.status,
-        payment_status: session.payment_status,
+        status: session.status,  // open | complete
+        payment_status: session.payment_status, // paid | unpaid
         payment_intent_id: session.payment_intent?.id,
-        payment_intent_status: session.payment_intent?.status, // STATUS OF THE PAYMENT INTETN
+        // STATUS OF THE PAYMENT INTETN
+        payment_intent_status: session.payment_intent?.status, // succeeded | processing | failed
     };
 }

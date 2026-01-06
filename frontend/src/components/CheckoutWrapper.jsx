@@ -46,6 +46,7 @@ export default function CheckoutWrapper({ priceID, amountCents, onError }) {
       });
 
       // data is the actual JS object frmo BACKEND
+      // inclueds error message if session creation failed
       // Backend has validation for !priceId, ect.
       // so errror mesage comes from backend
       const data = await response.json();
