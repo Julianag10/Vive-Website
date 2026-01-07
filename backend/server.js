@@ -64,9 +64,8 @@ app.use("/checkout", checkoutRouter); // reutens pure JSON
 app.use("/programs", programsRouter);
 
 // Admin
-app.use("/admin/donations", adminDonationsRouter);
-app.use("/admin/programs", adminProgramsRouter);
-// app.use("/admin/registrations", adminRegistrationsRouter);
+app.use("/admin/api/donations", adminDonationsRouter);
+app.use("/admin/api/programs", adminProgramsRouter);
 
 // ---------- HEALTH API ROUTE ----------------------------------------
 // checks :

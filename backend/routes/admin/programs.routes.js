@@ -31,7 +31,7 @@ router.put("/:id", updateProgramController);
 // :id -> change 1 field in  THIS program 
 router.patch("/:id/active", toggleProgramController);
 
-// GET 
+// GET admin/programs/:id/registrations
 router.get("/:id/registrations", listProgramRegistrationsController);
 
 export default router;
