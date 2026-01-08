@@ -27,6 +27,8 @@ import ProgramRegistrations from "./pages/admin/ProgramRegistrations";
 
 import "./styles/App.css";
 
+import AdminLayout from "./components/AdminLayout";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -40,10 +42,11 @@ export default function App() {
         {/* ---------- PROTECTED ADMIN ROUTES ---------- */}
         <Route
           path="/admin"
-          // react renders element
           element={
             <AdminGuard>
-              <AdminHome />
+              <AdminLayout>
+                <AdminHome />
+              </AdminLayout>
             </AdminGuard>
           }
         />
@@ -52,7 +55,9 @@ export default function App() {
           path="/admin/donations"
           element={
             <AdminGuard>
-              <AdminDonations />
+              <AdminLayout>
+                <AdminDonations />
+              </AdminLayout>
             </AdminGuard>
           }
         />
@@ -61,7 +66,9 @@ export default function App() {
           path="/admin/programs"
           element={
             <AdminGuard>
-              <AdminPrograms />
+              <AdminLayout>
+                <AdminPrograms />
+              </AdminLayout>
             </AdminGuard>
           }
         />
@@ -70,7 +77,9 @@ export default function App() {
           path="/admin/programs/:id/registrations"
           element={
             <AdminGuard>
-              <ProgramRegistrations />
+              <AdminLayout>
+                <ProgramRegistrations />
+              </AdminLayout>
             </AdminGuard>
           }
         />
