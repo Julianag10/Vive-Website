@@ -1,6 +1,8 @@
 // ADMIN WRITE
 
 import express from "express";
+import { requireAdmin } from "../../middleware/requireAdmin.js";
+import { listProgramRegistrationsController } from "../../controllers/admin/registrations.controller.js";
 import {
   listAdminProgramsController,
   createProgramController,
@@ -8,9 +10,11 @@ import {
   toggleProgramController,
 } from "../../controllers/admin/programs.controller.js";
 
-import { listProgramRegistrationsController } from "../../controllers/admin/registrations.controller.js";
 
 const router = express.Router();
+
+// 🔐 Protect everything below
+router.use(requireAdmin);
 
 // GET /admin/programs
 router.get("/", listAdminProgramsController);

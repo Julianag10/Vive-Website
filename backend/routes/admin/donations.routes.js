@@ -5,11 +5,13 @@
 
 import { Router } from "express";
 import {listDonationsController} from "../../controllers/admin/donations.controller.js";
+import { requireAdmin } from "../../middleware/requireAdmin.js";
 
 const router = Router();
 
-// file is ONLY for admin donation analytics.
-// ONLY READS THE DATABASE
+
+// 🔐 Protect everything below
+router.use(requireAdmin);
 
 // ---------- Admin Endpoints (READ Donations) ---------
 
