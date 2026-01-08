@@ -6,14 +6,16 @@ export async function loginController(req,res) {
     // await reutrns: {id: admin.id, email: admin.email}
     const admin = await authenticateAdmin(email, password);
 
-    // every time an admin route is visted the routes are prtected here:
+    // every time an admin route is visted the routes are protected here:
     // if admin never logged in -> blocked
     // if admin logged out -> blocked
     // if session expired -> blocked
     if (!admin) 
         return res.status(401).json({error: "Invalid credentials"});
 
-    // MIDDLEWARE creates the session + saves admmin to session
+    // creates + saves admmin to session || updates the session if session data (admin) was modified:
+    // 1. middlewar sees sessin data was modidied
+    // 2. generates || reuses session ID
     req.session.admin = admin;
     
     // responds to client (cookie is created w/ session id) (browsers saves cookies in cache) 

@@ -13,6 +13,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Donate from "./pages/Donate";
 import Complete from "./pages/Complete";
+
+import AdminLogin from "./pages/admin/AdminLogin";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminDonations from "./pages/admin/Donations";
 import AdminPrograms from "./pages/admin/Programs";
@@ -28,6 +30,8 @@ export default function App() {
         <Route path="/donate" element={<Donate />} />
         <Route path="/complete" element={<Complete />} />
 
+        {/* Admin */}
+        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminHome />} />
         <Route path="/admin/donations" element={<AdminDonations />} />
         <Route path="/admin/programs" element={<AdminPrograms />} />
