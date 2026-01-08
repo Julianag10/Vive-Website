@@ -14,10 +14,15 @@ export default defineConfig({
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },
+                "/admin/auth": {
+                    target: "http://localhost:3000",
+                    changeOrigin: true,
+                },                
                 "/programs/api": {
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },
+
             },
         },
 });
