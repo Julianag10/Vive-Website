@@ -7,6 +7,8 @@ export default function AdminPrograms() {
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingProgramId, setEditingProgramId] = useState(null);
+  const [editForm, setEditForm] = useState({});
 
   // create program form inline on progrmas page (NO MODAL YET)
   const [form, setForm] = useState({
@@ -19,6 +21,7 @@ export default function AdminPrograms() {
 
   const navigate = useNavigate();
 
+  // FETCH PROGRAMS ON MOUNT
   useEffect(() => {
     async function fetchPrograms() {
       try {
@@ -46,6 +49,10 @@ export default function AdminPrograms() {
     // WHY DOSE EMPTY DEP ARRAY MAKE USEEFECT ONLY RUN ONVE ON MOUNT
   }, []);
 
+  if (loading) return <p>Loading programs…</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (programs.length === 0) return <p>No programs found.</p>;
+
   // OUTSIDE USEEFFECT:
   // toggleProgram() runs only when user clicks:
   //  fetch side effect: -> triggered by an event -> not automatic (useEffect for automatic effects)
@@ -54,7 +61,7 @@ export default function AdminPrograms() {
   // onClick -> no sde effects during render
   // but why no side effects during render???
 
-  // TOGGLE PROGRAMS
+  // TOGGLE PROGRAM ACTIVE / INACTIVE
   async function toggleProgram(programId, currentActive) {
     try {
       const res = await fetch(`/admin/api/programs/${programId}/active`, {
@@ -125,7 +132,7 @@ export default function AdminPrograms() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  // CREATE PORGRAM FORM: submit handler
+  // CREATE PROGRAM FORM: submit handler
   async function handleCreateProgram(e) {
     e.preventDefault();
 
@@ -164,15 +171,38 @@ export default function AdminPrograms() {
     }
   }
 
-  if (loading) return <p>Loading programs…</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (programs.length === 0) return <p>No programs found.</p>;
+  // SAVE EDITED PROGRAM
+  async function saveEdit(programId) {
+    try {
+      const res = await fetch(`/admin/api/programs/${programId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(editForm),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Update failed");
+      }
+
+      const updatedProgram = await res.json();
+
+      setPrograms((prev) =>
+        prev.map((p) => (p.id === programId ? updatedProgram : p))
+      );
+
+      setEditingProgramId(null);
+    } catch (err) {
+      alert(err.message);
+    }
+  }
 
   return (
     <div>
       <h1>Programs</h1>
 
-      {/* CREATE PORGRMA FORM */}
+      {/* CREATE PROGRAM FORM */}
       <h2>Create Program</h2>
 
       <form onSubmit={handleCreateProgram}>
@@ -222,7 +252,8 @@ export default function AdminPrograms() {
       <table border="1" cellPadding="8">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Title</th>
+            <th>Capacity</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -230,24 +261,100 @@ export default function AdminPrograms() {
 
         <tbody>
           {programs.map((program) => (
-            <tr key={program.id}>
-              <td>{program.title}</td>
-              <td>{program.is_active ? "Active" : "Inactive"}</td>
-              <td>
-                <button
-                  onClick={() => toggleProgram(program.id, program.is_active)}
-                >
-                  {program.is_active ? "Deactivate" : "Activate"}
-                </button>
+            // WHEN: programs.map(program => <tr>...</tr>)
+            // REACT needs Which row is which between renders?
 
-                <button
-                  onClick={() =>
-                    navigate(`/admin/programs/${program.id}/registrations`)
-                  }
-                >
-                  View Registrations
-                </button>
-              </td>
+            // without keys:
+            // - react may reuse the wrong row
+            // - buttons act on the wrong item
+
+            // with keys:
+            // - This row = that program
+            // - Only update what actually changed
+            <tr key={program.id}>
+              {editingProgramId === program.id ? (
+                // EDIT MODE JSX:
+                // IF this program is currently being edited, show input fields
+                // Only ONE row enters edit mode at a time.
+                // <tr> -> table row
+                // <td> -> colom cell
+
+                // JSX requires one parent element -> FRAGMENTS
+                // START REACT FRAGMENT
+                <>
+                  <td>
+                    <input
+                      value={editForm.title}
+                      onChange={(e) =>
+                        setEditForm({
+                          ...editForm,
+                          title: e.target.value,
+                        })
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={editForm.capacity}
+                      onChange={(e) =>
+                        setEditForm({
+                          ...editForm,
+                          capacity: e.target.value,
+                        })
+                      }
+                    />
+                  </td>
+                  <td>{program.is_active ? "Active" : "Inactive"}</td>
+                  <td>
+                    <button onClick={() => saveEdit(program.id)}>Save</button>
+                    <button onClick={() => setEditingProgramId(null)}>
+                      Cancel
+                    </button>
+                  </td>
+                </>
+              ) : (
+                // END REACT FRAGMENT
+                // START REACT FRAGMENT
+                // NORMAL VIEW JSX
+                // OTHERWISE show normal text + buttons
+                <>
+                  <td>{program.title}</td>
+                  <td>{program.capacity}</td>
+                  <td>{program.is_active ? "Active" : "Inactive"}</td>
+
+                  <td>
+                    <button
+                      onClick={() => {
+                        setEditingProgramId(program.id);
+                        setEditForm({
+                          title: program.title,
+                          capacity: program.capacity,
+                        });
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        toggleProgram(program.id, program.is_active)
+                      }
+                    >
+                      {program.is_active ? "Deactivate" : "Activate"}
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        navigate(`/admin/programs/${program.id}/registrations`)
+                      }
+                    >
+                      View Registrations
+                    </button>
+                  </td>
+                </>
+                // END REACT FRAGMENT
+              )}
             </tr>
           ))}
         </tbody>

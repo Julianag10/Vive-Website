@@ -13,11 +13,11 @@ export async function authenticateAdmin(email, password) {
     );
 
     const admin = rows[0];
-    
+
     if(!admin) return null;
 
     // password is the user typed input
-    // admin.password_ hash is encrypted pass stored in admin table 
+    // admin.password_hash is encrypted pass stored in admin table 
     // bcrypt takes teh plain text password the user typed & compares it agains teh stored hash in the database
     // bcrypt never decrypts, it hases the incoming pass w/ same factor embeded in admin.password_hash and checks if the HASHES match
     const match = await bcrypt.compare(password, admin.password_hash);
