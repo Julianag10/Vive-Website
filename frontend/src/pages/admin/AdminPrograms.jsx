@@ -8,6 +8,15 @@ export default function AdminPrograms() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // create program form inline on progrmas page (NO MODAL YET)
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    start_date: "",
+    end_date: "",
+    capacity: "",
+  });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +53,8 @@ export default function AdminPrograms() {
   // fetch sideeffect isnt tied to component life cycle like fetch in fetchPrograms
   // onClick -> no sde effects during render
   // but why no side effects during render???
+
+  // TOGGLE PROGRAMS
   async function toggleProgram(programId, currentActive) {
     try {
       const res = await fetch(`/admin/api/programs/${programId}/active`, {
@@ -100,6 +111,59 @@ export default function AdminPrograms() {
     }
   }
 
+  // CREATE PROGRAM FORM: handle input changes
+  // give my funtion event = input change, bc: <input... onChange={}>
+  function handleChange(e) {
+    // e.target is the DOM element that triggerd the event = input
+    // so e is the event and e.target is my acutal dom ele so that it can be used
+    // e.target.name === "title"
+    // e.target.value === "Yoga Class"
+    const { name, value } = e.target;
+
+    // each input change only updates 1 field at a time
+    // BUT form state has mulitpe fields , so mkae a copy and then change one field in frorm state obj
+    setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  // CREATE PORGRAM FORM: submit handler
+  async function handleCreateProgram(e) {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("/admin/api/programs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          // sending a copy of the form to the backend, and convert it to JSON
+          ...form,
+          capacity: Number(form.capacity),
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Create failed");
+      }
+
+      const newProgram = await res.json();
+
+      // add to UI immediately
+      setPrograms((prev) => [...prev, newProgram]);
+
+      // reset form
+      setForm({
+        title: "",
+        description: "",
+        start_date: "",
+        end_date: "",
+        capacity: "",
+      });
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+
   if (loading) return <p>Loading programs…</p>;
   if (error) return <p>Error: {error}</p>;
   if (programs.length === 0) return <p>No programs found.</p>;
@@ -108,6 +172,53 @@ export default function AdminPrograms() {
     <div>
       <h1>Programs</h1>
 
+      {/* CREATE PORGRMA FORM */}
+      <h2>Create Program</h2>
+
+      <form onSubmit={handleCreateProgram}>
+        <input
+          name="title"
+          placeholder="Title"
+          value={form.title}
+          // when this <input name= "xxx"...> changes, call my function and give it an event
+          // give my funtion event = input change, bc: <input... onChange={}>
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={handleChange}
+        />
+
+        <input
+          type="date"
+          name="start_date"
+          value={form.start_date}
+          onChange={handleChange}
+        />
+
+        <input
+          type="date"
+          name="end_date"
+          value={form.end_date}
+          onChange={handleChange}
+        />
+
+        <input
+          type="number"
+          name="capacity"
+          placeholder="Capacity"
+          value={form.capacity}
+          onChange={handleChange}
+        />
+
+        <button type="submit">Create Program</button>
+      </form>
+
+      {/* PROGRAMS TABLE */}
       <table border="1" cellPadding="8">
         <thead>
           <tr>

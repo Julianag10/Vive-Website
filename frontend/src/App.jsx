@@ -21,9 +21,9 @@ import Complete from "./pages/Complete";
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminHome from "./pages/admin/AdminHome";
-import AdminDonations from "./pages/admin/Donations";
-import AdminPrograms from "./pages/admin/Programs";
-import ProgramRegistrations from "./pages/admin/ProgramRegistrations";
+import AdminDonations from "./pages/admin/AdminDonations";
+import AdminPrograms from "./pages/admin/AdminPrograms";
+import ProgramRegistrations from "./pages/admin/AdminProgramRegistrations";
 
 import "./styles/App.css";
 
