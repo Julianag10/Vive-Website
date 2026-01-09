@@ -18,7 +18,7 @@ MOUNTS:
 */
 
 // 1. coomponet called by parent -> starts render #1
-// 6. render #2
+// 6. render #2 = react calls component again
 export default function AdminDonations() {
   // State changes trigger renders.
   const [donations, setDonations] = useState([]);
@@ -37,15 +37,24 @@ export default function AdminDonations() {
           credentials: "include",
         });
 
+        // catches if res status is not okay (errors from backend)
+        if (!res.ok) {
+          // gets error JSON object from backend res -> parse into JS object
+          const errorData = await res.json();
+          throw new Error(errorData.error || "Failed to load donations");
+        }
+
         // backend response data from db: admin table
         const data = await res.json();
 
-        // 5c. schedule render #2 but save donation
+        // 5c. saved state for render #2 (saved stae will be used when render #1 returns)
         setDonations(data);
       } catch (err) {
+        // catches maual error thrown or netwirk error
+        // schedules reender to display error message UI
         setError(err.message);
       } finally {
-        // 5d. save this data for render #2
+        // 5d. daved stae for render #2
         setLoading(false);
       }
     }
