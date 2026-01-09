@@ -62,7 +62,7 @@ CREATE TABLE donations (
     -- weebhook will update status later, not create
     -- every donation is in a known lifecycle stage
     status TEXT NOT NULL CHECK (
-        status IN ('pending', 'succeeded', 'failed', 'refunded')
+        status IN ('pending', 'succeeded', 'failed', 'refunded', 'abandond')
     ),
 
     donor_email TEXT,

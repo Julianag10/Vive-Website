@@ -18,6 +18,7 @@ export async function handleCheckoutCompleted(session) {
     const name = session.customer_details?.name;
     const email = session.customer_details?.email;
     const amount = session.amount_total / 100;
+    const paymentIntentId = session.payment_intent;
 
     // SEND RECIPT / THANKYOU EMAIL 
     console.log("🔔 Sending receipt email to:", email);
@@ -31,11 +32,16 @@ export async function handleCheckoutCompleted(session) {
 
     // INSERT DONATION INTO DB
     // .none bc not expexting any returned rows 
-    await pool.none(
-        `INSERT INTO donations (session_id, email, name, amount, status)
-        VALUES ($1, $2, $3, $4, $5)
-        ON CONFLICT(session_id) DO NOTHING`,
-        [session.id, email, name, amount, "completed"]
+    await pool.query(
+        `
+        UPDATE donations
+        SET
+        donor_email = $2,
+        stripe_payment_intent_id = $3,
+        status = 'succeeded'
+        WHERE stripe_session_id = $1;
+        `,
+        [session.id, email, paymentIntentId]
     );
 
     console.log("💾 Saved donation to DB:", session.id);
@@ -65,6 +71,18 @@ export async function handlePaymentFailed(paymentIntent) {
     }
 
     // TODO: DB → record failure
+    if (paymentIntent.id) {
+    await pool.query(
+        `
+        UPDATE donations
+        SET status = 'failed'
+        WHERE stripe_payment_intent_id = $1
+            AND status = 'pending';
+        `,
+        [paymentIntent.id]
+    );
+    }
+
 
 }
 
@@ -72,12 +90,23 @@ export async function handlePaymentFailed(paymentIntent) {
 export async function handleRefund(charge) {
     const email = charge.billing_details?.email;
     const amount = charge.amount_refunded / 100;
+    const paymentIntentId = charge.payment_intent;
 
     if (email) {
         await sendRefundEmail({ email, amount });
     }
 
-    // TODO: DB → update donation refund status
+    if (paymentIntentId) {
+        await pool.query(
+            `
+                UPDATE donations
+                SET status = 'refunded'
+                WHERE stripe_payment_intent_id = $1
+                    AND status != 'refunded';
+            `,
+            [paymentIntentId]
+        );
+    }
 }
 
 // -------------- DISPUTE ----------------------------
@@ -105,4 +134,14 @@ export async function handleAbandonedCheckout(session) {
     }
 
     // TODO: DB → log abandoned session
+    await pool.query(
+    `
+        UPDATE donations
+        SET status = 'abandond'
+        WHERE stripe_session_id = $1
+        AND status = 'pending';
+    `,
+    [session.id]
+    );
+
 }

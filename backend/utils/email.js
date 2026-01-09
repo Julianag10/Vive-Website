@@ -23,11 +23,30 @@ const transporter = nodemailer.createTransport({
 export async function sendConfirmationEmail({ name, email, amount }) {
     if (!email) return;
 
+    const homeUrl = process.env.BASE_URL || "http://localhost:5173"
+
     const HTML = `
         <h2>Thank you for your donation!</h2>
+
         <p>Hi ${name || "friend"},</p>
+
         <p>We received your donation of <strong>$${amount}</strong>. This email serves as your receipt.</p>
-        <p>     TODO: ADD BUTTON BACK TO HOME PAGE</p>
+        <div style="margin: 24px 0;">
+            <a
+                href="${homeUrl}"
+                style="
+                display: inline-block;
+                padding: 12px 20px;
+                background-color: #111827;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: 600;
+                "
+            >
+                Back to Vive HOME
+            </a>
+        </div>
     `;
 
     await transporter.sendMail({
@@ -67,6 +86,7 @@ export async function sendPaymentFailedEmail({email, reason, retryUrl}) {
 export async function sendRefundEmail({email, amount}) {
     if (!email) return;
 
+    
     const HTML = `
         <h2>Your donation has been refunded.</h2>
         <p>Amount refunded: <strong>$${amount.toFixed(2)}</strong></p>
