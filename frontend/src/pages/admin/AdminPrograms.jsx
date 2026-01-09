@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "../../styles/admin-programs.css";
+
 export default function AdminPrograms() {
   // progrmas state is array of programs
   // bc page displays all progrmas, fetchPrograms()
@@ -199,166 +201,182 @@ export default function AdminPrograms() {
   }
 
   return (
-    <div>
+    <div className="admin-programs">
       <h1>Programs</h1>
 
       {/* CREATE PROGRAM FORM */}
-      <h2>Create Program</h2>
+      <section className="create-program">
+        <h2>Create Program</h2>
 
-      <form onSubmit={handleCreateProgram}>
-        <input
-          name="title"
-          placeholder="Title"
-          value={form.title}
-          // when this <input name= "xxx"...> changes, call my function and give it an event
-          // give my funtion event = input change, bc: <input... onChange={}>
-          onChange={handleChange}
-          required
-        />
+        <form onSubmit={handleCreateProgram} className="program-form">
+          <input
+            name="title"
+            placeholder="Title"
+            value={form.title}
+            // when this <input name= "xxx"...> changes, call my function and give it an event
+            // give my funtion event = input change, bc: <input... onChange={}>
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-        />
+          <input
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+          />
 
-        <input
-          type="date"
-          name="start_date"
-          value={form.start_date}
-          onChange={handleChange}
-        />
+          <input
+            type="date"
+            name="start_date"
+            value={form.start_date}
+            onChange={handleChange}
+          />
 
-        <input
-          type="date"
-          name="end_date"
-          value={form.end_date}
-          onChange={handleChange}
-        />
+          <input
+            type="date"
+            name="end_date"
+            value={form.end_date}
+            onChange={handleChange}
+          />
 
-        <input
-          type="number"
-          name="capacity"
-          placeholder="Capacity"
-          value={form.capacity}
-          onChange={handleChange}
-        />
+          <input
+            type="number"
+            name="capacity"
+            placeholder="Capacity"
+            value={form.capacity}
+            onChange={handleChange}
+          />
 
-        <button type="submit">Create Program</button>
-      </form>
+          <button type="submit">Create Program</button>
+        </form>
+      </section>
 
       {/* PROGRAMS TABLE */}
-      <table border="1" cellPadding="8">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Capacity</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {programs.map((program) => (
-            // WHEN: programs.map(program => <tr>...</tr>)
-            // REACT needs Which row is which between renders?
-
-            // without keys:
-            // - react may reuse the wrong row
-            // - buttons act on the wrong item
-
-            // with keys:
-            // - This row = that program
-            // - Only update what actually changed
-            <tr key={program.id}>
-              {editingProgramId === program.id ? (
-                // EDIT MODE JSX:
-                // IF this program is currently being edited, show input fields
-                // Only ONE row enters edit mode at a time.
-                // <tr> -> table row
-                // <td> -> colom cell
-
-                // JSX requires one parent element -> FRAGMENTS
-                // START REACT FRAGMENT
-                <>
-                  <td>
-                    <input
-                      value={editForm.title}
-                      onChange={(e) =>
-                        setEditForm({
-                          ...editForm,
-                          title: e.target.value,
-                        })
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={editForm.capacity}
-                      onChange={(e) =>
-                        setEditForm({
-                          ...editForm,
-                          capacity: e.target.value,
-                        })
-                      }
-                    />
-                  </td>
-                  <td>{program.is_active ? "Active" : "Inactive"}</td>
-                  <td>
-                    <button onClick={() => saveEdit(program.id)}>Save</button>
-                    <button onClick={() => setEditingProgramId(null)}>
-                      Cancel
-                    </button>
-                  </td>
-                </>
-              ) : (
-                // END REACT FRAGMENT
-                // START REACT FRAGMENT
-                // NORMAL VIEW JSX
-                // OTHERWISE show normal text + buttons
-                <>
-                  <td>{program.title}</td>
-                  <td>{program.capacity}</td>
-                  <td>{program.is_active ? "Active" : "Inactive"}</td>
-
-                  <td>
-                    <button
-                      onClick={() => {
-                        setEditingProgramId(program.id);
-                        setEditForm({
-                          title: program.title,
-                          capacity: program.capacity,
-                        });
-                      }}
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        toggleProgram(program.id, program.is_active)
-                      }
-                    >
-                      {program.is_active ? "Deactivate" : "Activate"}
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        navigate(`/admin/programs/${program.id}/registrations`)
-                      }
-                    >
-                      View Registrations
-                    </button>
-                  </td>
-                </>
-                // END REACT FRAGMENT
-              )}
+      <section className="programs-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Capacity</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {programs.map((program) => (
+              // WHEN: programs.map(program => <tr>...</tr>)
+              // REACT needs Which row is which between renders?
+
+              // without keys:
+              // - react may reuse the wrong row
+              // - buttons act on the wrong item
+
+              // with keys:
+              // - This row = that program
+              // - Only update what actually changed
+              <tr key={program.id}>
+                {editingProgramId === program.id ? (
+                  // EDIT MODE JSX:
+                  // IF this program is currently being edited, show input fields
+                  // Only ONE row enters edit mode at a time.
+                  // <tr> -> table row
+                  // <td> -> colom cell
+
+                  // JSX requires one parent element -> FRAGMENTS
+                  // START REACT FRAGMENT
+                  <>
+                    <td>
+                      <input
+                        value={editForm.title}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            title: e.target.value,
+                          })
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={editForm.capacity}
+                        onChange={(e) =>
+                          setEditForm({
+                            ...editForm,
+                            capacity: e.target.value,
+                          })
+                        }
+                      />
+                    </td>
+
+                    <td>{program.is_active ? "Active" : "Inactive"}</td>
+
+                    <td className="actions">
+                      <button
+                        className="primary"
+                        onClick={() => saveEdit(program.id)}
+                      >
+                        Save
+                      </button>
+                      <button
+                        className="secondary"
+                        onClick={() => setEditingProgramId(null)}
+                      >
+                        Cancel
+                      </button>
+                    </td>
+                  </>
+                ) : (
+                  // END REACT FRAGMENT
+                  // START REACT FRAGMENT
+                  // NORMAL VIEW JSX
+                  // OTHERWISE show normal text + buttons
+                  <>
+                    <td>{program.title}</td>
+                    <td>{program.capacity}</td>
+                    <td>{program.is_active ? "Active" : "Inactive"}</td>
+
+                    <td className="actions">
+                      <button
+                        onClick={() => {
+                          setEditingProgramId(program.id);
+                          setEditForm({
+                            title: program.title,
+                            capacity: program.capacity,
+                          });
+                        }}
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          toggleProgram(program.id, program.is_active)
+                        }
+                      >
+                        {program.is_active ? "Deactivate" : "Activate"}
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/admin/programs/${program.id}/registrations`
+                          )
+                        }
+                      >
+                        View Registrations
+                      </button>
+                    </td>
+                  </>
+                  // END REACT FRAGMENT
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
     </div>
   );
 }

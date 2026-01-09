@@ -1,0 +1,70 @@
+/* ADMIN LAYOUT WRAPPER */
+.admin-layout {
+  min-height: 100vh;
+  /* background-color: #121212; */
+}
+
+/* HEADER */
+.admin-header {
+    width: 100%;
+  background-color: #121212;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.admin-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* TITLE */
+.admin-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f5f5f5;
+}
+
+/* NAV */
+.admin-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.admin-nav a {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.admin-nav a:hover {
+  color: #ffffff;
+}
+
+/* LOGOUT BUTTON */
+.admin-nav button {
+  background-color: #1c1c1c;
+  border: 1px solid #333;
+  color: #e5e5e5;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-nav button:hover {
+  background-color: #0a0a0a;
+}
+
+/* CONTENT AREA */
+.admin-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
