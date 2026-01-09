@@ -1,40 +1,104 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-// 6. rereder w/ saves state
+/*
+PROGRAM REGISTRATIONS PAGE
+--------------------------
+Route: /admin/programs/:id/registrations
+
+Responsibilities:
+- Fetch registrations for a specific program
+- Display them in a readable table
+- Handle loading / error / empty states
+- Stay protected by AdminGuard (parent routing)
+*/
+
 export default function ProgramRegistrations() {
-  // :id is a URL parameter
-  // 1. react deconstructs the URL param object and gets id
-  const { id } = useParams();
-  const [rows, setRows] = useState([]);
+  // URL PARAM: /admin/programs/:id/registrations
+  const { id } = useParams(); // program id from URL
 
-  // 2. skips but react stores function + dependecy array
-  // 4. component finshed render -> useEffect fucntinoruns w/ stored dep array
-  // 7. id dosent change -> unEffect wont run after render
-  // useEffect runs when [id] changes
+  const navigate = useNavigate();
+
+  // STATE
+  const [registrations, setRegistrations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // FETCH REGISTRATIONS ON MOUNT
   useEffect(() => {
-    // GET admin/programs/:id/registrations -> returns registrations for ONE program
-    fetch(`/admin/api/programs/${id}/registrations`)
-      .then((res) => res.json())
-      .then(
-        // 5. saves the rows -> changes react state -> schedule rerender -> saves state
-        // ONLY REMOUNT if NEXT RERENDER cahnges the JSX
-        setRows
-      );
+    async function fetchRegistrations() {
+      try {
+        const res = await fetch(`/admin/api/programs/${id}/registrations`, {
+          credentials: "include", // 🔐 send session cookie
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || "Failed to load registrations");
+        }
+
+        const data = await res.json();
+        setRegistrations(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchRegistrations();
   }, [id]);
 
-  // 3. JSX for the first render -> mount in DOM
-  // 8. JSX for rerender (w/ rows saved) -> mount in DOM
+  // ---------- UI STATES ----------
+  if (loading) {
+    return <p>Loading registrations…</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (registrations.length === 0) {
+    return (
+      <div>
+        <button onClick={() => navigate("/admin/programs")}>
+          ← Back to Programs
+        </button>
+
+        <h2>Program Registrations</h2>
+        <p>No registrations for this program yet.</p>
+      </div>
+    );
+  }
+
+  // ---------- MAIN RENDER ----------
   return (
     <div>
-      <h2>Registrations</h2>
-      <ul>
-        {rows.map((r, i) => (
-          <li key={i}>
-            {r.name} — {r.email}
-          </li>
-        ))}
-      </ul>
+      <button onClick={() => navigate("/admin/programs")}>
+        ← Back to Programs
+      </button>
+
+      <h2>Program Registrations</h2>
+
+      <table border="1" cellPadding="8" cellSpacing="0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registered At</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {registrations.map((registration) => (
+            <tr key={registration.id}>
+              <td>{registration.name}</td>
+              <td>{registration.email}</td>
+              <td>{new Date(registration.created_at).toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
