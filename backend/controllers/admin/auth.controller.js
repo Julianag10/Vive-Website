@@ -13,9 +13,10 @@ export async function loginController(req,res) {
     if (!admin) 
         return res.status(401).json({error: "Invalid credentials"});
 
-    // creates + saves admmin to session || updates the session if session data (admin) was modified:
-    // 1. middlewar sees sessin data was modidied
-    // 2. generates || reuses session ID
+    // creates + saves admmin to session:
+    // req was already parsed by req.session
+    // req.sesion alreay contains teh session in RAM 
+    // req.session.admin attaches the new||modified admin to session
     req.session.admin = admin;
     
     // responds to client (cookie is created w/ session id) (browsers saves cookies in cache) 
@@ -30,21 +31,11 @@ export async function logoutController(req, res) {
     });
 }
 
-// lets front end checko if session is logged in 
+// lets frontend know if session is logged in 
 export function meController(req, res) {
-    // reports teh Session STATE (current memory being used -> amdin )
+    // reports the Session STATE (current memory being used -> admin )
     res.json({admin: req.session.admin || null});
 }
 
-// server memory (RAM) : map of sessionId -> sessionDaTa
-// server nned to know whic session belongs to the is browser
-// browser sends the sessin id back on every req
 
-// broser cookie = whcih session id to use on each req
 
-// PER REQ
-// 1. browsers sends req + cookie
-// 2. backend reads cookie , extracts session id 
-// 3. backend looks up session id  in RAM 
-// 4. backend(w/ middleware) attaches teh session data to req.session so that 
-// 6. backend recives req adn reads req.session.admin to get teh session that the browser is activley usin g

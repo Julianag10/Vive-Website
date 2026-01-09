@@ -46,11 +46,22 @@ app.use(
 app.use(express.json()); // parses JSON req into req.body
 app.use(express.urlencoded({ extended: true })); // parses HTML form bodies
 
-// INCOMING REQ: POST /admin/auth/login
-// 1. looks for a session cookie in req (no cookie yet if new admin) || cookie id in req -> returning admin
-// 2. creates a new session object: req.session = {} ||  looks yp session ID
-// 3. asssigns a sessionID 
-// 4. prepares to send a cokie later (cookie has sessionID)
+// attaches .session middleware that works on every req 
+// req.session
+
+// server memory (RAM): map of sessionId -> session 
+// server needs to know which session the brower is using
+
+// FOR EVERY INCOMING REQ:
+// COOKIE: vive-admin-session = sessionID 
+// 1. express-session reads cookie from req
+// 1B. IF NO cookie = no session in RAM:
+    // assigns new sessionID
+    // req.session CREATES NEW empty object in RAM
+// 2. looks for a session.name (vive-admin-session) in cookie 
+// 3. IF cookie exits uses the sessionID to find session in RAM 
+// 4. req.session ATTACHES the found session from RAM to req
+// 5. prepares to send a cokie later (cookie has sessionID)
 app.use(
   session({
     // cookie name 

@@ -9,6 +9,9 @@ export default function AdminGuard({ children }) {
   useEffect(() => {
     async function checkAuth() {
       try {
+        // fetch == SIDEEFEFCT (talks to outside world. ...)
+        // http://localhost:5173/admin/auth/me
+        // http = networking -> browser (networking stack) -> proxy intercepts -> backend
         // send credentials to backend to authenticate
         const res = await fetch("/admin/auth/me", {
           credentials: "include",
@@ -22,7 +25,7 @@ export default function AdminGuard({ children }) {
           return;
         }
 
-        // triggere rerender -> next render it will skip authentications(useEffect)
+        // schedules rerender -> next render it will skip authentications(useEffect)
         setLoading(false);
       } catch (err) {
         navigate("/admin/login");

@@ -43,6 +43,7 @@ export default function App() {
         <Route
           path="/admin"
           element={
+            // a component tree react needs to render:
             <AdminGuard>
               <AdminLayout>
                 <AdminHome />
