@@ -17,6 +17,8 @@ import AdminGuard from "./components/AdminGuard";
 import Home from "./pages/Home";
 import Donate from "./pages/Donate";
 import Complete from "./pages/Complete";
+import Programs from "./pages/Programs";
+import ProgramRegister from "./pages/ProgramRegister";
 
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -31,15 +33,18 @@ import AdminLayout from "./components/AdminLayout";
 
 export default function App() {
   return (
+    // BROWSER TOUER = REACT ROUTER
     <BrowserRouter>
       <Routes>
-        {/* ---------- PUBLIC ROUTES ---------- */}
+        {/* ---------- PUBLIC PAGE ROUTES (NAVIGATION REQ) ---------- */}
         <Route path="/" element={<Home />} />
         <Route path="/donate" element={<Donate />} />
         <Route path="/complete" element={<Complete />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/programs" element={<Programs />} />
+        <Route path="/programs/:id/register" element={<ProgramRegister />} />
 
-        {/* ---------- PROTECTED ADMIN ROUTES ---------- */}
+        {/* ---------- PROTECTED ADMIN PAGE ROUTES (NAVIGATION) ---------- */}
         <Route
           path="/admin"
           element={

@@ -5,20 +5,23 @@ export default defineConfig({
     plugins: [react()],
         server: {
             proxy: {
+                // /donate --> NAV REQ (page)
+                // /checkout -> HTTP REQ (API)
+                // they dont have the same name no navigation REQ and http REQ confusion
                 "/checkout": {
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },
-                // KEEP ONLY API ROUTES
-                "/admin/api": {
+                "/programs": {
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },
                 "/admin/auth": {
                     target: "http://localhost:3000",
                     changeOrigin: true,
-                },                
-                "/programs/api": {
+                }, 
+                // KEEP ONLY API ROUTES
+                "/admin/api": {
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },
