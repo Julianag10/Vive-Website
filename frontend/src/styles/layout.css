@@ -1,0 +1,61 @@
+.header {
+  background: var(--color-primary);
+  /* padding-bottom: 8.53px;
+  padding-top: 8.53px; */
+  padding: 1.2rem 2rem;
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+
+  /* #BADA54 */
+}
+
+.nav-brand {
+  justify-self: start;
+}
+
+.brand-title {
+  font-family: "ADLaM Display", cursive;
+  font-size: 1.8rem;
+  letter-spacing: 0.02em;
+  color: #2a241f;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  font-family: var(--font-secondary);
+}
+
+.nav a {
+  color: #2a241f;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.nav a:hover {
+    opacity: 0.85;
+}
+
+.footer {
+  background: var(--color-primary);
+  padding: 1rem 2rem;
+}
+
+@media (max-width: 900px) {
+  .nav {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .nav-links {
+    justify-content: flex-start;
+  }
+}
