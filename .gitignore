@@ -1,0 +1,34 @@
+# NODE / JS
+node_modules/ 
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ENV FILES
+.env
+.env.*
+backend/.env
+frontend/.env
+
+# BUILD 
+dist/
+build/
+frontend/dist/
+backend/dist/
+
+# VITE
+frontend/.vite/
+
+
+# OS / EDITOR
+.DS_Store
+.vscode/
+.idea/
+
+# LOGS
+*.log
+
+# TEMP / MISC
+tmp/
+.temp/

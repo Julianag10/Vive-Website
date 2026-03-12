@@ -1,0 +1,322 @@
+
+
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "hero hero hero"
+    "about about about"
+    "programs programs programs"
+    "features features features"
+    "impact impact impact"
+    "donate donate donate"
+    "volunteer volunteer volunteer"
+    "testimonials testimonials testimonials"
+    "partners partners partners";
+  gap: 4rem 0rem;
+}
+
+.hero {
+  grid-area: hero;
+  position: relative;
+  width: 100%;
+  height: 75vh;
+  padding: 0.6rem 2rem;
+}
+
+.hero img {
+  position: absolute;
+  width: calc(100% - 3rem);
+  height: calc(100% - 1.2rem);
+  object-fit: cover;
+  display: block;
+  border-radius: 24px;
+}
+
+.hero-text {
+  position: absolute;
+  color: white;
+  text-align: left;
+  top: -10%;
+  left: 5%;
+}
+
+.hero-text p {
+  position: absolute;
+  max-width: 700px;
+  font-size: 1.8rem;
+}
+
+.hero-cta {
+  position: absolute;
+  left: 50%;
+  bottom: 4rem;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.donate-btn,
+.volunteer-btn {
+  font-family: var(--font-secondary);
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.donate-btn {
+  background: #ffffff;
+  color: #2a241f;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+}
+
+.donate-btn:hover {
+  transform: translateY(-1px);
+}
+
+.volunteer-btn {
+  background: transparent;
+  color: #ffffff;
+}
+
+.volunteer-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.about {
+  grid-area: about;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 0 3.5rem;
+}
+
+.programs {
+  grid-area: programs;
+  padding: 0 2rem;
+}
+
+.aboutus-btn {
+  display: block;
+  margin: 1rem auto 0;
+  text-align: center;
+  font-family: var(--font-secondary);
+  width: fit-content;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  background: #2a241f;
+  color: #ffffff;
+  font-weight: 800;
+  text-decoration: none;
+  /* border: 3px solid #2a241f; */
+}
+
+.aboutus-btn:hover {
+  background: #f3f0e6;
+}
+
+.programs h2 {
+  text-align: center;
+}
+
+.programs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.program-card {
+  display: grid;
+  grid-template-rows: auto 1fr 1fr auto auto;
+  gap: 1rem;
+  padding: 3rem;
+  background: var(--color-secondary);
+  color: white;
+  border-radius: 10px;
+}
+
+.program-card h3 {
+  margin: 0;
+  text-align: center;
+}
+
+.program-card p,
+.program-card .activities {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  padding-bottom: 1rem;
+}
+
+.program-card .activities li {
+  margin-bottom: 1rem;
+}
+
+.program-card img {
+  display: block;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+  justify-self: center;
+}
+
+.program-card button {
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+.features {
+  grid-area: features;
+  display: grid;
+  background-color: #BADA54;
+}
+
+.features-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 3rem 2rem;
+}
+
+.features-benefits {
+  justify-self: center;
+  align-self: center;
+  width: 80%;
+}
+
+.features img {
+  width: 60%;
+  justify-self: center;
+}
+
+.impact {
+  grid-area: impact;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: #0685EE;
+  margin: 1rem;
+  padding: 4rem;
+  gap: 4rem;
+}
+
+.fact-impact {
+  display: grid;
+  background-color: #0685EE;
+  color: white;
+  border-radius: 10px;
+  border: 5px solid #BADA54;
+  padding: 1rem;
+}
+
+.donate {
+  grid-area: donate;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  background-color: #BADA54;
+  padding: 4rem;
+  text-align: center;
+}
+
+.volunteer {
+  grid-area: volunteer;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4rem;
+}
+
+.testimonials {
+  grid-area: testimonials;
+  padding: 3.5rem 3.5rem 4rem;
+  margin: 0 2rem;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(6, 133, 238, 0.16), transparent 55%),
+    linear-gradient(315deg, rgba(174, 221, 123, 0.2), transparent 60%),
+    var(--color-accent);
+}
+
+.partners {
+  grid-area: partners;
+}
+
+.testimonials h2 {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 3.2rem;
+}
+
+.testimonials {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+.testimonials h2 {
+  grid-column: 1 / -1;
+}
+
+.testimonials blockquote {
+  border-radius: 22px;
+  padding: 1.75rem 2rem;
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border: 3px solid #2a241f;
+}
+
+.testimonials cite {
+  display: block;
+  margin-top: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  color: #2a241f;
+}
+
+.testimonials blockquote:nth-of-type(1) {
+  grid-column: 1 / span 7;
+  background: var(--color-primary);
+}
+
+.testimonials blockquote:nth-of-type(2) {
+  grid-column: 8 / span 5;
+  background: var(--color-accent);
+}
+
+.testimonials blockquote:nth-of-type(3) {
+  grid-column: 1 / span 5;
+  background: #d6edff;
+}
+
+.testimonials blockquote:nth-of-type(4) {
+  grid-column: 6 / span 7;
+  background: var(--color-secondary);
+  color: #ffffff;
+}
+
+.testimonials blockquote:nth-of-type(5) {
+  grid-column: 1 / span 6;
+  background: #bfead8;
+}
+
+.testimonials blockquote:nth-of-type(6) {
+  grid-column: 7 / span 6;
+  background: #ffe4a6;
+}
+
+@media (max-width: 900px) {
+  .testimonials {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonials blockquote {
+    grid-column: auto;
+  }
+}

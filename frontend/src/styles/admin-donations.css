@@ -1,0 +1,8 @@
+.admin-donations {
+  padding: 2rem;
+}
+
+.admin-donations table {
+  border-collapse: collapse;
+  width: 100%;
+}

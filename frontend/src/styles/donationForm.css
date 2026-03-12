@@ -1,0 +1,163 @@
+/* 
+STRIPE APREANCE API HAS 3 MAINPARTS:
+const appearance = {
+  theme,
+  variables,
+  rules,
+}; 
+
+theme: "stripe"   // default, clean
+theme: "night"    // dark mode
+theme: "flat"     // minimal, less shadow
+
+variables: {
+  fontFamily: '"Inter", system-ui, sans-serif',
+
+  Focus border, selected states
+  colorPrimary: "#5469d4",
+
+  Input background
+  colorBackground: "#ffffff",
+
+  Input text color
+  colorText: "#30313d",
+
+  Error borders + messages
+  colorDanger: "#df1b41",
+
+  Input rounding
+  borderRadius: "6px",
+
+  Internal padding scale
+  spacingUnit: "4px",
+}
+
+
+Rules let you target specific internal elements:
+rules == Stripe-approved CSS selectors
+
+rules: {
+  ".Input": {
+    padding: "12px",
+  },
+  ".Input:focus": {
+    borderColor: "#5469d4",
+  },
+  ".Label": {
+    fontWeight: "500",
+  },
+}
+
+
+STRIPE APPEARANCE API EQUIVALENT CSS
+// Shared design tokens that mirror Stripe’s default theme
+export const stripeAppearance = {
+  theme: "stripe",
+  variables: {
+    colorPrimary: "#5469d4",
+    colorText: "#30313d",
+    colorDanger: "#df1b41",
+    colorBackground: "#ffffff",
+    fontFamily: "Inter, system-ui, -apple-system, BlinkMacSystemFont",
+    fontSizeBase: "16px",
+    borderRadius: "6px",
+    spacingUnit: "4px",
+  },
+};
+
+*/
+
+
+/* Container spacing to match Stripe */
+.donation-field {
+  margin-bottom: 16px;
+}
+
+.donation-form {
+  padding: 2rem;
+  border-radius: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  max-width: 520px;
+}
+
+.donation-form h2 {
+  margin-top: 0;
+}
+
+.donation-tiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.donation-tier-btn {
+  border: 2px solid #2a241f;
+  background: #f6f0dd;
+  color: #2a241f;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.donation-tier-btn.selected {
+  background: #2a241f;
+  color: #ffffff;
+}
+
+.donation-submit {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: 999px;
+  border: 2px solid #2a241f;
+  background: #2a241f;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.donation-submit:hover {
+  background: #151210;
+}
+
+/* Shared input look */
+.stripe-like-input {
+  width: 100%;
+  box-sizing: border-box;
+
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont;
+  font-size: 16px;
+  line-height: 1.5;
+
+  color: #30313d;
+  background-color: #ffffff;
+
+  padding: 12px;
+
+  border-radius: 6px;
+  border: 1px solid #ccc;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Focus matches Stripe */
+.stripe-like-input:focus {
+  outline: none;
+  border-color: #5469d4;
+  box-shadow: 0 0 0 1px #5469d4;
+}
+
+/* Error state */
+.stripe-like-input.error {
+  border-color: #df1b41;
+}
+
+.stripe-error-text {
+  color: #df1b41;
+  font-size: 14px;
+  margin-top: 6px;
+}
