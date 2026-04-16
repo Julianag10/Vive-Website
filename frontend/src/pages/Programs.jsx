@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import "../styles/programs.css";
 
 import ProgramSection from "../components/ProgramSection";
-
-// TODO CHANEG file NAEM TO PAGE
+// TODO prgrams shouldnt fethc bc programs --> who should fethc programs 
+// // TODO CHANEG file NAEM TO PAGE
 // TODO fetch all public programs from /api/programs,
 // TODO split into sections (start with only current + upcoming).
 // TODO compute only currentPrograms and upcomingPrograms first.

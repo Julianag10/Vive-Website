@@ -8,7 +8,7 @@ import session from "express-session";
 // session is how server remembers accorss multiple reqs
 // 1. server creates a session record
 // 2. sends the browser a cookie with session id
-// 3. next req, browser sends cookie back
+// 3. next req, browser sends cookie back // TODO but what about when chache is cleared or in differnt browsers
 // 4. server uses session id to load teh session data again
 
 // ROUTERS
@@ -43,7 +43,13 @@ app.use(
 
 // app.use -> a hook to get attach onto reqs
 // app.use(fn) without a path runs for EVERY request
+
+// for authlogin sessions -> need to read cookie from req header -> need to run before any route handlers that need sessions
+// when is cookie read? before app.use
 app.use(express.json()); // parses JSON req into req.body
+// extended allows for credentials to be sent in form data
+// here express reads the cookie   from the req header   
+// 
 app.use(express.urlencoded({ extended: true })); // parses HTML form bodies
 
 // attaches .session middleware that works on every req 
@@ -67,7 +73,7 @@ app.use(express.urlencoded({ extended: true })); // parses HTML form bodies
     // req.session CREATES NEW empty object in RAM
 // 2. looks for a session.name (vive-admin-session) in cookie 
 // 3. IF cookie exists uses the sessionID to find session in RAM 
-// 4. req.session ATTACHES the found session from RAM to req
+// 4. req.session ATTACHES the found session from RAM to req // TODO but how save to RAM if not on one coomputer(aws)
 // 5. No SESSIONID is saved to store(RAM) & NO COOKIE is sent UNTILL somthing to req.session(bc not need to resave unchanged sessions)
 app.use(
   session({
@@ -76,7 +82,7 @@ app.use(
 
     // used to SIGN the SESSION COOKIE
     // SIGNING -> cookies can be tampered w/ w/out the secret
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "dev-session-secret",
 
     // prevents session from being saved back to the store on every req when nothing changed
     resave: false,
@@ -118,14 +124,16 @@ app.use(
 // final route handler sends the response -> STOP Midlle ware
 // Routes usually END the req by sending a response
 
-// Public
+// PUBLIC
 app.use("/api/checkout", checkoutRouter); // reutens pure JSON
 app.use("/api/programs", programsRouter);
+app.use("/api/events", eventsRouter);
 
-// Admin
+// ADMIN
 app.use("/admin/api/auth", adminAuthRouter);
 app.use("/admin/api/donations", adminDonationsRouter);
 app.use("/admin/api/programs", adminProgramsRouter);
+app.use("/admin/api/events", adminEventsRouter);
 
 // ---------- HEALTH API ROUTE ----------------------------------------
 // checks :

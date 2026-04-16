@@ -27,7 +27,6 @@ export async function toggleProgramController(req, res) {
   // service returned the row of the new prgram that was toggled
   // conteoller puts row into progrmanJS object
   const program = await toggleProgramActive(
-    // bc progrma id is in req url pram
     req.params.id,
     req.body.is_active,
   );

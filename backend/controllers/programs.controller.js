@@ -5,6 +5,7 @@ import {
   listActivePrograms,
   listFeaturedPrograms,
 } from "../services/programs.service.js";
+import { getProgramById } from "../services/programs.service.js";
 
 
 // LIST ACTIVE PORGRMAS (public)
@@ -31,4 +32,15 @@ export async function registerController(req, res) {
   res.json(registration);
 }
 
+export async function getProgramByIdController(req, res) {
+  const program = await getProgramById(
+    req.params.id
+  );
 
+  // if no row found
+  if (!program) {
+    res.status(404).json({ error: "Program not found" });
+  } else {
+    res.json(program);
+  }
+}

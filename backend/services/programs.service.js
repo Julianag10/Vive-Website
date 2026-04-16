@@ -28,3 +28,18 @@ export async function listFeaturedPrograms() {
   // returns all rows that were quried 
   return rows;
 }
+
+export async function getProgramById(id)  {
+  const { rows } = await pool.query(
+    `
+    SELECT * 
+    FROM programs 
+    WHERE id = $1 
+    AND is_active = true 
+    LIMIT 1;
+    `, 
+    [id],
+  );
+
+  return rows[0] || null;
+}

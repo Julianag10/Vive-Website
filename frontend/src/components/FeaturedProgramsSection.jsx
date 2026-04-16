@@ -13,7 +13,7 @@ export default function FeaturedProgramSection() {
       try{
         const res = fetch("/api/programs/featured");
 
-        // is backend: res.json(programs) express will send a status code 200 and json response body
+        // in backend: res.json(programs) express will send a status code 200 and json response body
         if (!res.ok) {
           // if res not ok: backend sends error message in json response body
           const errorData = await res.json();

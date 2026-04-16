@@ -85,7 +85,8 @@ CREATE TABLE programs (
     is_active BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP DEFAULT NOW(),
-    image_url TEXT
+    image_url TEXT,
+    activities TEXT[],
 );
 -- -------------------------------------------
 -- REGISTRATION WRITE:
@@ -112,4 +113,16 @@ CREATE TABLE admins (
   email TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  start_time TIMESTAMPTZ NOT NULL,
+  end_time TIMESTAMPTZ NOT NULL,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+
 );

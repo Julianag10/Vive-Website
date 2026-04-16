@@ -1,0 +1,7 @@
+.day-cell {
+  height: 120px;
+}
+
+.day-cell.expanded {
+  height: 300px;
+}

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "../styles/home.css";
 import DonationForm from "../components/DonationForm";
 import ProgramCard from "../components/ProgramCard";
-import FeaturedProgramSection from "../components/ProgramSection";
+import FeaturedProgramsSection from "../components/FeaturedProgramsSection";
 
 
 export default function HomePage() {
@@ -49,7 +49,7 @@ export default function HomePage() {
       {/* PROGRAMS */}
       <section className="featured-programs">
         <h2>Our Top Programs</h2>
-          <FeaturedProgramSection/>
+          <FeaturedProgramsSection/>
       </section>
 
       {/* FEATURES */}

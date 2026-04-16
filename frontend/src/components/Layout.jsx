@@ -1,6 +1,6 @@
 // OUTLET ->  used for rendering the matched child route inside a layout
 import { Outlet, Link } from "react-router-dom";
-import "../styles/layout.css";
+import "../styles/App.css";
 
 // TODO why layout? with grid?
 export default function Layout() {
@@ -18,6 +18,7 @@ export default function Layout() {
             <Link to="/about">About Us</Link>
             <Link to="/programs">Programs</Link>
             <Link to="/donate">Donate</Link>
+            <Link to="/events"> Events</Link>
           </nav>
         </div>
       </header>

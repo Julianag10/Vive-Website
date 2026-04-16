@@ -7,6 +7,7 @@ import {
   listProgramsController,
   listFeaturedProgramsController,
   registerController,
+  getProgramByIdController,
 } from "../controllers/programs.controller.js";
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.get("/featured", listFeaturedProgramsController);
 // creating a NEW CHILD RESOURCE (registraton)
 router.post("/:id/register", registerController);
 
+router.get("/:id", getProgramByIdController);
 
 export default router;
 

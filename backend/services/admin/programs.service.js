@@ -20,16 +20,18 @@ export async function createProgram({
   end_date = null,
   capacity = null,
   is_active = true,
+  image_url = null,
+  activities = [],
 }) {
   const { rows } = await pool.query(
     `
     INSERT INTO programs (
-      title, description, start_date, end_date, capacity, is_active
+      title, description, start_date, end_date, capacity, is_active, image_url, activities
     )
-    VALUES ($1, $2, $3, $4, $5, $6)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *;
     `,
-    [title, description, start_date, end_date, capacity, is_active],
+    [title, description, start_date, end_date, capacity, is_active, image_url, activities],
   );
   // RETURNING * → give me the row you just created
 
@@ -39,8 +41,16 @@ export async function createProgram({
 
 // UPDATE PROGRAM DETAILS
 export async function updateProgram(id, data) {
-  // TODO add is_active
-  const { title, description, start_date, end_date, capacity } = data;
+  const { 
+    title, 
+    description, 
+    start_date, 
+    end_date, 
+    capacity, 
+    is_active, 
+    image_url, 
+    activities = [],
+  } = data;
 
   const { rows } = await pool.query(
     `
@@ -50,20 +60,20 @@ export async function updateProgram(id, data) {
       description = $3,
       start_date = $4,
       end_date = $5,
-      capacity = $6
-      updated_at = NOW()
+      capacity = $6,
+      is_active = $7,
+      image_url = $8,
+      activities = $9,
     WHERE id = $1
     RETURNING *;
     `,
-   // TODO added is_active
-    [id, title, description, start_date, end_date, capacity, is_active],
+    [id, title, description, start_date, end_date, capacity, is_active, image_url, activities],
   );
 
   return rows[0];
 }
 
 // ENABLE / DISABLE PROGRAM
-// TODO isActive --> is_active
 export async function toggleProgramActive(id, isActive) {
   const { rows } = await pool.query(
     `
