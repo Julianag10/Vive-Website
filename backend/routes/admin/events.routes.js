@@ -6,7 +6,7 @@ import {
   putUpdatedEventController,
   patchToggledEventController,
   deleteEventController,
-} from "../controllers/admin/events.controller.js";
+} from "../../controllers/admin/events.controller.js";
 
 const router = express.Router();
 
@@ -14,8 +14,10 @@ router.get("/", getEventsForMonthController);
 
 router.post("/createEvent", postCreatedEventController);
 
-router.put(`/${id}`, putUpdatedEventController);
+router.put("/:id", putUpdatedEventController);
 
-router.patch(`/${id}/active`, patchToggledEventController);
+router.patch("/:id/active", patchToggledEventController);
 
-router.delete(`/${id}`, deleteEventController);
+router.delete("/:id", deleteEventController);
+
+export default router;

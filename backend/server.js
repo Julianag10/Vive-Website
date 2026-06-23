@@ -16,10 +16,12 @@ import webhookRouter from "./routes/webhook.routes.js";
 
 import checkoutRouter from "./routes/checkout.routes.js";
 import programsRouter from "./routes/programs.routes.js";
+import eventsRouter from "./routes/events.routes.js";
 
 import adminAuthRouter from "./routes/admin/auth.routes.js";
 import adminDonationsRouter from "./routes/admin/donations.routes.js";
 import adminProgramsRouter from "./routes/admin/programs.routes.js";
+import adminEventsRouter from "./routes/admin/events.routes.js";
 
 
 // ---------- EXPRESS APP SETUP ----------------------------------------

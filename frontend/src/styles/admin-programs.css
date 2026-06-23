@@ -1,98 +1,199 @@
-/* PAGE LAYOUT */
-.admin-programs {
-  padding: 2rem;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* HEADERS */
-.admin-programs h1 {
-  margin-bottom: 1.5rem;
-}
-
-.admin-programs h2 {
-  margin-bottom: 0.75rem;
-}
-
-/* CREATE PROGRAM FORM */
-.create-program {
-  margin-bottom: 3rem;
-}
-
-.program-form {
+.admin-programs-page {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  max-width: 600px;
+  gap: 1.5rem;
 }
 
-.program-form input {
-  padding: 0.5rem;
-  font-size: 0.95rem;
-  background-color: #1c1c1c;
-  color: #e5e5e5;
-  border: 1px solid #333;
-}
-
-.program-form button {
-  grid-column: span 2;
-  justify-self: start;
-  padding: 0.6rem 1.4rem;
-  font-weight: 600;
-  font-size: 0.9rem;
-
-  background-color: #1c1c1c;
+.admin-programs-page h1 {
+  margin: 0;
   color: #f5f5f5;
-
-  border: 1px solid #333;
-  border-radius: 6px;
-  cursor: pointer;
+  font-family: var(--font-secondary);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
-.program-form button:hover {
-  background-color: #0a0a0a;
+.create-program-form,
+.admin-program-card {
+  background-color: #151515;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
 }
 
-/* TABLE */
-.programs-table table {
+.create-program-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.create-program-form textarea,
+.create-program-form input[name="image_url"],
+.create-program-form label,
+.create-program-form button {
+  grid-column: 1 / -1;
+}
+
+.create-program-form input,
+.create-program-form textarea,
+.admin-program-card input,
+.admin-program-card textarea {
   width: 100%;
-  border-collapse: collapse;
-  background-color: #121212;
+  min-width: 0;
+  border: 1px solid #343434;
+  border-radius: 6px;
+  background-color: #202020;
+  color: #f1f1f1;
+  font: inherit;
+  padding: 0.7rem 0.8rem;
 }
 
-/* Header */
-.programs-table th {
-  background-color: #1a1a1a;
-  color: #f5f5f5;
+.create-program-form input::placeholder,
+.create-program-form textarea::placeholder,
+.admin-program-card input::placeholder,
+.admin-program-card textarea::placeholder {
+  color: #8d8d8d;
+}
+
+.create-program-form input:focus,
+.create-program-form textarea:focus,
+.admin-program-card input:focus,
+.admin-program-card textarea:focus {
+  border-color: #7e7e7e;
+  outline: none;
+}
+
+.create-program-form textarea,
+.admin-program-card textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.create-program-form label,
+.admin-program-card label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #d8d8d8;
   font-weight: 600;
-  padding: 0.75rem;
-  border-bottom: 1px solid #2a2a2a;
 }
 
-/* Rows */
-.programs-table td {
-  padding: 0.75rem;
-  color: #e5e5e5;
-  border-bottom: 1px solid #2a2a2a;
-  background-color: #121212;
+.create-program-form input[type="checkbox"],
+.admin-program-card input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #0d7f71;
 }
 
-/* Hover */
-.programs-table tr:hover td {
-  background-color: #0a0a0a;
-}
-
-/* ACTION BUTTONS */
-.actions button {
-  background-color: #1c1c1c;
-  border: 1px solid #333;
-  color: #e5e5e5;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.8rem;
-  border-radius: 4px;
+.create-program-form button,
+.admin-program-card button {
+  border: 1px solid #3b3b3b;
+  border-radius: 6px;
+  background-color: #2a2a2a;
+  color: #f5f5f5;
   cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  min-height: 2.35rem;
+  padding: 0.6rem 0.9rem;
 }
 
-.actions button:hover {
-  background-color: #0a0a0a;
+.create-program-form button {
+  justify-self: start;
+  background-color: #0d7f71;
+  border-color: #0d7f71;
+}
+
+.create-program-form button:hover,
+.admin-program-card button:hover {
+  background-color: #3a3a3a;
+}
+
+.create-program-form button:hover {
+  background-color: #0b6056;
+}
+
+.admin-program-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-program-card {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 0.95rem 1.2rem;
+  padding: 1rem;
+}
+
+.admin-program-card > img {
+  grid-row: span 5;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #303030;
+  background-color: #222;
+}
+
+.admin-program-card h3,
+.admin-program-card p {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-program-card h3 {
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-secondary);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.admin-program-card p {
+  margin: 0;
+  color: #cfcfcf;
+}
+
+.admin-program-card p:first-of-type {
+  color: #e4e4e4;
+}
+
+.admin-program-card-butttons,
+.admin-edit-from-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.admin-program-card form {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.admin-program-card form textarea,
+.admin-program-card form input[name="image_url"],
+.admin-program-card form label,
+.admin-edit-from-buttons {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 720px) {
+  .create-program-form,
+  .admin-program-card,
+  .admin-program-card form {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-program-card > img {
+    grid-row: auto;
+  }
+
+  .admin-program-card-butttons,
+  .admin-edit-from-buttons {
+    flex-direction: column;
+  }
 }

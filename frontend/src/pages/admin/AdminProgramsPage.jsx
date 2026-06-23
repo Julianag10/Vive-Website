@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ProgramCardList from "../../components/admin/ProgramsCardList.jsx";
-import CreateProgramForm from "../../components/admin/createProgramForm.jsx";
+import CreateProgramForm from "../../components/admin/CreateProgramForm.jsx";
 import {
   getPrograms,
   postCreatedProgram,
@@ -28,8 +28,9 @@ export default function AdminProgramsPage() {
   if (errorMessage) return <p> Error: {errorMessage} </p>;
 
 
-  // CALLBACK: add prgram to prgrams array 
+  // CALLBACK: add program to programs array 
   async function onSaveCreate(newFormData) {
+    // TODO add validation here !!
     const createdProgram = await postCreatedProgram(newFormData);
 
     // rerender programs list with new program

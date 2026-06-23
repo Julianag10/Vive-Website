@@ -74,15 +74,17 @@ export const stripeAppearance = {
 }
 
 .donation-form {
-  padding: 2rem;
-  border-radius: 20px;
-  border: 2px solid rgba(0, 0, 0, 0.08);
+  padding: 1.4rem;
+  border-radius: 18px;
+  border: 1px solid var(--color-outline);
   background: #ffffff;
   max-width: 520px;
+  box-shadow: var(--shadow-soft);
 }
 
 .donation-form h2 {
   margin-top: 0;
+  margin-bottom: 0.6rem;
 }
 
 .donation-tiers {
@@ -93,17 +95,18 @@ export const stripeAppearance = {
 }
 
 .donation-tier-btn {
-  border: 2px solid #2a241f;
-  background: #f6f0dd;
-  color: #2a241f;
-  padding: 0.5rem 1rem;
+  border: 1px solid #bfd8d3;
+  background: #f7fffd;
+  color: #1b4f47;
+  padding: 0.56rem 0.95rem;
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
 }
 
 .donation-tier-btn.selected {
-  background: #2a241f;
+  background: var(--color-brand);
+  border-color: var(--color-brand);
   color: #ffffff;
 }
 
@@ -111,15 +114,35 @@ export const stripeAppearance = {
   margin-top: 0.75rem;
   padding: 0.75rem 1.6rem;
   border-radius: 999px;
-  border: 2px solid #2a241f;
-  background: #2a241f;
+  border: 1px solid var(--color-brand);
+  background: var(--color-brand);
   color: #ffffff;
   font-weight: 700;
   cursor: pointer;
 }
 
 .donation-submit:hover {
-  background: #151210;
+  background: var(--color-brand-dark);
+}
+
+.error {
+  margin-top: 0.8rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid #eeb5c2;
+  background: #fff5f8;
+}
+
+.error p {
+  margin: 0 0 0.5rem;
+}
+
+.error button {
+  border: 1px solid #d34a6d;
+  background: #ffffff;
+  color: #a22f4d;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
 }
 
 /* Shared input look */

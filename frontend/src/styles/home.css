@@ -1,9 +1,7 @@
 
-
-
 .home-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-template-areas:
     "hero hero hero"
@@ -15,48 +13,73 @@
     "volunteer volunteer volunteer"
     "testimonials testimonials testimonials"
     "partners partners partners";
-  gap: 4rem 0rem;
+  gap: 1.35rem;
 }
 
 .hero {
   grid-area: hero;
   position: relative;
   width: 100%;
-  height: 75vh;
-  padding: 0.6rem 2rem;
+  min-height: 62vh;
+  padding: 0.8rem;
+  border-radius: 28px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #dcefe9, #f7e8c5);
 }
 
 .hero img {
   position: absolute;
-  width: calc(100% - 3rem);
-  height: calc(100% - 1.2rem);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 24px;
+  border-radius: 28px;
+  filter: brightness(0.75);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 253, 248, 0.72) 0%,
+    rgba(255, 253, 248, 0.25) 45%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 .hero-text {
   position: absolute;
-  color: white;
+  color: var(--color-ink);
   text-align: left;
-  top: -10%;
-  left: 5%;
+  top: 50%;
+  left: 4%;
+  transform: translateY(-58%);
+  max-width: 620px;
+  z-index: 1;
+  background: rgba(255, 253, 248, 0.88);
+  border: 1px solid rgba(43, 43, 43, 0.12);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
 }
 
-.hero-text p {
-  position: absolute;
-  max-width: 700px;
-  font-size: 1.8rem;
+.hero-text h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  margin: 0;
 }
 
 .hero-cta {
   position: absolute;
-  left: 50%;
-  bottom: 4rem;
-  transform: translateX(-50%);
+  left: 4%;
+  bottom: 2rem;
   display: flex;
   gap: 1rem;
   z-index: 1;
+  flex-wrap: wrap;
 }
 
 .donate-btn,
@@ -64,41 +87,40 @@
   font-family: var(--font-secondary);
   padding: 0.85rem 1.6rem;
   border-radius: 999px;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--color-brand);
   display: inline-block;
   text-decoration: none;
 }
 
 .donate-btn {
-  background: #ffffff;
-  color: #2a241f;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
-}
-
-.donate-btn:hover {
-  transform: translateY(-1px);
+  background: var(--color-accent);
+  color: #25211a;
+  border-color: var(--color-accent);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .volunteer-btn {
-  background: transparent;
-  color: #ffffff;
+  background: rgba(13, 127, 113, 0.12);
+  color: #164942;
 }
 
 .volunteer-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(13, 127, 113, 0.2);
 }
 
 .about {
   grid-area: about;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 0 3.5rem;
+  gap: 1rem;
 }
 
-.programs {
-  grid-area: programs;
-  padding: 0 2rem;
+.about > div {
+  background: #fffdf8;
+  border: 1px solid var(--color-outline);
+  border-radius: 22px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .aboutus-btn {
@@ -109,35 +131,46 @@
   width: fit-content;
   padding: 0.6rem 1.4rem;
   border-radius: 999px;
-  background: #2a241f;
+  background: var(--color-brand);
   color: #ffffff;
   font-weight: 800;
   text-decoration: none;
-  /* border: 3px solid #2a241f; */
 }
 
 .aboutus-btn:hover {
-  background: #f3f0e6;
+  background: var(--color-brand-dark);
 }
 
-.programs h2 {
+.featured-programs {
+  grid-area: programs;
+  background: #fffdf8;
+  border: 1px solid var(--color-outline);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+  padding: 1.5rem;
+}
+
+.featured-programs h2 {
   text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.2rem;
 }
 
-.programs-grid {
+.featured-programs-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .program-card {
   display: grid;
   grid-template-rows: auto 1fr 1fr auto auto;
   gap: 1rem;
-  padding: 3rem;
-  background: var(--color-secondary);
-  color: white;
-  border-radius: 10px;
+  padding: 1rem;
+  background: #ffffff;
+  color: var(--color-ink);
+  border-radius: 16px;
+  border: 1px solid var(--color-outline);
 }
 
 .program-card h3 {
@@ -160,9 +193,10 @@
 .program-card img {
   display: block;
   max-width: 100%;
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: 14px;
   justify-self: center;
 }
 
@@ -174,14 +208,16 @@
 .features {
   grid-area: features;
   display: grid;
-  background-color: #BADA54;
+  background: linear-gradient(135deg, #f0c15d, #f2d79d);
+  border-radius: 22px;
+  padding: 0.5rem;
 }
 
 .features-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  padding: 3rem 2rem;
+  padding: 2rem 1.2rem;
 }
 
 .features-benefits {
@@ -191,26 +227,28 @@
 }
 
 .features img {
-  width: 60%;
+  width: 100%;
+  max-width: 320px;
   justify-self: center;
+  border-radius: 14px;
 }
 
 .impact {
   grid-area: impact;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  background-color: #0685EE;
-  margin: 1rem;
-  padding: 4rem;
-  gap: 4rem;
+  background: linear-gradient(130deg, #167ec7, #0f5ca7);
+  border-radius: 24px;
+  padding: 2rem;
+  gap: 1rem;
 }
 
 .fact-impact {
   display: grid;
-  background-color: #0685EE;
+  background-color: rgba(255, 255, 255, 0.06);
   color: white;
-  border-radius: 10px;
-  border: 5px solid #BADA54;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 1rem;
 }
 
@@ -218,9 +256,10 @@
   grid-area: donate;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  background-color: #BADA54;
-  padding: 4rem;
+  gap: 1.3rem;
+  background: linear-gradient(145deg, #e6f7f4, #f8f0dc);
+  border-radius: 22px;
+  padding: 1.5rem;
   text-align: center;
 }
 
@@ -228,13 +267,16 @@
   grid-area: volunteer;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 4rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-outline);
+  border-radius: 22px;
+  background: #fffdf8;
+  gap: 1.25rem;
 }
 
 .testimonials {
   grid-area: testimonials;
-  padding: 3.5rem 3.5rem 4rem;
-  margin: 0 2rem;
+  padding: 2rem;
   border-radius: 28px;
   background:
     linear-gradient(135deg, rgba(6, 133, 238, 0.16), transparent 55%),
@@ -244,6 +286,11 @@
 
 .partners {
   grid-area: partners;
+  min-height: 120px;
+  border: 1px dashed var(--color-outline);
+  border-radius: 22px;
+  padding: 1rem;
+  background: #fffdf8;
 }
 
 .testimonials h2 {
@@ -297,7 +344,7 @@
 
 .testimonials blockquote:nth-of-type(4) {
   grid-column: 6 / span 7;
-  background: var(--color-secondary);
+  background: #0d7f71;
   color: #ffffff;
 }
 
@@ -312,6 +359,24 @@
 }
 
 @media (max-width: 900px) {
+  .hero {
+    min-height: 56vh;
+  }
+
+  .about,
+  .features-row,
+  .impact,
+  .donate,
+  .volunteer,
+  .featured-programs-section {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-cta {
+    left: 6%;
+    bottom: 1.5rem;
+  }
+
   .testimonials {
     grid-template-columns: 1fr;
   }

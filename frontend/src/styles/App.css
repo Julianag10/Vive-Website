@@ -1,11 +1,176 @@
-/* 
-global.css 
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap");
 
-Colors
-Fonts
-Layout styles
-Shared classes
-*/
+:root {
+  --color-bg: #f5f4ef;
+  --color-primary: #dff3ef;
+  --color-surface: #fffdf8;
+  --color-ink: #2b2b2b;
+  --color-muted: #5f646d;
+  --color-brand: #0d7f71;
+  --color-brand-dark: #0b6056;
+  --color-accent: #f0c15d;
+  --color-card: #ffffff;
+  --color-outline: #d7d9dd;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 10px 30px rgba(14, 20, 36, 0.08);
+  --font-primary: "Fraunces", Georgia, serif;
+  --font-secondary: "Manrope", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
 #root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-secondary);
+  color: var(--color-ink);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(13, 127, 113, 0.12), transparent 26%),
+    radial-gradient(circle at 100% 10%, rgba(240, 193, 93, 0.2), transparent 25%),
+    var(--color-bg);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-primary);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+}
+
+.layout {
   min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(8px);
+  background: rgba(245, 244, 239, 0.88);
+  border-bottom: 1px solid rgba(43, 43, 43, 0.08);
+  color: var(--color-ink);
+}
+
+.nav {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand-title {
+  text-decoration: none;
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-brand-dark);
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--color-muted);
+  padding: 0.5rem 0.95rem;
+  border-radius: var(--radius-pill);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.nav-links a:hover {
+  color: var(--color-ink);
+  background: rgba(13, 127, 113, 0.12);
+}
+
+.public-content {
+  width: min(1160px, calc(100% - 2rem));
+  margin: 1.2rem auto 2rem;
+}
+
+.public-footer {
+  border-top: 1px solid rgba(43, 43, 43, 0.08);
+  background: rgba(255, 253, 248, 0.9);
+  text-align: center;
+  color: var(--color-muted);
+  font-weight: 600;
+  padding: 1rem;
+}
+
+.program-card,
+.donation-form,
+.learn-more-page,
+.program-register,
+.complete-page,
+.donate-page,
+.programs-page,
+.about-page,
+.volunteer-page,
+.events-page {
+  background: var(--color-card);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.learn-more-page,
+.program-register,
+.complete-page,
+.about-page,
+.volunteer-page,
+.events-page {
+  padding: 2rem;
+}
+
+button,
+.learnmore-btn,
+.register-btn,
+.aboutus-btn,
+.donate-btn,
+.volunteer-btn {
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+button:hover,
+.learnmore-btn:hover,
+.register-btn:hover,
+.aboutus-btn:hover,
+.donate-btn:hover,
+.volunteer-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+}
+
+@media (max-width: 760px) {
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .public-content {
+    width: calc(100% - 1rem);
+  }
 }

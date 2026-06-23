@@ -15,7 +15,7 @@ export default function groupEventsByDate(events) {
 
     // This removes time-of-day from date
     const current = new Date(
-      start.getFullYear() 
+      start.getFullYear(),
       start.getMonth(),
       start.getDate()
     );

@@ -1,14 +1,16 @@
-// liek a class
+// I DONT THINK THIS IS DONE - JUST CHAT GBT IMPLEMNTATION
+// like a class
 
-//INSIDE EVENT DETAIL MODAL 
+// INSIDE EVENT DETAIL MODAL 
 // title
 // description
 // date/time
 // location
 // instructor
 // register link
-// add 
+// notes section .... (later)
 
+// const event = new Event(...) ?????
 export default class Event {
 
   // add location??
@@ -22,6 +24,7 @@ export default class Event {
     this.startDate = new Date(start_date);
     this.endDate = new Date(end_date);
     this.isActive = is_active;
+    // add notes section later
   }
 
   isMultiDay() {

@@ -1,6 +1,6 @@
 // ADMIN
 import {
-  getEventsForMonth,
+  getAllEventsForMonth,
   postCreatedEvent, 
   putUpdatedEvent,
   patchToggledEvent,
@@ -12,7 +12,7 @@ export async function getEventsForMonthController(req, res) {
   try {
     // becuase month and year were sent in url 
     const { month, year } = req.query;
-    const events = await getEventsForMonth(
+    const events = await getAllEventsForMonth(
       Number(month),
       Number(year),
     );

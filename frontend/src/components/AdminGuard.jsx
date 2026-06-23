@@ -27,7 +27,7 @@ export default function AdminGuard({ children }) {
 
         // schedules rerender -> next render it will skip authentications(useEffect)
         setLoading(false);
-      } catch (err) {
+      } catch {
         navigate("/admin/login");
       }
     }

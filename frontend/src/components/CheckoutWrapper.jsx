@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   EmbeddedCheckoutProvider,
@@ -11,9 +11,6 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 export default function CheckoutWrapper({ priceID, amountCents, onError }) {
   // onError is a variable, that holds a function passed from parent
   // calling onError() calls the parent function
-
-  // Local error state ONLY for session creation
-  const [sessionError, setSessionError] = useState(null);
 
   // creating a checkout session is a SIDE EFFECT:
   // - compnet is changing something other than the returned JSX
@@ -79,10 +76,7 @@ export default function CheckoutWrapper({ priceID, amountCents, onError }) {
           ? err.message
           : "Checkout failed. Please try again.";
 
-      // 1️⃣ Store locally so this component can render fallback UI
-      setSessionError(message);
-
-      // 2️⃣ Notify parent ( UI owner) so it can reset the flow n
+      // Notify parent ( UI owner) so it can reset the flow.
       // If the parent gave a onError function, call it with message
       onError?.(message);
 

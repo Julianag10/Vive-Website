@@ -4,16 +4,10 @@ import "../styles/complete.css";
 export default function Complete() {
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState(null);
+  const sessionId = new URLSearchParams(window.location.search).get("session_id");
 
   useEffect(() => {
-    const sessionId = new URLSearchParams(window.location.search).get(
-      "session_id",
-    );
-
-    if (!sessionId) {
-      setError("Missing session ID");
-      return;
-    }
+    if (!sessionId) return;
 
     fetch(`/api/checkout/session-status?session_id=${sessionId}`)
       .then((res) => res.json())
@@ -22,7 +16,15 @@ export default function Complete() {
         setStatus(data.payment_status);
       })
       .catch(() => setError("Failed to verify payment"));
-  }, []);
+  }, [sessionId]);
+
+  if (!sessionId) {
+    return (
+      <div className="complete-page">
+        <h2>Missing session ID</h2>
+      </div>
+    );
+  }
 
   if (error) {
     return (

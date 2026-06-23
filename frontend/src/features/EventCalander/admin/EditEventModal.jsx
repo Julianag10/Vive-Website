@@ -1,7 +1,7 @@
 // import { useState} from "react";
 import EventService from "../EventService";
 
-
+// HAS DELET EVENT MODAL 
 // edit title
 // edit date
 // edit time

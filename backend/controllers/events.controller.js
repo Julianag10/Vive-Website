@@ -1,10 +1,10 @@
 // PUBLIC
-import {getEventsForMonth} from "../services/events.service";
+import { getAllEventsForMonth } from "../services/events.service.js";
 
 export async function getEventsForMonthController(req, res) {
   const { month, year } = req.query;
 
-  const events = await getEventsForMonth(
+  const events = await getAllEventsForMonth(
     Number(month),
     Number(year),
   );

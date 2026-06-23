@@ -1,4 +1,4 @@
-import { act, useState } from "react";
+import { useState } from "react";
 
 const INITIAL_FORM = {
   title: "",
@@ -18,6 +18,7 @@ function parseActivities(text) {
     .map((item) => item.trim())
     .filter(Boolean);
 }
+
 
 export default function CreateProgramForm({onSaveCreate}) {
   const [form, setForm] = useState(INITIAL_FORM);

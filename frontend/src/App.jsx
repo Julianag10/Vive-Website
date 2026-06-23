@@ -8,9 +8,12 @@ import Layout from "./components/Layout";
 import Home from "./pages/HomePage";
 import Donate from "./pages/Donate";
 import Complete from "./pages/Complete";
-import Programs from "./pages/Programs";
+import Programs from "./pages/ProgramsPage";
 import LearnMorePage from "./pages/LearnMorePage";
 import ProgramRegister from "./pages/ProgramRegister";
+import EventsPage from "./pages/EventsPage";
+import AboutPage from "./pages/AboutPage";
+import VolunteerPage from "./pages/VolunteerPage";
 
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -20,6 +23,7 @@ import AdminPrograms from "./pages/admin/AdminProgramsPage";
 import ProgramRegistrations from "./pages/admin/AdminProgramRegistrations";
 
 import "./styles/App.css";
+import AdminProgramsPage from "./pages/admin/AdminProgramsPage";
 
 export default function App() {
   return (
@@ -40,6 +44,9 @@ export default function App() {
           <Route path="/programs" element={<Programs />} />
           <Route path="/programs/:id/register" element={<ProgramRegister />} />
           <Route path="/programs/:id" element={<LearnMorePage/>} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/volunteer" element={<VolunteerPage />} />
         </Route>
 
         {/* ----------ADMIN LOGIN PAGE NOT PROTECTED ----------*/}
@@ -58,7 +65,7 @@ export default function App() {
         >
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/admin/donations" element={<AdminDonations />} />
-          <Route path="/admin/programs" element={<AdminPrograms />} />
+          <Route path="/admin/programs" element={<AdminProgramsPage />} />
           <Route
             path="/admin/programs/:id/registrations"
             element={<ProgramRegistrations />}

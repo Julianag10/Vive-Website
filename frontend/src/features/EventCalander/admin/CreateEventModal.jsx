@@ -1,8 +1,9 @@
 import { useState } from "react";
 
+// NOT ANY WHERE NEAR DONE - JUST PALCE HOLDER IMPLEMENTATION
 const INITIAL_FORM = {
   title: "",
-  // ...
+  // TODO ...
 };
 
 export default function CreateEventModal({onSaveCreate, onCancelCreate}) {

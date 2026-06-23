@@ -63,7 +63,7 @@ export async function updateProgram(id, data) {
       capacity = $6,
       is_active = $7,
       image_url = $8,
-      activities = $9,
+      activities = $9
     WHERE id = $1
     RETURNING *;
     `,

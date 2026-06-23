@@ -1,3 +1,22 @@
 .donate-page {
-  padding: 2rem;
+  padding: 1.5rem;
+  background: #fffdf8;
+  border: 1px solid var(--color-outline);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+}
+
+.donate-page h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.donate-page .donation-form {
+  margin-top: 0.4rem;
+}
+
+@media (max-width: 720px) {
+  .donate-page {
+    padding: 1rem;
+  }
 }

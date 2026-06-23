@@ -3,7 +3,6 @@ import "../styles/programs.css";
 
 import ProgramSection from "../components/ProgramSection";
 // TODO prgrams shouldnt fethc bc programs --> who should fethc programs 
-// // TODO CHANEG file NAEM TO PAGE
 // TODO fetch all public programs from /api/programs,
 // TODO split into sections (start with only current + upcoming).
 // TODO compute only currentPrograms and upcomingPrograms first.
@@ -40,7 +39,7 @@ export default function ProgramsPage() {
   if (error) return <p>Error: {error}</p>;
   if (programs.length === 0) return <p>No programs available.</p>;
 
-  // filter programs
+  // filter programs - BUT WHY DONT REMBER ??? 
   const today = new Date();
 
   // TODO Define the rule once
@@ -59,14 +58,6 @@ export default function ProgramsPage() {
 
   const upcomingPrograms = programs.filter(
     (p) => p.is_active && new Date(p.start_date) > today,
-  );
-
-  const afterSchoolPrograms = programs.filter(
-    (p) => p.is_active && p.category === "after-school",
-  );
-
-  const adultPrograms = programs.filter(
-    (p) => p.is_active && p.audience === "adult",
   );
 
   return (
