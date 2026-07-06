@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/home.css";
 import DonationForm from "../components/DonationForm";
-import ProgramCard from "../components/ProgramCard";
-import FeaturedProgramsSection from "../components/FeaturedProgramsSection";
+import FeaturedProgramsSection from "../features/Programs/components/FeaturedProgramsSection";
 
 
 export default function HomePage() {

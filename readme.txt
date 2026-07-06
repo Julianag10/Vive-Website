@@ -30,3 +30,14 @@ npm run dev
 
 node backend/server.js
 ------------------------------
+HOW TO ACCESS DATANSE
+do this i s beackend folder:
+psql -d nonprofit_db
+
+
+1. list databses:
+\l
+
+
+2. list tables 
+\dt

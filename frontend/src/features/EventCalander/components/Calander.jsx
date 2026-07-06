@@ -22,13 +22,21 @@ export default function EventCalendar({ events, year, month, expandedDay, setExp
   // TODO show on all days?
   const groupedEvents = groupEventsByDate(events);
   const days = getMonthGridDates(year, month);
+  const weekDays = ["Sundy", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   // const days = getMonthDays(new Date().getFullYear(), new Date().getMonth() + 1);
 
   return (
-    // TODO fix map: where is day 
-    // TODO day.date shdoul be grouped events
-    <div className="calander-grid">
+    <div className="calendar-shell">
+      <div className="calander-weekdays" aria-hidden="true">
+        {weekDays.map((day) => (
+          <div key={day} className="weekday-label">
+            {day}
+          </div>
+        ))}
+      </div>
+
+      <div className="calander-grid">
       {days.map((date, i) => (
         <DayCell
           key={i}
@@ -39,6 +47,7 @@ export default function EventCalendar({ events, year, month, expandedDay, setExp
           onEventSelect={onEventSelect}
         />
       ))}
+      </div>
     </div>
   );
 }

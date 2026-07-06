@@ -28,6 +28,8 @@ export default function AdminLayout() {
             <Link to="/admin">Dashboard</Link>
             <Link to="/admin/donations">Donations</Link>
             <Link to="/admin/programs">Programs</Link>
+            <Link to="/admin/events">Events</Link>
+            <Link to="/admin/about">About</Link>
             <button onClick={handleLogout}>Logout</button>
           </nav>
         </div>

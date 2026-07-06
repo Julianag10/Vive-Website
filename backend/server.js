@@ -4,6 +4,8 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import session from "express-session";
+import path from "path";
+// import { fileURLToPath } from "url"; // for image uploadpath 
 // express dose't knwo about session -> install session middle ware
 // session is how server remembers accorss multiple reqs
 // 1. server creates a session record
@@ -15,13 +17,18 @@ import session from "express-session";
 import webhookRouter from "./routes/webhook.routes.js";
 
 import checkoutRouter from "./routes/checkout.routes.js";
+import registrationsRouter from "./routes/registrations.routes.js";
 import programsRouter from "./routes/programs.routes.js";
 import eventsRouter from "./routes/events.routes.js";
+import staffRouter from "./routes/staff.routes.js";
 
 import adminAuthRouter from "./routes/admin/auth.routes.js";
 import adminDonationsRouter from "./routes/admin/donations.routes.js";
+import adminRegistrationsRouter from "./routes/admin/registrations.routes.js";
 import adminProgramsRouter from "./routes/admin/programs.routes.js";
 import adminEventsRouter from "./routes/admin/events.routes.js";
+import adminStaffRouter from "./routes/admin/staff.routes.js";
+import { ensureEventColumns, ensureRegistrationTables } from "./db/db.js";
 
 
 // ---------- EXPRESS APP SETUP ----------------------------------------
@@ -98,6 +105,24 @@ app.use(
     },
   })
 );
+// ---------- IMAGE UPLOAD ------------------------------
+// make uploads folder publicly accessible
+app.use(
+    "/uploads",
+    express.static(path.join(process.cwd(), "uploads"))
+  );
+
+// import { fileURLToPath } from "url";
+
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
+// app.use(
+//   "/uploads",
+//   express.static(path.join(__dirname, "../uploads"))
+// );
+
 // ---------- LOGGIN MIDDLEWARE ------------------------------
 // log every request
 app.use((req, res, next) => {
@@ -128,14 +153,18 @@ app.use(
 
 // PUBLIC
 app.use("/api/checkout", checkoutRouter); // reutens pure JSON
+app.use("/api/registrations", registrationsRouter);
 app.use("/api/programs", programsRouter);
 app.use("/api/events", eventsRouter);
+app.use("/api/staff", staffRouter);
 
 // ADMIN
 app.use("/admin/api/auth", adminAuthRouter);
 app.use("/admin/api/donations", adminDonationsRouter);
+app.use("/admin/api/registrations", adminRegistrationsRouter);
 app.use("/admin/api/programs", adminProgramsRouter);
 app.use("/admin/api/events", adminEventsRouter);
+app.use("/admin/api/staff", adminStaffRouter);
 
 // ---------- HEALTH API ROUTE ----------------------------------------
 // checks :
@@ -151,8 +180,18 @@ app.get("/api/health", (req, res) => {
     });
 });
 
+app.use((err, _req, res, _next) => {
+    console.error(err);
+    res.status(err.status || 500).json({
+        error: err.message || "Internal server error",
+    });
+});
+
 // ---------- START SERVER --------------------
 const PORT = process.env.PORT || 3000;
+
+await ensureEventColumns();
+await ensureRegistrationTables();
 
 app.listen(PORT, () => {
     console.log("🚀 Server started");

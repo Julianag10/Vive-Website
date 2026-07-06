@@ -7,6 +7,7 @@ const INITIAL_FORM = {
   end_date: "",
   capacity: "",
   is_active: true,
+  is_featured: false,
   image_url: "",
   activities_text: "",
 };
@@ -20,12 +21,24 @@ function parseActivities(text) {
 }
 
 
-export default function CreateProgramForm({onSaveCreate}) {
+export default function CreateProgramForm({onSaveCreate, featuredProgramCount}) {
   const [form, setForm] = useState(INITIAL_FORM);
+  const [featuredError, setFeaturedError] = useState("");
+
+  const wouldExceedFeaturedLimit = (isFeatured) =>
+    isFeatured && featuredProgramCount >= 3;
 
   function handleChange(e) {
     // e -> USER CHANGED input field object
     const { name, value, type, checked } = e.target;
+
+    if (name === "is_featured") {
+      setFeaturedError(
+        wouldExceedFeaturedLimit(checked)
+          ? "Only three featured programs allowed."
+          : "",
+      );
+    }
 
     setForm((prevForm) => ({
       ...prevForm,
@@ -38,20 +51,32 @@ export default function CreateProgramForm({onSaveCreate}) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // pass form data up to AdminPrograms -> postCreatedProgram() -> backend
-    await onSaveCreate({
-      title: form.title,
-      description: form.description,
-      start_date: form.start_date || null,
-      end_date: form.end_date || null,
-      capacity: Number(form.capacity),
-      is_active: form.is_active,
-      image_url: form.image_url || null,
-      activities: parseActivities(form.activities_text),
-    });
+    if (wouldExceedFeaturedLimit(form.is_featured)) {
+      setFeaturedError("Only three featured programs allowed.");
+      return;
+    }
+
+    try {
+      // pass form data up to AdminPrograms -> postCreatedProgram() -> backend
+      await onSaveCreate({
+        title: form.title,
+        description: form.description,
+        start_date: form.start_date || null,
+        end_date: form.end_date || null,
+        capacity: Number(form.capacity),
+        is_active: form.is_active,
+        is_featured: form.is_featured,
+        image_url: form.image_url || null,
+        activities: parseActivities(form.activities_text),
+      });
+    } catch (err) {
+      setFeaturedError(err.message);
+      return;
+    }
 
     // reset form to blank form
     setForm(INITIAL_FORM);
+    setFeaturedError("");
   }
 
 
@@ -111,6 +136,18 @@ export default function CreateProgramForm({onSaveCreate}) {
         />
         Active
       </label>
+      <label>
+        <input
+          type="checkbox"
+          name="is_featured"
+          checked={form.is_featured}
+          onChange={handleChange}
+        />
+        Featured Program
+      </label>
+      {featuredError && (
+        <p className="admin-program-form-error">{featuredError}</p>
+      )}
       <button type="submit">Create Program</button>
     </form>
   );

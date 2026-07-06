@@ -1,0 +1,274 @@
+.staff-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.staff-card {
+  display: flex;
+  align-items: stretch;
+
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+
+  transition: .2s;
+}
+
+.staff-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow: 0 10px 25px rgba(0,0,0,.15);
+}
+
+.staff-card-draggable {
+  cursor: grab;
+}
+
+.staff-card-draggable:active {
+  cursor: grabbing;
+}
+
+.staff-card-dragging {
+  opacity: 0.55;
+  transform: none;
+}
+
+.staff-card-drag-over {
+  outline: 3px solid #4d8b5d;
+  outline-offset: 4px;
+}
+
+/* IMAGE ON LEFT */
+.staff-image-container{
+  width:180px;
+  min-width:180px;
+  height:180px;
+
+  overflow:hidden;
+
+  background:#eee;
+}
+
+.staff-image-container img{
+
+  width:100%;
+  height:100%;
+
+  /* object-fit:cover;  makes every uploaded image fill the square nicely regardless of its dimensions. */
+  object-fit:cover; 
+  object-position:center;
+
+  display:block;
+}
+
+
+/* RIGHT SDE OF CARD  */
+.staff-card-content{
+
+  flex:1;
+
+  padding:20px;
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:center;
+}
+
+
+/* TYPOGRPAPHY */
+.staff-card-content h3{
+
+  margin:0;
+
+  font-size:24px;
+
+  color:#1b3d2f;
+}
+
+.staff-card-content h4{
+
+  margin:8px 0 16px;
+
+  color:#4d8b5d;
+
+  font-weight:600;
+}
+
+.staff-card-content p{
+
+  margin:0;
+
+  line-height:1.6;
+
+  color:#444;
+}
+
+
+/* ADMIN BUTTON */
+.staff-card-actions{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:10px;
+  padding:20px;
+}
+.staff-card-actions button{
+  width:100px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.staff-drag-handle {
+  width: 100px;
+  height: 28px;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle, #6b7280 1.5px, transparent 2px) 0 0 / 10px 10px,
+    #f3f4f6;
+  border: 1px solid #d1d5db;
+  cursor: grab;
+}
+
+.staff-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(17, 24, 39, 0.55);
+}
+
+.staff-modal {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+.staff-confirm-modal {
+  max-width: 420px;
+}
+
+.staff-modal h3 {
+  margin: 0 0 16px;
+  color: #1b3d2f;
+}
+
+.staff-modal form {
+  display: grid;
+  gap: 12px;
+}
+
+.staff-modal input,
+.staff-modal textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.staff-modal textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.staff-modal-preview {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: #eee;
+}
+
+.staff-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.staff-modal-actions button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.staff-modal-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.staff-action-error {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* RESPONSIVNESS */
+@media(max-width:700px){
+  .staff-card{
+      flex-direction:column;
+  }
+  
+  .staff-image-container{
+      width:100%;
+      height:260px;
+  }
+  
+  .staff-card-actions{
+      flex-direction:row;
+  }
+  }
+
+  /* CREAT STFF FORM  */
+  .create-staff{
+    max-width:700px;
+    margin:40px auto;
+    padding:30px;
+    background:white;
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+/* INPUTS */
+.create-staff input,
+.create-staff textarea{
+    width:100%;
+    margin-bottom:18px;
+    padding:12px 14px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:16px;
+}
+
+/* TEXTAREA */
+.create-staff textarea{
+  min-height:130px;
+  resize:vertical;
+}
+
+/* BUTTON */
+.create-staff button{
+  padding:12px 26px;
+  background:#2d6cdf;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}

@@ -6,7 +6,6 @@ import express from "express";
 import {
   listProgramsController,
   listFeaturedProgramsController,
-  registerController,
   getProgramByIdController,
 } from "../controllers/programs.controller.js";
 
@@ -18,11 +17,6 @@ router.get("/", listProgramsController);
 
 router.get("/featured", listFeaturedProgramsController);
 
-// :id -> create a NEW REGISTRATION for THIS PRogram
-// creating a NEW CHILD RESOURCE (registraton)
-router.post("/:id/register", registerController);
-
 router.get("/:id", getProgramByIdController);
-
 export default router;
 

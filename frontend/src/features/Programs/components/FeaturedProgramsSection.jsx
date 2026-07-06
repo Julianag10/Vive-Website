@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ProgramCard from "./ProgramCard";
-import { getFeaturedPrograms } from "../api/programsApi";
+import { getFeaturedPrograms } from "../ProgramService";
 
 // FEATURED ROGRAM SECTION: grid container
 export default function FeaturedProgramSection() {

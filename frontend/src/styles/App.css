@@ -145,6 +145,416 @@ a {
   padding: 2rem;
 }
 
+.events-page {
+  display: grid;
+  gap: 1rem;
+}
+
+.events-page h1,
+.events-page-intro,
+.events-controls,
+.events-agenda,
+.events-empty-state {
+  max-width: 100%;
+}
+
+.events-page-intro {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.events-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(43, 43, 43, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.82);
+}
+
+.events-controls strong {
+  font-size: 1.05rem;
+}
+
+.calendar-nav-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(43, 43, 43, 0.14);
+  background: rgba(255, 253, 248, 0.95);
+  color: var(--color-brand-dark);
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.calendar-nav-button:hover {
+  background: rgba(13, 127, 113, 0.12);
+}
+
+.events-calendar-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.events-agenda {
+  padding-top: 0.5rem;
+}
+
+.events-agenda h2 {
+  margin-bottom: 0.75rem;
+}
+
+.events-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.events-list li {
+  padding: 1rem 1.1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(43, 43, 43, 0.08);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.events-list h3,
+.events-list p {
+  margin: 0;
+}
+
+.events-list p {
+  margin-top: 0.35rem;
+  color: var(--color-muted);
+}
+
+.events-empty-state {
+  color: var(--color-muted);
+}
+
+.event-registration-actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.event-registration-actions button {
+  justify-self: start;
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0.65rem 1.1rem;
+}
+
+.event-registration-actions button:hover {
+  background: var(--color-brand-dark);
+}
+
+.event-registration-message {
+  margin: 0;
+  color: var(--color-brand-dark);
+  font-weight: 700;
+}
+
+.admin-events-page {
+  display: grid;
+  gap: 1rem;
+  color: #f5f5f5;
+}
+
+.admin-events-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.25rem 0;
+  border: 0;
+  background: transparent;
+}
+
+.admin-events-header h1 {
+  margin: 0;
+  font-size: 1.65rem;
+}
+
+.admin-events-page .events-controls {
+  background: #151515;
+  border-color: #2a2a2a;
+  color: #f5f5f5;
+}
+
+.admin-events-page .events-controls strong {
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.admin-events-page .events-controls .calendar-nav-button {
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border: 1px solid #3b3b3b;
+}
+
+.admin-events-page .events-controls .calendar-nav-button:hover {
+  background: #3a3a3a;
+}
+
+.admin-events-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-events-page .calander-weekdays {
+  margin-top: 0.25rem;
+}
+
+.admin-create-event-button {
+  border: 1px solid #0d7f71;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0d7f71, #0b6056);
+  color: #ffffff;
+  font-weight: 800;
+  padding: 0.8rem 1.2rem;
+  box-shadow: 0 12px 26px rgba(13, 127, 113, 0.22);
+}
+
+.admin-create-event-button:hover {
+  background: linear-gradient(135deg, #0b6056, #08463e);
+}
+
+.admin-events-page .event-item {
+  background: rgba(13, 127, 113, 0.16);
+  border-color: rgba(13, 127, 113, 0.35);
+  color: #f4fffb;
+}
+
+.admin-edit-modal {
+  background: #121212;
+  color: #f5f5f5;
+  border: 1px solid #2a2a2a;
+}
+
+.admin-edit-modal h2,
+.admin-edit-modal label,
+.admin-edit-modal strong,
+.admin-edit-modal p {
+  color: #f5f5f5;
+}
+
+.admin-edit-modal input,
+.admin-edit-modal textarea {
+  background: #202020;
+  border-color: #343434;
+  color: #f5f5f5;
+}
+
+.admin-edit-modal input::placeholder,
+.admin-edit-modal textarea::placeholder {
+  color: #9a9a9a;
+}
+
+.admin-edit-modal .modal-actions button {
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border: 1px solid #3b3b3b;
+}
+
+.admin-edit-modal .modal-actions button:hover {
+  background: #3a3a3a;
+}
+
+.admin-edit-modal .modal-actions button[type="submit"] {
+  background: #0d7f71;
+  border-color: #0d7f71;
+}
+
+.admin-edit-modal .modal-actions button[type="submit"]:hover {
+  background: #0b6056;
+}
+
+.admin-edit-modal .modal-actions button[type="button"]:last-child {
+  background: transparent;
+  border-color: #4a4a4a;
+}
+
+.admin-edit-modal .modal-close {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.modal-backdrop,
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.52);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.modal-backdrop.is-open,
+.modal-overlay.is-open {
+  animation: modal-fade-in 180ms ease-out both;
+}
+
+.modal-backdrop.is-closing,
+.modal-overlay.is-closing {
+  animation: modal-fade-out 180ms ease-in both;
+}
+
+.modal,
+.event-details-modal {
+  position: relative;
+  width: min(540px, 100%);
+  background: #fffdf8;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 28px 80px rgba(17, 24, 39, 0.24);
+}
+
+.modal-backdrop.is-open .modal,
+.modal-overlay.is-open .event-details-modal {
+  animation: modal-pop-in 180ms ease-out both;
+}
+
+.modal-backdrop.is-closing .modal,
+.modal-overlay.is-closing .event-details-modal {
+  animation: modal-pop-out 180ms ease-in both;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.modal form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.modal input,
+.modal textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(43, 43, 43, 0.18);
+  font: inherit;
+  background: #fff;
+}
+
+.admin-event-modal {
+  background: #121212;
+  color: #f5f5f5;
+  border: 1px solid #2a2a2a;
+}
+
+.admin-event-modal h2,
+.admin-event-modal label,
+.admin-event-modal strong,
+.admin-event-modal p {
+  color: #f5f5f5;
+}
+
+.admin-event-modal input,
+.admin-event-modal textarea {
+  background: #202020;
+  border-color: #343434;
+  color: #f5f5f5;
+  color-scheme: dark;
+}
+
+.admin-event-modal input:focus,
+.admin-event-modal textarea:focus {
+  border-color: #0d7f71;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 127, 113, 0.22);
+}
+
+.admin-event-modal input::placeholder,
+.admin-event-modal textarea::placeholder {
+  color: #9a9a9a;
+}
+
+.admin-event-modal input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1);
+  opacity: 0.85;
+}
+
+.admin-event-modal input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #0d7f71;
+}
+
+.admin-event-modal button {
+  background: #2a2a2a;
+  color: #f5f5f5;
+  border: 1px solid #3b3b3b;
+  border-radius: 12px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.7rem 0.95rem;
+}
+
+.admin-event-modal button:hover {
+  background: #3a3a3a;
+}
+
+.admin-event-modal button[type="submit"] {
+  background: #0d7f71;
+  border-color: #0d7f71;
+}
+
+.admin-event-modal button[type="submit"]:hover {
+  background: #0b6056;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modal-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-pop-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
 button,
 .learnmore-btn,
 .register-btn,

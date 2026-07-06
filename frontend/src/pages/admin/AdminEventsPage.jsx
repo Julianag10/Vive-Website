@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import EventService from "../../features/calander/EventService";
+import { useState, useEffect, useMemo } from "react";
+import EventService from "../../features/EventCalander/EventService";
 
 import Calander from "../../features/EventCalander/components/Calander";
 import EditEventModal from "../../features/EventCalander/admin/EditEventModal";
@@ -33,11 +33,18 @@ export default function AdminEventsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [eventPendingDelete, setEventPendingDelete] = useState(null);
 
+  const monthLabel = useMemo(() => {
+    return new Date(year, month - 1, 1).toLocaleString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
+  }, [year, month]);
+
   // fetch ALL events (including inactive) + store in state
   // runs whenever month/year state changes
   useEffect(() => {
     async function fetchEvents() {
-      const events = await eventService.getAllEventsForMonth(year, month);
+      const events = await eventService.getAllEventsForMonth(month, year);
       setEvents(events);
     }
 
@@ -102,16 +109,46 @@ export default function AdminEventsPage() {
   // toggle visibility
   // NAVIGATE MONTHS 
   return (
-    <>
-      {/* ---- CREATE EVENT --------------------- */}
-      <button onClick={() => setShowCreateModal(true)}> 
-        Create Event
-      </button>
+    <section className="admin-events-page">
+      <div className="admin-events-header">
+        <h1>Events</h1>
+      </div>
+
+      <div className="events-controls">
+        <button
+          type="button"
+          className="calendar-nav-button"
+          onClick={prevMonth}
+          aria-label="Previous month"
+        >
+          ←
+        </button>
+        <strong>{monthLabel}</strong>
+        <button
+          type="button"
+          className="calendar-nav-button"
+          onClick={nextMonth}
+          aria-label="Next month"
+        >
+          →
+        </button>
+      </div>
+
+      <div className="admin-events-actions">
+        <button
+          className="admin-create-event-button"
+          onClick={() => setShowCreateModal(true)}
+        >
+          Create Event
+        </button>
+      </div>
     
       <Calander
         events={events}
+        year={year}
+        month={month}
         expandedDay={expandedDay}
-        onDayExpand={setExpandedDay}
+        setExpandedDay={setExpandedDay}
         onEventSelect={setEditingEvent}
       />
 
@@ -119,7 +156,7 @@ export default function AdminEventsPage() {
       {editingEvent && (
         <EditEventModal
           event={editingEvent}
-          // onSave={handleSave}
+          onSave={handleSave}
           onClose={() => setEditingEvent(null)}
           onDelete={() => setEventPendingDelete(editingEvent)}
         />
@@ -136,8 +173,9 @@ export default function AdminEventsPage() {
       {showCreateModal && (
         <CreateEventModal
           onClose={() => setShowCreateModal(false)}
+          onCreate={handleCreate}
         />
       )}
-    </>
+    </section>
   );
 }

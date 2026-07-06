@@ -1,11 +1,7 @@
 import ProgramCardAdmin from "./ProgramCardAdmin";
 
-// TODO update backend - ADMIN services: 
-  // - createProgram() , description, photo, action buttons(CTAs -- is registerable)
-  // - updateProgram() , description, photo, action buttons(CTAs -- is registerable)
-// TODO update frontend to render these in the program card orlearn more.
 
-export default function ProgramCardList({programs, editingProgramID, onStartEdit, onSaveEdit, onCancleEdit, onToggleProgram}) {
+export default function ProgramCardList({programs, editingProgramID, onStartEdit, onSaveEdit, onCancleEdit, onToggleProgram, featuredProgramCount}) {
 
   if (!programs || programs.length === 0) return <p>No programs.</p>;
 
@@ -29,6 +25,7 @@ export default function ProgramCardList({programs, editingProgramID, onStartEdit
           onSaveEdit={onSaveEdit}
           onCancleEdit={onCancleEdit}
           onToggleProgram={onToggleProgram}
+          featuredProgramCount={featuredProgramCount}
         />
       ))}
 
@@ -36,4 +33,3 @@ export default function ProgramCardList({programs, editingProgramID, onStartEdit
   );
   
 }
-

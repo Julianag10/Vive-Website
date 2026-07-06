@@ -14,10 +14,12 @@
 
 .create-program-form,
 .admin-program-card {
-  background-color: #151515;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    #151515;
   border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.2);
 }
 
 .create-program-form {
@@ -115,24 +117,55 @@
 
 .admin-program-list {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.15rem;
 }
 
 .admin-program-card {
   display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
-  gap: 0.95rem 1.2rem;
-  padding: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.95rem;
+  padding: 1.1rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.admin-program-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(13, 127, 113, 0.55);
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.26);
 }
 
 .admin-program-card > img {
-  grid-row: span 5;
-  width: 100%;
+  width: min(100%, 260px);
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  border-radius: 6px;
+  justify-self: center;
+  border-radius: 14px;
   border: 1px solid #303030;
   background-color: #222;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.admin-program-card-copy {
+  min-width: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.admin-program-card-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.admin-program-card-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
 }
 
 .admin-program-card h3,
@@ -145,26 +178,128 @@
   margin: 0;
   color: #ffffff;
   font-family: var(--font-secondary);
-  font-size: 1.1rem;
+  font-size: 1.12rem;
   font-weight: 800;
   letter-spacing: 0;
 }
 
-.admin-program-card p {
+.admin-program-card-description {
   margin: 0;
   color: #cfcfcf;
+  line-height: 1.55;
 }
 
-.admin-program-card p:first-of-type {
-  color: #e4e4e4;
+.admin-program-card-meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin: 0;
 }
 
-.admin-program-card-butttons,
+.admin-program-card-meta div {
+  padding: 0.85rem 0.95rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-program-card-meta dt {
+  margin: 0 0 0.25rem;
+  color: #9f9f9f;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-program-card-meta dd {
+  margin: 0;
+  color: #f0f0f0;
+  font-weight: 600;
+}
+
+.admin-program-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5.5rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.admin-program-status.is-active {
+  color: #bff4e9;
+  background: rgba(13, 127, 113, 0.16);
+  border-color: rgba(13, 127, 113, 0.28);
+}
+
+.admin-program-status.is-inactive {
+  color: #f6d6d6;
+  background: rgba(198, 71, 71, 0.14);
+  border-color: rgba(198, 71, 71, 0.22);
+}
+
+.admin-program-card-actions,
 .admin-edit-from-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 0.25rem;
+  gap: 0.65rem;
+}
+
+.admin-program-card-actions {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.admin-program-card-action {
+  border: 1px solid #3b3b3b;
+  border-radius: 999px;
+  background-color: #242424;
+  color: #f5f5f5;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  min-height: 2.5rem;
+  padding: 0.65rem 1rem;
+  transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.admin-program-card-action:hover {
+  transform: translateY(-1px);
+}
+
+.admin-program-card-action--edit {
+  background: linear-gradient(135deg, #f0c15d, #dba43a);
+  border-color: #f0c15d;
+  color: #1d1d1d;
+}
+
+.admin-program-card-action--edit:hover {
+  background: linear-gradient(135deg, #f3cd7d, #d89a28);
+}
+
+.admin-program-card-action--toggle {
+  background: linear-gradient(135deg, #0d7f71, #0b6056);
+  border-color: #0d7f71;
+}
+
+.admin-program-card-action--toggle:hover {
+  background: linear-gradient(135deg, #0b6056, #08463e);
+}
+
+.admin-program-card-action--registrations {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.admin-program-card-action--registrations:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .admin-program-card form {
@@ -177,8 +312,27 @@
 .admin-program-card form textarea,
 .admin-program-card form input[name="image_url"],
 .admin-program-card form label,
+.admin-program-form-error,
 .admin-edit-from-buttons {
   grid-column: 1 / -1;
+}
+
+.admin-program-form-error {
+  margin: 0;
+  color: #f6d6d6;
+  font-weight: 700;
+}
+
+.admin-program-status.is-featured {
+  color: #ffe7ae;
+  background: rgba(240, 193, 93, 0.16);
+  border-color: rgba(240, 193, 93, 0.32);
+}
+
+.admin-program-status.is-not-featured {
+  color: #d5d5d5;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 @media (max-width: 720px) {
@@ -189,11 +343,20 @@
   }
 
   .admin-program-card > img {
-    grid-row: auto;
+    width: min(100%, 100%);
   }
 
-  .admin-program-card-butttons,
+  .admin-program-card-actions,
   .admin-edit-from-buttons {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-program-card-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-program-card-heading-row {
+    align-items: flex-start;
   }
 }

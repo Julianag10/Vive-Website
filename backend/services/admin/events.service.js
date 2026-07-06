@@ -16,19 +16,46 @@ export async function getAllEventsForMonth(month, year) {
 }
 
 export async function postCreatedEvent(eventData) {
-  const { title, start_date, end_date, description, is_active } = eventData;
+  const {
+    title,
+    start_date,
+    end_date,
+    description,
+    location,
+    capacity,
+    is_active,
+    is_registerable,
+  } = eventData;
 
   const { rows } = await pool.query(`
-    INSERT INTO events (title, start_date, end_date, description, is_active)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO events (title, start_date, end_date, description, location, capacity, is_active, is_registerable)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *
-  `, [title, start_date, end_date, description, is_active ?? true]);
+  `, [
+    title,
+    start_date,
+    end_date,
+    description,
+    location,
+    capacity ?? null,
+    is_active ?? true,
+    is_registerable ?? false,
+  ]);
 
   return rows[0];
 }
 
 export async function putUpdatedEvent(id, eventData) {
-  const { title, start_date, end_date, description, is_active } = eventData;
+  const {
+    title,
+    start_date,
+    end_date,
+    description,
+    location,
+    capacity,
+    is_active,
+    is_registerable,
+  } = eventData;
 
   const { rows } = await pool.query(`
     UPDATE events 
@@ -36,10 +63,23 @@ export async function putUpdatedEvent(id, eventData) {
         start_date=$2, 
         end_date = $3,
         description = $4,
-        is_active = $5
-    WHERE id = $6
+        location = $5,
+        capacity = $6,
+        is_active = $7,
+        is_registerable = $8
+    WHERE id = $9
     RETURNING *
-  `, [title, start_date, end_date, description, is_active, id]);
+  `, [
+    title,
+    start_date,
+    end_date,
+    description,
+    location,
+    capacity ?? null,
+    is_active,
+    is_registerable ?? false,
+    id,
+  ]);
 
   return rows[0];
 }

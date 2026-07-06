@@ -14,13 +14,21 @@ export async function listAdminProgramsController(_req, res) {
 }
 
 export async function createProgramController(req, res) {
-  const program = await createProgram(req.body);
-  res.json(program);
+  try {
+    const program = await createProgram(req.body);
+    res.json(program);
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message });
+  }
 }
 
 export async function updateProgramController(req, res) {
-  const program = await updateProgram(req.params.id, req.body);
-  res.json(program);
+  try {
+    const program = await updateProgram(req.params.id, req.body);
+    res.json(program);
+  } catch (error) {
+    res.status(error.status || 500).json({ error: error.message });
+  }
 }
 
 export async function toggleProgramController(req, res) {

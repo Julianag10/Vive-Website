@@ -2,7 +2,6 @@
 
 import express from "express";
 import { requireAdmin } from "../../middleware/requireAdmin.js";
-import { listProgramRegistrationsController } from "../../controllers/admin/registrations.controller.js";
 import {
   listAdminProgramsController,
   createProgramController,
@@ -33,8 +32,5 @@ router.put("/:id", updateProgramController);
 // PATCH /admin/programs/:id/active
 // :id -> change 1 field in  THIS program
 router.patch("/:id/active", toggleProgramController);
-
-// GET admin/programs/:id/registrations
-router.get("/:id/registrations", listProgramRegistrationsController);
 
 export default router;

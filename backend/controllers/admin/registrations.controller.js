@@ -1,7 +1,11 @@
-// ADMIN 
-import { listRegistrationsForProgram } from "../../services/admin/registrations.service.js";
+// ADMIN
+import { listRegistrationsForResource } from "../../services/admin/registrations.service.js";
 
-export async function listProgramRegistrationsController(req, res) {
-  const registrationList = await listRegistrationsForProgram(req.params.id);
+export async function listRegistrationsController(req, res) {
+  const registrationList = await listRegistrationsForResource(
+    req.params.type,
+    req.params.id
+  );
+
   res.json(registrationList);
 }

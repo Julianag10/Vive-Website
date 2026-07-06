@@ -21,6 +21,7 @@ export async function listFeaturedPrograms() {
     SELECT *
     FROM programs
     WHERE is_active = true
+    AND is_featured = true
     ORDER BY created_at DESC
     LIMIT 3;
   `);

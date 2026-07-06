@@ -1,5 +1,5 @@
 import EventItem from "./EventItem";
-import { formatDateKey } from "../utils/dateUtils";
+import { formatDateKey } from "../dateUtils";
 import "./DayCell.css";
 
 // HANDLES:
@@ -40,7 +40,6 @@ export default function DayCell({ date, dayEvents, expandedDay, setExpandedDay, 
             key={event.id}
             event={event}
             onClick={() =>onEventSelect(event)}
-            onMouseEnter={() => onEventSelect(event)}
           />
       ))}
 

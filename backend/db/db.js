@@ -14,6 +14,42 @@ export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
+export async function ensureEventColumns() {
+  await pool.query(`
+    ALTER TABLE events
+    ADD COLUMN IF NOT EXISTS is_registerable BOOLEAN NOT NULL DEFAULT false;
+  `);
+
+  await pool.query(`
+    ALTER TABLE events
+    ADD COLUMN IF NOT EXISTS capacity INTEGER CHECK (capacity >= 0);
+  `);
+}
+
+export async function ensureRegistrationTables() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS program_registrations (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      status TEXT NOT NULL CHECK (status IN ('waitlisted', 'registered', 'cancelled'))
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS event_registrations (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      status TEXT NOT NULL CHECK (status IN ('waitlisted', 'registered', 'cancelled'))
+    );
+  `);
+}
+
 // Now anywhere in the backend can import:
 // import { pool } from "../db/db.js";
 

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import ProgramCardList from "../../components/admin/ProgramsCardList.jsx";
-import CreateProgramForm from "../../components/admin/CreateProgramForm.jsx";
+import "../../styles/admin-programs.css";
+import ProgramCardList from "../../features/Programs/admin/ProgramsCardList.jsx";
+import CreateProgramForm from "../../features/Programs/admin/CreateProgramForm.jsx";
 import {
   getPrograms,
   postCreatedProgram,
   putUpdatedProgram,
   patchToggleProgram,
-} from "../../api/admin/programsApi.js";
+} from "../../features/Programs/ProgramService";
 
 export default function AdminProgramsPage() {
   // programs state is an array
@@ -27,6 +28,7 @@ export default function AdminProgramsPage() {
   if (loading) return <p>Loading programs…</p>;
   if (errorMessage) return <p> Error: {errorMessage} </p>;
 
+  const featuredProgramCount = programs.filter((program) => program.is_featured).length;
 
   // CALLBACK: add program to programs array 
   async function onSaveCreate(newFormData) {
@@ -84,7 +86,10 @@ export default function AdminProgramsPage() {
     <div className="admin-programs-page">
       <h1>Programs</h1>
       
-      <CreateProgramForm onSaveCreate={onSaveCreate}/>
+      <CreateProgramForm
+        onSaveCreate={onSaveCreate}
+        featuredProgramCount={featuredProgramCount}
+      />
 
       <ProgramCardList 
         programs={programs}
@@ -98,6 +103,7 @@ export default function AdminProgramsPage() {
         onSaveEdit={onSaveEdit}
 
         onToggleProgram={onToggleProgram}
+        featuredProgramCount={featuredProgramCount}
       />
     </div>
   );

@@ -9,9 +9,9 @@ export default function ProgramSection({ title, programs }) {
   }
 
   return (
-    <section className="program-section">
+    <section className="programs-section">
       <h2>{title}</h2>
-      <div className="program-grid">
+      <div className="programs-grid">
         {programs.map((program) => (
           <ProgramCard key={program.id} program={program} />
         ))}

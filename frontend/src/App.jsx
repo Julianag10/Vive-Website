@@ -10,17 +10,19 @@ import Donate from "./pages/Donate";
 import Complete from "./pages/Complete";
 import Programs from "./pages/ProgramsPage";
 import LearnMorePage from "./pages/LearnMorePage";
-import ProgramRegister from "./pages/ProgramRegister";
 import EventsPage from "./pages/EventsPage";
 import AboutPage from "./pages/AboutPage";
 import VolunteerPage from "./pages/VolunteerPage";
+
 
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminDonations from "./pages/admin/AdminDonations";
 import AdminPrograms from "./pages/admin/AdminProgramsPage";
-import ProgramRegistrations from "./pages/admin/AdminProgramRegistrations";
+import AdminEventsPage from "./pages/admin/AdminEventsPage";
+import AdminRegistrationsPage from "./pages/admin/AdminRegistrationsPage";
+import AdminAboutPage from "./pages/admin/AdminAboutPage";
 
 import "./styles/App.css";
 import AdminProgramsPage from "./pages/admin/AdminProgramsPage";
@@ -42,7 +44,6 @@ export default function App() {
           <Route path="/donate" element={<Donate />} />
           <Route path="/complete" element={<Complete />} />
           <Route path="/programs" element={<Programs />} />
-          <Route path="/programs/:id/register" element={<ProgramRegister />} />
           <Route path="/programs/:id" element={<LearnMorePage/>} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -66,9 +67,11 @@ export default function App() {
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/admin/donations" element={<AdminDonations />} />
           <Route path="/admin/programs" element={<AdminProgramsPage />} />
+          <Route path="/admin/events" element={<AdminEventsPage />} />
+          <Route path="/admin/about" element={<AdminAboutPage />} />
           <Route
-            path="/admin/programs/:id/registrations"
-            element={<ProgramRegistrations />}
+            path="/admin/registrations/:type/:id"
+            element={<AdminRegistrationsPage />}
           />
         </Route>
       </Routes>

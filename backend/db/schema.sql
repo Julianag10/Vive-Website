@@ -75,7 +75,7 @@ CREATE TABLE donations (
 -- porgrams are mutatble 
 -- admin only 
 -- simple insert/update
-CREATE TABLE programs (
+CREATE TABLE IF NOT EXISTS programs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     description TEXT,
@@ -83,11 +83,15 @@ CREATE TABLE programs (
     end_date DATE,
     capacity INTEGER CHECK (capacity >= 0),
     is_active BOOLEAN NOT NULL DEFAULT true,
+    is_featured BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP DEFAULT NOW(),
     image_url TEXT,
-    activities TEXT[],
+    activities TEXT[]
 );
+
+ALTER TABLE programs
+ADD COLUMN IF NOT EXISTS is_featured BOOLEAN NOT NULL DEFAULT false;
 -- -------------------------------------------
 -- REGISTRATION WRITE:
 -- Append-only = safe
@@ -95,7 +99,7 @@ CREATE TABLE programs (
 -- public
 -- always insert
 -- never update
-CREATE TABLE registrations (
+CREATE TABLE IF NOT EXISTS program_registrations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
   -- foreign key to programs table
@@ -104,25 +108,61 @@ CREATE TABLE registrations (
   program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  status TEXT NOT NULL CHECK ( status IN ('waitlisted', 'registered', 'cancelled') ),
+);
+
+CREATE TABLE IF NOT EXISTS event_registrations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    status TEXT NOT NULL CHECK ( status IN ('waitlisted', 'registered', 'cancelled') )
 );
 
 -- ---------------------------------------
-CREATE TABLE admins (
+CREATE TABLE IF NOT EXISTS admins (
   id SERIAL PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE events (
+CREATE TABLE IF NOT EXISTS events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   description TEXT,
-  start_time TIMESTAMPTZ NOT NULL,
-  end_time TIMESTAMPTZ NOT NULL,
+  location TEXT,
+  start_date TIMESTAMP NOT NULL,
+  end_date TIMESTAMP NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT true,
+  capacity INTEGER CHECK (capacity >= 0),
+  waitlist_enabled BOOLEAN NOT NULL DEFAULT false,
+  is_registerable BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT NOW(),
-
+  updated_at TIMESTAMP DEFAULT NOW()
 );
+
+ALTER TABLE events
+ADD COLUMN IF NOT EXISTS location TEXT;
+
+ALTER TABLE events
+ADD COLUMN IF NOT EXISTS is_registerable BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE events
+ALTER COLUMN start_date TYPE TIMESTAMP USING start_date::timestamp,
+ALTER COLUMN end_date TYPE TIMESTAMP USING end_date::timestamp;
+
+-- ---------------------------------------
+CREATE TABLE IF NOT EXISTS staff (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL,
+  bio TEXT,
+  image_url TEXT,
+  display_order INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+-- ---------------------------------------

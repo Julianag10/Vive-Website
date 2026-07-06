@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "../styles/programs.css";
 
-import ProgramSection from "../components/ProgramSection";
+import ProgramSection from "../features/Programs/components/ProgramSection";
+import { getAllPrograms } from "../features/Programs/ProgramService";
 // TODO prgrams shouldnt fethc bc programs --> who should fethc programs 
 // TODO fetch all public programs from /api/programs,
 // TODO split into sections (start with only current + upcoming).
@@ -17,13 +18,7 @@ export default function ProgramsPage() {
   useEffect(() => {
     async function fetchPrograms() {
       try {
-        const res = await fetch("/api/programs");
-
-        if (!res.ok) {
-          throw new Error("Failed to load programs");
-        }
-
-        const data = await res.json();
+        const data = await getAllPrograms();
         setPrograms(data);
       } catch (err) {
         setError(err.message);
@@ -41,6 +36,7 @@ export default function ProgramsPage() {
 
   // filter programs - BUT WHY DONT REMBER ??? 
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   // TODO Define the rule once
   // tDO why are rules defined here? should they be defined in the backend and sent as part of the program data? or should they be defined in a shared utils file that both frontend and backend can use to compute current/upcoming/featured programs consistently?
@@ -49,22 +45,38 @@ export default function ProgramsPage() {
   // TODO RULE: featured = [...current, ...upcoming], sorted by start_date, limited to top N (ex: 3)
   // TODO why did i add upcoming progrms, sesonal progrmas, year long progrmas, after school progrmas, adult programs? do i need all these categories? can i just have current and upcoming?, ...
   // TODO should isActive be snake casee, match db?
-  const currentPrograms = programs.filter(
-    (p) =>
-      p.is_active &&
-      new Date(p.start_date) <= today &&
-      new Date(p.end_date) >= today,
-  );
+  const getProgramPriority = (startDate, endDate) => {
+    if (startDate <= today && endDate >= today) return 0;
+    if (startDate > today) return 1;
+    return 2;
+  };
 
-  const upcomingPrograms = programs.filter(
-    (p) => p.is_active && new Date(p.start_date) > today,
-  );
+  const activePrograms = programs
+    .filter((program) => program.is_active)
+    .map((program, index) => {
+      const startDate = new Date(program.start_date);
+      const endDate = new Date(program.end_date);
+      const startTime = startDate.getTime();
+
+      return {
+        program,
+        index,
+        priority: getProgramPriority(startDate, endDate),
+        startTime: Number.isNaN(startTime) ? Number.MAX_SAFE_INTEGER : startTime,
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.priority - b.priority ||
+        a.startTime - b.startTime ||
+        a.index - b.index,
+    )
+    .map(({ program }) => program);
 
   return (
     <div className="programs-page">
       <h1>Our Programs</h1>
-      <ProgramSection title="Current Programs" programs={currentPrograms} />
-      <ProgramSection title="Upcoming Programs" programs={upcomingPrograms} />
+      <ProgramSection title="Active Programs" programs={activePrograms} />
     </div>
   );
 }

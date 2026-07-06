@@ -1,11 +1,22 @@
 import Event from "./Event";
 
+// PUBLIC + ADMIN API CALLS:
+
 // ABSTRACTIONLAYER
 // LOGIC AND DATA FETCHING 
 // HOW YOU GET OR PROCESS DATA
 // WHERE DO EVENTS COME FROM ?
 
 export default class EventService {
+  normalizeOutgoingEvent(eventData) {
+    const { isRegisterable, ...rest } = eventData;
+
+    return {
+      ...rest,
+      is_registerable: isRegisterable ?? false,
+    };
+  }
+
   // --------------------------------------------------
   //             PUBLIC API CALLS
   // --------------------------------------------------
@@ -24,9 +35,9 @@ export default class EventService {
     return activeEvents;
   }
 
-  // --------------------------------------------------
-  //             ADMIN API CALLS
-  // --------------------------------------------------
+// --------------------------------------------------
+//             ADMIN API CALLS
+// --------------------------------------------------
 
   // ADMIN - some events could be toggled, admin shoudl see all events even it toggled
   async getAllEventsForMonth(month, year) {
@@ -46,11 +57,13 @@ export default class EventService {
 
   // ADMIN
   async postCreatedEvent(eventData) {
+    const payload = this.normalizeOutgoingEvent(eventData);
+    // TODO FIX HERE
     const res = await fetch("/admin/api/events/createEvent", {
       method: "POST",
       credentials: "include",
       headers: {"Content-Type": "application/json",} ,
-      body: JSON.stringify(eventData),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) 
@@ -62,11 +75,12 @@ export default class EventService {
 
   // ADMIN
   async putUpdatedEvent(id, eventData) {
+    const payload = this.normalizeOutgoingEvent(eventData);
     const res = await fetch(`/admin/api/events/${id}`, {
       method: "PUT",
       headers: {"Content-Type": "application/json",} ,
       credentials: "include",
-      body: JSON.stringify(eventData),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) 

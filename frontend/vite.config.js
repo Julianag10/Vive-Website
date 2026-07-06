@@ -11,11 +11,19 @@ export default defineConfig({
                 // /donate --> NAV REQ (page)
                 // /checkout -> HTTP REQ (API)
                 // they dont have the same name no navigation REQ and http REQ confusion
+                "/api/staff": {
+                    target: "http://localhost:3000",
+                    changeOrigin: true,
+                },
                 "/api/checkout": {
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },
                 "/api/programs": {
+                    target: "http://localhost:3000",
+                    changeOrigin: true,
+                },
+                "/api/registrations": {
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },

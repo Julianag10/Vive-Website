@@ -22,7 +22,11 @@ export default function EventItem({event, onClick, onMouseEnter}) {
     <div
       className="event-item"
       onMouseEnter={onMouseEnter}
+      onPointerEnter={onMouseEnter}
+      onFocus={onMouseEnter}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
     >
       {event.title}
     </div>

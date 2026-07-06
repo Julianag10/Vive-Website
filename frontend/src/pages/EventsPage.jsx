@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import EventService from "../features/calander/EventService";
+import EventService from "../features/EventCalander/EventService";
 import Calander from "../features/EventCalander/components/Calander";
 import EventDetailsModal from "../features/EventCalander/components/EventDetailsModal";
 // Fetch data (via service)
@@ -75,36 +75,34 @@ export default function EventsPage() {
   return (
     <section className="events-page">
       <h1>Community Events</h1>
+      <p className="events-page-intro">
+        Browse the month view, then click a day to expand it and inspect the events on that date.
+      </p>
 
       <div className="events-controls">
-        <button type="button" onClick={goToPreviousMonth}>
-          Previous
+        <button
+          type="button"
+          className="calendar-nav-button"
+          onClick={goToPreviousMonth}
+          aria-label="Previous month"
+        >
+          ←
         </button>
         <strong>{monthLabel}</strong>
-        <button type="button" onClick={goToNextMonth}>
-          Next
+        <button
+          type="button"
+          className="calendar-nav-button"
+          onClick={goToNextMonth}
+          aria-label="Next month"
+        >
+          →
         </button>
       </div>
 
       {loading && <p>Loading events...</p>}
       {error && <p>Error: {error}</p>}
 
-      {!loading && !error && events.length === 0 && (
-        <p>No events available for this month.</p>
-      )}
-
-      {!loading && !error && events.length > 0 && (
-        <ul className="events-list">
-          {events.map((event) => (
-            <li key={event.id}>
-              <h3>{event.title}</h3>
-              <p>{event.description || "No description provided."}</p>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <>
+      <div className="events-calendar-section">
         <Calander
           events={events}
           year={year}
@@ -120,7 +118,25 @@ export default function EventsPage() {
             onClose={() => setSelectedEvent(null)}
           />
         )}
-      </>
+      </div>
+
+      {!loading && !error && events.length === 0 && (
+        <p className="events-empty-state">No events available for this month.</p>
+      )}
+
+      {!loading && !error && events.length > 0 && (
+        <div className="events-agenda">
+          <h2>This Month</h2>
+          <ul className="events-list">
+            {events.map((event) => (
+              <li key={event.id}>
+                <h3>{event.title}</h3>
+                <p>{event.description || "No description provided."}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       
 
     </section>

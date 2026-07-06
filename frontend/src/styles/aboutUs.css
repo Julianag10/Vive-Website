@@ -1,0 +1,46 @@
+
+.about-grid {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 16px;
+
+  align-items: center;
+}
+
+.about-box {
+  background: #a6f29b;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+
+  padding: 16px 18px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.about-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.about-box p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.inline-h4 {
+  display: inline;
+  /* font-size: 28px; */
+  /* font-weight: 700; */
+
+  margin: 0 8px;
+  /* margin: 6px 6px 6px 0; */
+
+  line-height: 1;
+  vertical-align: baseline;
+}
