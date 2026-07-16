@@ -55,11 +55,12 @@ export async function getPrograms() {
 
 
 export async function postCreatedProgram(programData) {
+  const isFormData = programData instanceof FormData;
   const res = await fetch("/admin/api/programs", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: isFormData ? undefined : { "Content-Type": "application/json" },
     credentials: "include",
-    body:JSON.stringify(programData),
+    body: isFormData ? programData : JSON.stringify(programData),
   });
 
   return readJsonOrThrow(res, "Failed to create program");
@@ -67,11 +68,12 @@ export async function postCreatedProgram(programData) {
 
 
 export async function putUpdatedProgram(id, programData) {
+  const isFormData = programData instanceof FormData;
   const res = await fetch(`/admin/api/programs/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: isFormData ? undefined : { "Content-Type": "application/json" },
     credentials: "include",
-    body:JSON.stringify(programData),
+    body: isFormData ? programData : JSON.stringify(programData),
   });
 
   return readJsonOrThrow(res, "Failed to update program");
@@ -88,4 +90,13 @@ export async function patchToggleProgram(id, isActive) {
 
   return readJsonOrThrow(res, "Failed to update program status");
 
+}
+
+export async function deleteProgram(id) {
+  const res = await fetch(`/admin/api/programs/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  return readJsonOrThrow(res, "Failed to delete program");
 }

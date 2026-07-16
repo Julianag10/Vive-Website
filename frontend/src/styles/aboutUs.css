@@ -1,46 +1,126 @@
-
-.about-grid {
-  max-width: 800px;
+.about-page {
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 20px;
-
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-
-  gap: 16px;
-
-  align-items: center;
+  padding: 40px 24px 64px;
 }
 
-.about-box {
-  background: #a6f29b;
-  border: 1px solid #e6e6e6;
-  border-radius: 12px;
-
-  padding: 16px 18px;
-
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+.about-hero {
+  max-width: 760px;
+  margin-bottom: 34px;
 }
 
-.about-box h4 {
-  margin: 0 0 8px 0;
-  font-size: 18px;
-  font-weight: 700;
+.about-eyebrow {
+  margin: 0 0 10px;
+  color: #2f7d4f;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
-.about-box p {
+.about-hero h1 {
   margin: 0;
-  line-height: 1.6;
+  color: #15382d;
+  font-size: 48px;
+  line-height: 1.05;
 }
 
-.inline-h4 {
-  display: inline;
-  /* font-size: 28px; */
-  /* font-weight: 700; */
+.about-hero p:last-child {
+  margin: 18px 0 0;
+  color: #3f4f48;
+  font-size: 19px;
+  line-height: 1.7;
+}
 
-  margin: 0 8px;
-  /* margin: 6px 6px 6px 0; */
+.about-story-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  grid-template-areas:
+    "mission vision"
+    "story story"
+    "impact impact";
+  gap: 18px;
+  align-items: start;
+  margin-bottom: 46px;
+}
 
-  line-height: 1;
-  vertical-align: baseline;
+.about-panel {
+  position: relative;
+  padding: 22px 24px;
+  border: 1px solid #dde8df;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(21, 44, 35, .08);
+}
+
+.about-panel h2 {
+  margin: 0 0 12px;
+  color: #16382d;
+  font-size: 27px;
+  line-height: 1.15;
+}
+
+.about-panel p {
+  margin: 0;
+  color: #43534b;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.about-panel-mission {
+  grid-area: mission;
+  background: #f6fbf7;
+}
+
+.about-panel-vision {
+  grid-area: vision;
+}
+
+.about-panel-story {
+  grid-area: story;
+  background: #17382d;
+}
+
+.about-panel-story h2,
+.about-panel-story p {
+  color: #ffffff;
+}
+
+.about-panel-story p {
+  opacity: .9;
+}
+
+.about-panel-impact {
+  grid-area: impact;
+  background: #f9fafb;
+}
+
+.about-page .staff-section {
+  margin-top: 38px;
+}
+
+.about-page .staff-section > h2 {
+  margin-bottom: 18px;
+  color: #16382d;
+  font-size: 32px;
+}
+
+@media (max-width: 760px) {
+  .about-page {
+    padding: 28px 16px 48px;
+  }
+
+  .about-hero h1 {
+    font-size: 38px;
+  }
+
+  .about-story-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "mission"
+      "vision"
+      "story"
+      "impact";
+  }
+
 }

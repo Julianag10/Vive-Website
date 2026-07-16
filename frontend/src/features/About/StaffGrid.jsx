@@ -47,7 +47,7 @@ export default function StaffGrid({
 
       <h2> Meet Our Team</h2>
 
-      <div className="staff-grid">
+      <div className="staff-card-grid">
         {staff.map((staffMember) => (
           <StaffCard 
             key={staffMember.id} 

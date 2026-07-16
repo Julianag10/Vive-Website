@@ -1,29 +1,42 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { getProgramById } from "../features/Programs/ProgramService";
+import { programImageSrc } from "../features/Programs/programImages";
 import RegistrationPanel from "../features/Registration/RegistrationPanel";
-import RegistrationLookupPanel from "../features/Registration/RegistrationLookup";
+import RegistrationLookup from "../features/Registration/RegistrationLookup";
 import useRegistrationStats from "../features/Registration/useRegistrationStats";
+import {
+  formatDisplayDate,
+  formatDisplayTimeRange,
+} from "../utils/dateFormat";
+
+// HELPER FUNCTION - format schedule for new database design allows different times for each recurring day.
+function formatSchedule(program) {
+  if (!program.schedules?.length) {
+    return [];
+  }
+
+  return program.schedules.map((schedule)=>{
+    return `${schedule.day_of_week}: ${formatDisplayTimeRange(
+      schedule.start_time,
+      schedule.end_time
+    )}`;
+    
+  });
+}
 
 export default function LearnMorePage() {
   const { id } = useParams(); // read program ID from URL
-  const location = useLocation();
   const [searchParams] = useSearchParams();
   const registrationRef = useRef(null);
-
-  const [showRegistration, setShowRegistration] = useState(
-    searchParams.get("register") === "1"
-  );
-  const [showLookup, setShowLookup] = useState(false);
 
   const [program, setProgram] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { stats, loading: loadingStats } = useRegistrationStats("program", id);
-
-
+  const { stats, loading: loadingStats, error: statsError, refreshStats } = useRegistrationStats("program", id);
 
   useEffect(() => {
+    setLoading(true);
     getProgramById(id)
       .then((data) => setProgram(data))
       .catch((err) => setErrorMessage(err.message))
@@ -32,75 +45,118 @@ export default function LearnMorePage() {
   , [id]); // refetch when id changes
 
   useEffect(() => {
-    if (searchParams.get("register") === "1") {
-      setShowRegistration(true);
-    }
-  }, [searchParams]);
+    if (loading || !program) return;
 
-  useEffect(() => {
-    if (showRegistration) {
-      registrationRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [showRegistration]);
-
-  useEffect(() => {
     if (searchParams.get("register") === "1") {
-      setShowRegistration(true);
+      registrationRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [location.pathname, location.search, searchParams]);
+  }, [loading, program, searchParams]);
+
 
   if (loading) return <p>Loading programs…</p>;
   if (errorMessage) return <p> Error: {errorMessage} </p>;
   if (!program) return <p>Program not found.</p>;
 
+  const galleryImages = Array.from(
+    new Set((program.gallery_images || []).filter(Boolean))
+  );
+
   return (
     <div className="learn-more-page">
-      {program.image_url && <img src={program.image_url} alt={program.title} />}
-      <h1>{program.title}</h1>
-      <p>{program.description || "No description available."}</p>
+      <section className="learn-more-hero">
+        <div className="learn-more-copy">
+          <h1>{program.title}</h1>
+          <p>{program.description || "No description available."}</p>
 
-      <p>Start: {program.start_date || "TBD"}</p>
-      <p>End: {program.end_date || "TBD"}</p>
-      <p>Capacity: {program.capacity ?? "Unlimited"}</p>
+          <h2>Activities</h2>
+          {Array.isArray(program.activities) && program.activities.length > 0 && (
+            <section className="learn-more-activities">
+              
+              <ul>
+                {program.activities.map((activity, index) => (
+                  <li key={index}>{activity}</li>
+                ))}
+              </ul>
+            </section>
+          )}
 
-      {Array.isArray(program.activities) && program.activities.length > 0 && (
-        <ul>
-          {program.activities.map((a, i) => (
-            <li key={i}>{a}</li>
-          ))}
-        </ul>
-      )}
+          <div className="learn-more-meta">
+            <p>Location: {program.location || "TBD"}</p>
 
-      {stats && (
-        <p>
-          {stats.remaining === 0
-            ? "This program is at capacity. Joining will place you on the waitlist and you will be emailed if a spot opens up."
-            : `${stats.remaining} spots left`}
-        </p>
-      )}
+            <p>
+              {program.start_date
+                ? formatDisplayDate(program.start_date)
+                : "Program start date: TBD"}
+              {" – "}
+              {program.end_date
+                ? formatDisplayDate(program.end_date)
+                : "Program end date: TBD"}
+            </p>
 
-      <button onClick={() => setShowLookup((current) => !current)}>
-        Already Registered?
-      </button>
+            {formatSchedule(program).map((item)=>(
+              <p key={item}>{item}</p>
+            ))}
 
-      <div ref={registrationRef}>
+            <p>Capacity: {program.capacity ?? "Unlimited"}</p>
+          </div>
+        </div>
 
-      {showLookup && (
-        <RegistrationLookupPanel
-            type="program"
-            item={program}
+        <img
+          className="learn-more-main-image"
+          src={programImageSrc(program.image_url)}
+          alt={program.title}
         />
-      )}
-      
-        {showRegistration && (
-          <RegistrationPanel
-            type="program"
-            item={program}
-          />
-        )}
-      </div>
+      </section>
 
-      
+      <section className="program-gallery" aria-label={`${program.title} photos`}>
+        <h2>Program Photos</h2>
+        <div className="program-gallery-grid">
+          {galleryImages.length > 0 ? (
+            galleryImages.map((imageUrl, index) => (
+              <img
+                key={imageUrl}
+                src={programImageSrc(imageUrl)}
+                alt={`${program.title} photo ${index + 1}`}
+              />
+            ))
+          ) : (
+            <p>No program photos yet.</p>
+          )}
+        </div>
+      </section>
+
+      <div className="learn-more-registration-area" ref={registrationRef}>
+        {stats && (
+          <p className="learn-more-registration-status">
+            {stats.remaining === 0
+              ? `This program is at capacity. Joining will place you on the waitlist and you will be emailed if a spot opens up. ${
+                  stats.waitlisted === 1
+                    ? "1 person is currently on the waitlist."
+                    : `${stats.waitlisted} people are currently on the waitlist.`
+                }`
+              : `${stats.remaining} spots left`}
+          </p>
+        )}
+
+        <RegistrationLookup
+          type="program"
+          item={program}
+        />
+        
+        <RegistrationPanel
+          type="program"
+          item={program}
+          stats={stats}
+          loading={loadingStats}
+          error={statsError}
+          onRegistrationChange={refreshStats}
+        />
+      </div>
     </div>
   );
 }

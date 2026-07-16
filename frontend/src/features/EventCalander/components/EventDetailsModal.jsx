@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import RegistrationPanel from "../../Registration/RegistrationPanel";
-import RegistrationLookupPanel from "../../Registration/RegistrationLookup";
+import RegistrationLookup from "../../Registration/RegistrationLookup";
 import useRegistrationStats from "../../Registration/useRegistrationStats";
+import { 
+  formatTimeRange,
+} from "../dateUtils";
+import { formatDisplayDate } from "../../../utils/dateFormat";
 // DISPLAYS selectedEvent
 // close modal
 // fill in just with “event details”
@@ -29,14 +33,45 @@ import useRegistrationStats from "../../Registration/useRegistrationStats";
 // cancel button
 export default function EventDetailsModal({event, onClose}) {
   const [showRegistration, setShowRegistration] = useState(false);
-  const [showLookup, setShowLookup] = useState(false);
-  const { stats, loading: loadingStats } = useRegistrationStats("event", event?.id);
+  const occurrence = event?.occurrence || null;
+  const isRegisterable = event?.isRegisterable ?? false;
+  const {
+    stats,
+    loading: loadingStats,
+    error: statsError,
+    refreshStats,
+  } = useRegistrationStats("event", isRegisterable ? event?.id : null, {
+    occurrenceId: occurrence?.id,
+  });
 
   const [isClosing, setIsClosing] = useState(false);
 
   if (!event) return null;
 
-  const isRegisterable = event.isRegisterable ?? false;
+  const occurrenceDate = occurrence?.occurrence_date
+    ? new Date(`${occurrence.occurrence_date}T00:00:00`)
+    : event.startDate;
+
+  const occurrenceStart = occurrence?.start_time
+    ? new Date(`1970-01-01T${occurrence.start_time}`)
+    : event.startDate;
+
+  const occurrenceEnd = occurrence?.end_time
+    ? new Date(`1970-01-01T${occurrence.end_time}`)
+    : event.endDate;
+
+  const availableSpotsLabel = stats
+    ? stats.remaining === null || stats.remaining === undefined
+      ? "Not set"
+      : stats.remaining === 1
+      ? "1 spot"
+      : `${stats.remaining} spots`
+    : "";
+  const waitlistLabel = stats
+    ? stats.waitlisted === 1
+      ? "1 person is currently on the waitlist."
+      : `${stats.waitlisted} people are currently on the waitlist.`
+    : "";
 
   function handleClose() {
     if (isClosing) return;
@@ -72,25 +107,49 @@ export default function EventDetailsModal({event, onClose}) {
 
         {event.description && <p>{event.description}</p>}
 
-        <p>
-          <strong>Starts:</strong> {event.startDate.toLocaleDateString()}
-        </p>
-
-        <p>
-          <strong>Ends:</strong> {event.endDate.toLocaleDateString()}
-        </p>
-
-        {event.location && <p>{event.location}</p>}
-
-        {stats && (
-          <p>
-            {stats.remaining === 0
-              ? "This event is at capacity. Joining will place you on the waitlist and you will be emailed if a spot opens up."
-              : `${stats.remaining} spots left`}
-          </p>
+        {Array.isArray(event.notes) && event.notes.length > 0 && (
+          <section className="event-details-notes">
+            <h3>Notes</h3>
+            <ul>
+              {event.notes.map((note, index) => (
+                <li key={`${note}-${index}`}>{note}</li>
+              ))}
+            </ul>
+          </section>
         )}
 
-        {event.isRegisterable ? (
+        <p>
+          <strong>Date:</strong> {formatDisplayDate(occurrenceDate)}
+        </p>
+
+        <p>
+          <strong>Time:</strong> {formatTimeRange(occurrenceStart, occurrenceEnd)}
+        </p>
+
+        {event.location && 
+          <p> <strong>Location:</strong> {event.location}</p>
+        }
+
+        {isRegisterable && stats && (
+          <>
+            <p className="event-capacity-summary">
+              <strong>Capacity:</strong> {stats.capacity ?? "Not set"}
+              {" · "}
+              <strong>Available spots:</strong> {availableSpotsLabel}
+            </p>
+
+            {stats.remaining === 0 && (
+              <p className="event-registration-message">
+                This event is at capacity. Joining will place you on the
+                waitlist and you will be emailed if a spot opens up. {waitlistLabel}
+              </p>
+            )}
+          </>
+        )}
+
+
+
+        {isRegisterable && (
           <>
               {!showRegistration && (
                 <button
@@ -104,30 +163,26 @@ export default function EventDetailsModal({event, onClose}) {
                 </button>
               )}
 
-              <button
-                onClick={() => setShowLookup((current) => !current)}
-              >
-                  Already Registered?
-              </button>
-
           </>
-        ) : (
-          <button disabled>
-            Registration Closed
-          </button>
         )}
-        
-        {showLookup && (
-          <RegistrationLookupPanel
-              type="event"
-              item={event}
+
+        {isRegisterable && (
+          <RegistrationLookup
+            type="event"
+            item={event}
+            registrationData={{ eventOccurrenceId: occurrence?.id }}
           />
         )}
 
-        {showRegistration && (
+        {isRegisterable && showRegistration && (
           <RegistrationPanel
             type="event"
             item={event}
+            registrationData={{ eventOccurrenceId: occurrence?.id }}
+            stats={stats}
+            loading={loadingStats}
+            error={statsError}
+            onRegistrationChange={refreshStats}
           />
         )}
         

@@ -11,7 +11,24 @@
 
 
 // event item click -> set selectedEvent -> edit event form recives event 
+import { formatDisplayTime } from "../../../utils/dateFormat";
+
+function hexToRgba(hex, alpha) {
+  const value = String(hex || "").replace("#", "");
+
+  if (value.length !== 6) return `rgba(240, 193, 93, ${alpha})`;
+
+  const red = parseInt(value.slice(0, 2), 16);
+  const green = parseInt(value.slice(2, 4), 16);
+  const blue = parseInt(value.slice(4, 6), 16);
+
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
+
 export default function EventItem({event, onClick, onMouseEnter}) {
+  const startTime = event.occurrence?.start_time
+    ? formatDisplayTime(event.occurrence.start_time)
+    : formatDisplayTime(event.startDate);
 
   return (
     // each event item is a div -> when Event div is clicked/hovered
@@ -27,8 +44,14 @@ export default function EventItem({event, onClick, onMouseEnter}) {
       onClick={onClick}
       role="button"
       tabIndex={0}
+      style={{
+        backgroundColor: hexToRgba(event.color, 0.22),
+        borderColor: hexToRgba(event.color, 0.55),
+        boxShadow: `inset 4px 0 0 ${event.color || "#f0c15d"}`,
+      }}
     >
-      {event.title}
+      <span className="event-item-time">{startTime}</span>
+      <span>{event.title}</span>
     </div>
   );
 }

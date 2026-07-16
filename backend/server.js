@@ -28,7 +28,7 @@ import adminRegistrationsRouter from "./routes/admin/registrations.routes.js";
 import adminProgramsRouter from "./routes/admin/programs.routes.js";
 import adminEventsRouter from "./routes/admin/events.routes.js";
 import adminStaffRouter from "./routes/admin/staff.routes.js";
-import { ensureEventColumns, ensureRegistrationTables } from "./db/db.js";
+import { ensureEventColumns, ensureProgramColumns, ensureRegistrationTables } from "./db/db.js";
 
 
 // ---------- EXPRESS APP SETUP ----------------------------------------
@@ -191,6 +191,7 @@ app.use((err, _req, res, _next) => {
 const PORT = process.env.PORT || 3000;
 
 await ensureEventColumns();
+await ensureProgramColumns();
 await ensureRegistrationTables();
 
 app.listen(PORT, () => {

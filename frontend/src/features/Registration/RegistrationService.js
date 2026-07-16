@@ -19,13 +19,17 @@ export default class RegistrationService {
     return await res.json();
   }
 
-  async unregister(type, id, email) {
+  async unregister(type, id, email, options = {}) {
     const res = await fetch(`/api/registrations/${type}/${id}/unregister`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({
+        email,
+        eventOccurrenceId: options.eventOccurrenceId,
+        registrationId: options.registrationId,
+      }),
     });
 
     if (!res.ok) {
@@ -37,9 +41,17 @@ export default class RegistrationService {
   }
 
   // PUBLIC
-  async lookupRegistration(type, id, email) {
+  async lookupRegistration(type, id, email, options = {}) {
+    const params = new URLSearchParams({
+      email,
+    });
+
+    if (options.occurrenceId) {
+      params.set("occurrence_id", options.occurrenceId);
+    }
+
     const res = await fetch(
-      `/api/registrations/${type}/${id}/registration?email=${encodeURIComponent(email)}`
+      `/api/registrations/${type}/${id}/registration?${params.toString()}`
     );
 
     if (!res.ok) {
@@ -49,6 +61,22 @@ export default class RegistrationService {
     const data = await res.json();
 
     return new Registration(data);
+  }
+
+  async lookupRegistrationsByEmail(email) {
+    const params = new URLSearchParams({
+      email,
+    });
+
+    const res = await fetch(`/api/registrations/lookup?${params.toString()}`);
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const data = await res.json();
+
+    return data.map((registration) => new Registration(registration));
   }
 
   async getAdminRegistrations(type, id) {
@@ -87,9 +115,16 @@ export default class RegistrationService {
   }
 
 // piublic or amdin ????
-  async getRegistrationStats(type, id) {
+  async getRegistrationStats(type, id, options = {}) {
     // TODO FIX HERE???? shoudlnt it be /admin/api/registrations/${type}/${id}/registration-stats
-    const res = await fetch(`/api/registrations/${type}/${id}/registration-stats`);
+    const params = new URLSearchParams();
+
+    if (options.occurrenceId) {
+      params.set("occurrence_id", options.occurrenceId);
+    }
+
+    const query = params.toString() ? `?${params.toString()}` : "";
+    const res = await fetch(`/api/registrations/${type}/${id}/registration-stats${query}`);
 
     if (!res.ok) {
       throw new Error("Failed to load registration stats.");

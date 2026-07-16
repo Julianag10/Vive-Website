@@ -79,19 +79,24 @@ CREATE TABLE IF NOT EXISTS programs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     description TEXT,
-    start_date DATE,
-    end_date DATE,
+    location TEXT,
+    start_date TIMESTAMP NOT NULL,,
+    end_date TIMESTAMP NOT NULL,,
     capacity INTEGER CHECK (capacity >= 0),
     is_active BOOLEAN NOT NULL DEFAULT true,
     is_featured BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP DEFAULT NOW(),
     image_url TEXT,
+    gallery_images TEXT[] NOT NULL DEFAULT '{}',
     activities TEXT[]
 );
 
 ALTER TABLE programs
 ADD COLUMN IF NOT EXISTS is_featured BOOLEAN NOT NULL DEFAULT false;
+
+ALTER TABLE programs
+ADD COLUMN IF NOT EXISTS gallery_images TEXT[] NOT NULL DEFAULT '{}';
 -- -------------------------------------------
 -- REGISTRATION WRITE:
 -- Append-only = safe
@@ -108,6 +113,7 @@ CREATE TABLE IF NOT EXISTS program_registrations (
   program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
+  notes TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   status TEXT NOT NULL CHECK ( status IN ('waitlisted', 'registered', 'cancelled') ),
 );
@@ -115,8 +121,10 @@ CREATE TABLE IF NOT EXISTS program_registrations (
 CREATE TABLE IF NOT EXISTS event_registrations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    event_occurrence_id UUID,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
+    notes TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     status TEXT NOT NULL CHECK ( status IN ('waitlisted', 'registered', 'cancelled') )
 );
@@ -134,6 +142,8 @@ CREATE TABLE IF NOT EXISTS events (
   title TEXT NOT NULL,
   description TEXT,
   location TEXT,
+  color TEXT NOT NULL DEFAULT '#f0c15d',
+  notes TEXT[] NOT NULL DEFAULT '{}',
   start_date TIMESTAMP NOT NULL,
   end_date TIMESTAMP NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT true,
@@ -151,8 +161,32 @@ ALTER TABLE events
 ADD COLUMN IF NOT EXISTS is_registerable BOOLEAN NOT NULL DEFAULT false;
 
 ALTER TABLE events
+ADD COLUMN IF NOT EXISTS color TEXT NOT NULL DEFAULT '#f0c15d';
+
+ALTER TABLE events
+ADD COLUMN IF NOT EXISTS notes TEXT[] NOT NULL DEFAULT '{}';
+
+ALTER TABLE events
 ALTER COLUMN start_date TYPE TIMESTAMP USING start_date::timestamp,
 ALTER COLUMN end_date TYPE TIMESTAMP USING end_date::timestamp;
+
+CREATE TABLE IF NOT EXISTS event_occurrences (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  occurrence_date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE event_registrations
+ADD COLUMN IF NOT EXISTS event_occurrence_id UUID REFERENCES event_occurrences(id) ON DELETE SET NULL;
+
+ALTER TABLE program_registrations
+ADD COLUMN IF NOT EXISTS notes TEXT;
+
+ALTER TABLE event_registrations
+ADD COLUMN IF NOT EXISTS notes TEXT;
 
 -- ---------------------------------------
 CREATE TABLE IF NOT EXISTS staff (

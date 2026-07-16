@@ -8,6 +8,25 @@ export default function groupEventsByDate(events) {
 
   // loop througth every event sent from backend
   for (const event of events) {
+    if (Array.isArray(event.occurrences) && event.occurrences.length > 0) {
+      for (const occurrence of event.occurrences) {
+        const key = occurrence.occurrence_date
+          ? String(occurrence.occurrence_date).slice(0, 10)
+          : null;
+
+        if (!key) continue;
+
+        if (!grouped[key]) grouped[key] = [];
+
+        grouped[key].push({
+          ...event,
+          occurrence,
+        });
+      }
+
+      continue;
+    }
+
     // extract start and end date BC event might span multiple days
     // TODO where is Date class?? 
     const start = new Date(event.startDate);
@@ -43,6 +62,14 @@ export default function groupEventsByDate(events) {
       // move to next day
       current.setDate(current.getDate() + 1);
     }
+  }
+
+  for (const key of Object.keys(grouped)) {
+    grouped[key].sort((a, b) => {
+      const aTime = a.occurrence?.start_time || a.startDate?.toTimeString?.().slice(0, 5) || "99:99";
+      const bTime = b.occurrence?.start_time || b.startDate?.toTimeString?.().slice(0, 5) || "99:99";
+      return aTime.localeCompare(bTime);
+    });
   }
 
   return grouped;

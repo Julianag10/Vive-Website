@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { compressStaffImage } from "../imageCompression";
 
 const INITIAL = {
   name: "",
@@ -38,7 +39,7 @@ export default function CreateStaffModal({ onSaveCreate }) {
     formData.append("bio", form.bio);
 
     if (image) {
-      formData.append("image", image); // MUST MATCH upload.single("image")
+      formData.append("image", await compressStaffImage(image)); // MUST MATCH upload.single("image")
     }
 
     await onSaveCreate(formData);
@@ -53,15 +54,9 @@ export default function CreateStaffModal({ onSaveCreate }) {
 
       {preview && (
         <img
+          className="staff-upload-preview"
           src={preview}
           alt="preview"
-          style={{
-            width: "100%",
-            height: "200px",
-            objectFit: "cover",
-            borderRadius: "10px",
-            marginBottom: "10px",
-          }}
         />
       )}
 

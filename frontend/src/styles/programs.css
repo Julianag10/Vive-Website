@@ -18,12 +18,13 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   align-items: stretch;
+  grid-auto-rows: 1fr;
   gap: 1.2rem;
 }
 
 .program-card {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   gap: 0.9rem;
   height: 100%;
   padding: 1.1rem;
@@ -32,11 +33,32 @@
   border-radius: 16px;
   border: 1px solid var(--color-outline);
   box-shadow: var(--shadow-soft);
+
+  align-items: stretch;
+  text-align: center;
 }
+
+.program-card .activities{
+  text-align: center;
+
+  display: flex;
+  justify-content: center;
+}
+
+
+.program-card .activities ul{
+  display: inline-block;
+  text-align: left;
+  padding-left: 0;
+  margin: 0;
+} 
+
+
 
 .program-card-media {
   display: grid;
   place-items: center;
+  align-self: start;
 }
 
 .program-card h3 {
@@ -44,10 +66,20 @@
   text-align: center;
 }
 
+.program-card-title {
+  min-height: 2.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
 .program-card-copy {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  align-self: stretch;
   gap: 0.75rem;
+  height: 100%;
+  width: 100%;
 }
 
 .program-card p {
@@ -61,8 +93,17 @@
 
 .program-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-self: end;
+  gap: 0.6rem;
+  margin-top: auto;
+}
+
+.program-card-registration-status {
+  min-height: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .register-btn,
@@ -92,4 +133,11 @@
   .programs-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
+}
+
+
+.program-card-description,
+.program-card-dates {
+  width: 100%;
+  text-align: left;
 }

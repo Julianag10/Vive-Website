@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="title">
+  <title id="title">Denver Children's Affairs logo placeholder</title>
+  <rect width="420" height="220" rx="24" fill="#ffffff"/>
+  <rect x="18" y="18" width="384" height="184" rx="18" fill="#eef6ff" stroke="#2d8ccf" stroke-width="3"/>
+  <circle cx="82" cy="84" r="18" fill="#2d8ccf"/>
+  <circle cx="128" cy="84" r="18" fill="#f0c15d"/>
+  <path d="M58 150c6-28 42-28 48 0M104 150c6-28 42-28 48 0" stroke="#0d7f71" stroke-width="10" stroke-linecap="round"/>
+  <text x="184" y="84" fill="#2b2b2b" font-family="Arial, sans-serif" font-size="25" font-weight="700">Denver Children&apos;s</text>
+  <text x="184" y="120" fill="#2b2b2b" font-family="Arial, sans-serif" font-size="25" font-weight="700">Affairs</text>
+</svg>

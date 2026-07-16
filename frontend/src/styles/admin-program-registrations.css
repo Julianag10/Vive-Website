@@ -6,3 +6,38 @@
   border-collapse: collapse;
   width: 100%;
 }
+
+.admin-event-registration-groups {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.admin-event-registration-group {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #d7d9dd;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.admin-event-registration-group-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+}
+
+.admin-event-registration-group-header h3,
+.admin-event-registration-group-header p {
+  margin: 0;
+}
+
+.admin-event-registration-group-header h3 {
+  font-size: 1.15rem;
+}
+
+.admin-event-registration-group-header p {
+  color: #5f646d;
+  font-weight: 700;
+}

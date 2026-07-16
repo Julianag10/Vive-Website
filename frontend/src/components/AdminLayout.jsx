@@ -1,4 +1,4 @@
-import { Link, useNavigate, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../styles/admin-layout.css";
 
 // TODO MAKE ADMIN COMPONENTS DOLdeR??
@@ -6,6 +6,16 @@ import "../styles/admin-layout.css";
 // TODO why layout? with grid?
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/admin/login";
+
+  const adminLinks = [
+    { to: "/admin", label: "Dashboard", end: true },
+    { to: "/admin/programs", label: "Programs" },
+    { to: "/admin/events", label: "Events" },
+    { to: "/admin/donations", label: "Donations" },
+    { to: "/admin/about", label: "About" },
+  ];
 
   async function handleLogout() {
     await fetch("/admin/api/auth/logout", {
@@ -21,24 +31,37 @@ export default function AdminLayout() {
       {/* ADMIN HEADER */}
       <header className="admin-header">
         <div className="admin-header-inner">
-          <h2 className="admin-title">ViVe Admin</h2>
+          <Link className="admin-title" to="/admin">
+            ViVe Admin
+          </Link>
 
           {/* ADMIN NAV */}
-          <nav className="admin-nav">
-            <Link to="/admin">Dashboard</Link>
-            <Link to="/admin/donations">Donations</Link>
-            <Link to="/admin/programs">Programs</Link>
-            <Link to="/admin/events">Events</Link>
-            <Link to="/admin/about">About</Link>
-            <button onClick={handleLogout}>Logout</button>
-          </nav>
+          {!isLoginPage && (
+            <nav className="admin-nav" aria-label="Admin navigation">
+              {adminLinks.map((link) => (
+                <NavLink
+                  className={({ isActive }) =>
+                    `admin-nav-link${isActive ? " is-active" : ""}`
+                  }
+                  end={link.end}
+                  key={link.to}
+                  to={link.to}
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+              <Link className="admin-public-link" to="/">
+                Public Site
+              </Link>
+              <button type="button" onClick={handleLogout}>Logout</button>
+            </nav>
+          )}
         </div>
       </header>
 
       {/* ADMIN PAGE CONTENT */}
       <main className="admin-content">
-        {" "}
-        <Outlet />{" "}
+        <Outlet />
       </main>
     </div>
   );

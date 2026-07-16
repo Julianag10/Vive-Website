@@ -67,7 +67,8 @@
 }
 
 .event-item {
-  display: block;
+  display: grid;
+  gap: 0.15rem;
   width: 100%;
   padding: 0.5rem 0.6rem;
   border-radius: 12px;
@@ -84,6 +85,12 @@
   min-height: 2.35rem;
   box-sizing: border-box;
   transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.event-item-time {
+  color: var(--color-brand-dark);
+  font-size: 0.72rem;
+  font-weight: 900;
 }
 
 .event-item:hover,
@@ -115,6 +122,9 @@
 .event-details-modal {
   position: relative;
   width: min(540px, 100%);
+  max-height: min(86vh, 760px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: #fffdf8;
   border-radius: 20px;
   padding: 1.5rem;

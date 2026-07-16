@@ -8,25 +8,40 @@ import { getProgramById } from "../services/programs.service.js";
 // LIST ACTIVE PORGRMAS (public)
 // TODO why not _req any more?
 export async function listProgramsController(req, res) {
-  const programs = await listActivePrograms();
-  res.json(programs);
+  try {
+    const programs = await listActivePrograms();
+    res.json(programs);
+  } catch (error) {
+    console.error("Failed to load programs:", error);
+    res.status(500).json({ error: error.message || "Failed to load programs" });
+  }
 }
 
 export async function listFeaturedProgramsController(req, res) {
-  // format the response
-  const featuredPrograms = await listFeaturedPrograms();
-  res.json(featuredPrograms);
+  try {
+    // format the response
+    const featuredPrograms = await listFeaturedPrograms();
+    res.json(featuredPrograms);
+  } catch (error) {
+    console.error("Failed to load featured programs:", error);
+    res.status(500).json({ error: error.message || "Failed to load featured programs" });
+  }
 }
 
 export async function getProgramByIdController(req, res) {
-  const program = await getProgramById(
-    req.params.id
-  );
+  try {
+    const program = await getProgramById(
+      req.params.id
+    );
 
-  // if no row found
-  if (!program) {
-    res.status(404).json({ error: "Program not found" });
-  } else {
-    res.json(program);
+    // if no row found
+    if (!program) {
+      res.status(404).json({ error: "Program not found" });
+    } else {
+      res.json(program);
+    }
+  } catch (error) {
+    console.error("Failed to load program:", error);
+    res.status(500).json({ error: error.message || "Failed to load program" });
   }
 }

@@ -5,6 +5,7 @@ import Calander from "../../features/EventCalander/components/Calander";
 import EditEventModal from "../../features/EventCalander/admin/EditEventModal";
 import CreateEventModal from "../../features/EventCalander/admin/CreateEventModal";
 import DeleteConfirmModal from "../../features/EventCalander/admin/DeleteConfirmModal";
+import { formatMonthYear } from "../../utils/dateFormat";
 
 // ADMIN EVENTS PAGE
 // view events
@@ -34,10 +35,7 @@ export default function AdminEventsPage() {
   const [eventPendingDelete, setEventPendingDelete] = useState(null);
 
   const monthLabel = useMemo(() => {
-    return new Date(year, month - 1, 1).toLocaleString("en-US", {
-      month: "long",
-      year: "numeric",
-    });
+    return formatMonthYear(year, month);
   }, [year, month]);
 
   // fetch ALL events (including inactive) + store in state

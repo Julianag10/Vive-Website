@@ -32,6 +32,7 @@
 .create-program-form textarea,
 .create-program-form input[name="image_url"],
 .create-program-form label,
+.admin-program-gallery-preview,
 .create-program-form button {
   grid-column: 1 / -1;
 }
@@ -55,6 +56,50 @@
 .admin-program-card input::placeholder,
 .admin-program-card textarea::placeholder {
   color: #8d8d8d;
+}
+
+.create-program-form input[type="date"],
+.create-program-form input[type="time"],
+.admin-program-card input[type="date"],
+.admin-program-card input[type="time"],
+.create-program-form input[type="file"],
+.admin-program-card input[type="file"] {
+  color: #8d8d8d;
+}
+
+.create-program-form input[type="date"]::-webkit-datetime-edit,
+.create-program-form input[type="time"]::-webkit-datetime-edit,
+.admin-program-card input[type="date"]::-webkit-datetime-edit,
+.admin-program-card input[type="time"]::-webkit-datetime-edit {
+  color: #8d8d8d;
+}
+
+.create-program-form input[type="date"]::-webkit-calendar-picker-indicator,
+.create-program-form input[type="time"]::-webkit-calendar-picker-indicator,
+.admin-program-card input[type="date"]::-webkit-calendar-picker-indicator,
+.admin-program-card input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(57%) sepia(0%) saturate(0%) hue-rotate(166deg) brightness(96%) contrast(90%);
+  opacity: 0.9;
+}
+
+.create-program-form input[type="file"]::file-selector-button,
+.admin-program-card input[type="file"]::file-selector-button {
+  margin-right: 0.8rem;
+  border: 1px solid #343434;
+  border-radius: 6px;
+  background: #202020;
+  color: #8d8d8d;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.45rem 0.7rem;
+}
+
+.create-program-form input[type="file"]::file-selector-button:hover,
+.admin-program-card input[type="file"]::file-selector-button:hover {
+  border-color: #7e7e7e;
+  color: #d8d8d8;
 }
 
 .create-program-form input:focus,
@@ -85,6 +130,32 @@
   width: 1rem;
   height: 1rem;
   accent-color: #0d7f71;
+}
+
+.admin-program-image-preview {
+  grid-column: 1 / -1;
+  width: min(100%, 260px);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #303030;
+  background: #222;
+}
+
+.admin-program-delete-success {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1200;
+  width: min(420px, calc(100% - 2rem));
+  margin: 0;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(13, 127, 113, 0.5);
+  border-radius: 12px;
+  background: #123c36;
+  color: #bff4e9;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
+  font-weight: 800;
 }
 
 .create-program-form button,
@@ -137,7 +208,7 @@
   box-shadow: 0 22px 42px rgba(0, 0, 0, 0.26);
 }
 
-.admin-program-card > img {
+.admin-program-card-image {
   width: min(100%, 260px);
   aspect-ratio: 4 / 3;
   object-fit: cover;
@@ -216,6 +287,15 @@
   margin: 0;
   color: #f0f0f0;
   font-weight: 600;
+}
+
+.admin-program-card-activities {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.admin-program-card-activities li + li {
+  margin-top: 0.25rem;
 }
 
 .admin-program-status {
@@ -302,6 +382,16 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+.admin-program-card-action--delete {
+  background: rgba(198, 71, 71, 0.18);
+  border-color: rgba(198, 71, 71, 0.42);
+  color: #ffdede;
+}
+
+.admin-program-card-action--delete:hover {
+  background: rgba(198, 71, 71, 0.28);
+}
+
 .admin-program-card form {
   grid-column: 1 / -1;
   display: grid;
@@ -312,9 +402,25 @@
 .admin-program-card form textarea,
 .admin-program-card form input[name="image_url"],
 .admin-program-card form label,
+.admin-program-card .admin-program-gallery-preview,
 .admin-program-form-error,
 .admin-edit-from-buttons {
   grid-column: 1 / -1;
+}
+
+.admin-program-gallery-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 0.6rem;
+}
+
+.admin-program-gallery-preview img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #303030;
+  background: #222;
 }
 
 .admin-program-form-error {
@@ -342,7 +448,7 @@
     grid-template-columns: 1fr;
   }
 
-  .admin-program-card > img {
+  .admin-program-card-image {
     width: min(100%, 100%);
   }
 

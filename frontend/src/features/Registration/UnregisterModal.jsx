@@ -8,6 +8,7 @@ export default function UnregisterModal({
   registration,
   type,
   item,
+  registrationData = {},
   onClose,
 }) {
 
@@ -18,7 +19,10 @@ export default function UnregisterModal({
     setLoading(true);
 
     try{
-      await registrationService.unregister(type, item.id, registration.email);
+      await registrationService.unregister(type, item.id, registration.email, {
+        eventOccurrenceId: registrationData.eventOccurrenceId || registration.eventOccurrenceId,
+        registrationId: registration.id,
+      });
       setComplete(true);
     }
     finally{

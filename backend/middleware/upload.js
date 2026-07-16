@@ -1,16 +1,23 @@
+import fs from "fs";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
 
-const uploadDir = path.join(process.cwd(), "uploads/staff");
+function uploadFolder(req) {
+  if (req.baseUrl.includes("/programs")) {
+    return "programs";
+  }
 
-// ensure folder exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+  return "staff";
 }
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    const uploadDir = path.join(process.cwd(), "uploads", uploadFolder(req));
+
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
     cb(null, uploadDir);
   },
 
@@ -20,7 +27,16 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  fileFilter(req, file, cb) {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed."));
+    }
+  },
+});
 
 // const upload = multer({
 //   storage,

@@ -2,36 +2,42 @@ import { useState } from "react";
 
 import RegistrationService from "./RegistrationService";
 import UnregisterModal from "./UnregisterModal";
+import {
+  formatDisplayDate,
+  formatDisplayTimeRange,
+} from "../../utils/dateFormat";
 
 const registrationService = new RegistrationService();
 
-export default function RegistrationLookupPanel({ type, item }) {
+function registrationTitle(registration) {
+  return registration.resourceTitle || registration.name || "Registration";
+}
 
+export default function RegistrationLookup({ type, item, registrationData = {} }) {
+  const [showLookup, setShowLookup] = useState(false);
   const [email, setEmail] = useState("");
-  const [registration, setRegistration] = useState(null);
+  const [registrations, setRegistrations] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showUnregister, setShowUnregister] = useState(false);
+  const [selectedUnregisterRegistration, setSelectedUnregisterRegistration] = useState(null);
+  const hasRegistrations = registrations.length > 0;
 
   async function handleLookup(e) {
     e.preventDefault();
 
     setLoading(true);
     setError("");
+    setRegistrations([]);
 
     try {
       const result =
-        await registrationService.lookupRegistration(
-          type,
-          item.id,
-          email
-        );
+        await registrationService.lookupRegistrationsByEmail(email);
 
-      if (!result) {
+      if (result.length === 0) {
         setError("No registration found.");
         return;
       }
-      setRegistration(result);
+      setRegistrations(result);
     }
     catch(err){
       setError(err.message);
@@ -41,69 +47,118 @@ export default function RegistrationLookupPanel({ type, item }) {
     }
   }
 
+  function resetLookup() {
+    setEmail("");
+    setRegistrations([]);
+    setError("");
+    setSelectedUnregisterRegistration(null);
+  }
+
   return (
-    <section className="registration-lookup-panel">
-      <h2>Find Your Registration</h2>
+    <section className="registration-lookup-section">
+      {!showLookup && (
+        <button
+          className="already-registered-btn"
+          type="button"
+          onClick={() => setShowLookup(true)}
+        >
+          Confirm registration or waitlist spot
+        </button>
+      )}
 
-      {!registration && (
-        <form onSubmit={handleLookup}>
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e)=>setEmail(e.target.value)}
-            required
-          />
+      {showLookup && (
+        <div className="registration-lookup-panel">
+          <h2>Find Your Registration</h2>
 
-          {error && (
-            <p className="error">
-              {error}
-            </p>
+          {!hasRegistrations && (
+            <form onSubmit={handleLookup}>
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
+                required
+              />
+
+              {error && (
+                <p className="error">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+              >
+                {loading
+                  ? "Searching..."
+                  : "Find Registration"}
+              </button>
+            </form>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-          >
+          {hasRegistrations && (
+            <>
+              <h3>Registrations Found</h3>
+              <p>{email}</p>
+              {registrations.map((registration) => (
+                <div className="registration-lookup-result" key={registration.id}>
+                  <h4>{registrationTitle(registration)}</h4>
+                  <p>{registration.type === "event" ? "Event" : "Program"}</p>
+                  {registration.occurrenceDate && (
+                    <p>
+                      {formatDisplayDate(registration.occurrenceDate, "")}
+                      {registration.startTime && registration.endTime
+                        ? `, ${formatDisplayTimeRange(registration.startTime, registration.endTime, "")}`
+                        : ""}
+                    </p>
+                  )}
+                  <p>Status: {registration.status}</p>
 
-            {loading
-              ? "Searching..."
-              : "Find Registration"}
-          </button>
-        </form>
+                  {registration.status === "waitlisted" && (
+                    <>
+                      <p>
+                        You are #{registration.waitlistPosition} on the waitlist.
+                      </p>
+                      <p>
+                        Capacity: {registration.capacity ?? "Not set"}
+                      </p>
+                    </>
+                  )}
+
+                  <button
+                    onClick={() =>
+                      setSelectedUnregisterRegistration(registration)
+                    }
+                  >
+                    Unregister
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={resetLookup}
+              >
+                Find another registration
+              </button>
+            </>
+          )}
+        </div>
       )}
 
-      {registration && (
-        <>
-          <h3>
-            Registration Found
-          </h3>
-
-          <p>
-              {registration.name || `${registration.firstName || ""} ${registration.lastName || ""}`.trim()}
-          </p>
-
-          <p>
-            {registration.email}
-          </p>
-
-          <button
-            onClick={() =>
-              setShowUnregister(true)
-            }
-          >
-            Unregister
-          </button>
-        </>
-      )}
-
-      {showUnregister && (
+      {selectedUnregisterRegistration && (
         <UnregisterModal
-          registration={registration}
-          type={type}
-          item={item}
+          registration={selectedUnregisterRegistration}
+          type={selectedUnregisterRegistration.type || type}
+          item={{
+            id: selectedUnregisterRegistration.resourceId || item.id,
+            title: selectedUnregisterRegistration.resourceTitle || item.title,
+          }}
+          registrationData={{
+            eventOccurrenceId: selectedUnregisterRegistration.eventOccurrenceId || registrationData.eventOccurrenceId,
+          }}
           onClose={() =>
-            setShowUnregister(false)
+            setSelectedUnregisterRegistration(null)
           }
         />
       )}

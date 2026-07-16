@@ -1,26 +1,9 @@
-// registrationService.register(
-//   "program",
-//   12,
-//   formData
-// )
-
-// registrationService.register(
-//   "event",
-//   7,
-//   formData
-// )
-
-// OWNS
-// form state
-// validation
-// submit
 import { useState } from "react";
 
 export default function RegistrationForm({
   onSubmit,
   submitLabel = "Register",
 }) {
-
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -46,12 +29,22 @@ export default function RegistrationForm({
   async function handleSubmit(e) {
     e.preventDefault();
 
-    setSubmitting(true);
-
     setError("");
 
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim()) {
+      setError("First name, last name, and email are required.");
+      return;
+    }
+
+    setSubmitting(true);
+
     try {
-      await onSubmit(form);
+      await onSubmit({
+        ...form,
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim(),
+      });
     }
     catch(err){
       setError(err.message);
@@ -63,61 +56,88 @@ export default function RegistrationForm({
 
   return (
 
-    <form onSubmit={handleSubmit}>
+    <form className="registration-form" onSubmit={handleSubmit}>
 
-      <input
-        name="firstName"
-        placeholder="First Name"
-        value={form.firstName}
-        onChange={handleChange}
-        required
-      />
+      <label>
+        <span className="registration-label-text">
+          First Name <span aria-hidden="true">*</span>
+        </span>
+        <input
+          name="firstName"
+          placeholder="e.g. Maria"
+          value={form.firstName}
+          onChange={handleChange}
+          required
+        />
+      </label>
 
-      <input
-        name="lastName"
-        placeholder="Last Name"
-        value={form.lastName}
-        onChange={handleChange}
-        required
-      />
+      <label>
+        <span className="registration-label-text">
+          Last Name <span aria-hidden="true">*</span>
+        </span>
+        <input
+          name="lastName"
+          placeholder="e.g. Garcia"
+          value={form.lastName}
+          onChange={handleChange}
+          required
+        />
+      </label>
 
-      <input
-        name="email"
-        type="email"
-        placeholder="Email"
-        value={form.email}
-        onChange={handleChange}
-        required
-      />
+      <label>
+        <span className="registration-label-text">
+          Email <span aria-hidden="true">*</span>
+        </span>
+        <input
+          name="email"
+          type="email"
+          placeholder="name@example.com"
+          value={form.email}
+          onChange={handleChange}
+          required
+        />
+      </label>
 
-      <input
-        name="phone"
-        placeholder="Phone Number"
-        value={form.phone}
-        onChange={handleChange}
-      />
+      <label>
+        <span className="registration-label-text">Phone Number</span>
+        <input
+          name="phone"
+          placeholder="Optional"
+          value={form.phone}
+          onChange={handleChange}
+        />
+      </label>
 
-      <input
-        name="emergencyContact"
-        placeholder="Emergency Contact"
-        value={form.emergencyContact}
-        onChange={handleChange}
-      />
+      <label>
+        <span className="registration-label-text">Emergency Contact</span>
+        <input
+          name="emergencyContact"
+          placeholder="Optional"
+          value={form.emergencyContact}
+          onChange={handleChange}
+        />
+      </label>
 
-      <input
-        name="emergencyPhone"
-        placeholder="Emergency Contact Phone"
-        value={form.emergencyPhone}
-        onChange={handleChange}
-      />
+      <label>
+        <span className="registration-label-text">Emergency Contact Phone</span>
+        <input
+          name="emergencyPhone"
+          placeholder="Optional"
+          value={form.emergencyPhone}
+          onChange={handleChange}
+        />
+      </label>
 
-      <textarea
-        name="notes"
-        placeholder="Anything you'd like us to know?"
-        rows={4}
-        value={form.notes}
-        onChange={handleChange}
-      />
+      <label className="registration-notes-field">
+        <span className="registration-label-text">Notes</span>
+        <textarea
+          name="notes"
+          placeholder="Anything you'd like us to know?"
+          rows={4}
+          value={form.notes}
+          onChange={handleChange}
+        />
+      </label>
 
       {error && (
         <p className="error">

@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import "../../styles/admin-programs.css";
 import ProgramCardList from "../../features/Programs/admin/ProgramsCardList.jsx";
 import CreateProgramForm from "../../features/Programs/admin/CreateProgramForm.jsx";
+import DeleteProgramConfirmModal from "../../features/Programs/admin/DeleteProgramConfirmModal.jsx";
 import {
   getPrograms,
   postCreatedProgram,
   putUpdatedProgram,
   patchToggleProgram,
+  deleteProgram,
 } from "../../features/Programs/ProgramService";
 
 export default function AdminProgramsPage() {
@@ -15,6 +17,8 @@ export default function AdminProgramsPage() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [editingProgramID, setEditingProgramID] = useState(null);
+  const [deletingProgram, setDeletingProgram] = useState(null);
+  const [deleteSuccessMessage, setDeleteSuccessMessage] = useState("");
 
   // programs page -> load progrmas on mount
   useEffect( () => {
@@ -82,9 +86,33 @@ export default function AdminProgramsPage() {
     ));
   }
 
+  async function onDeleteProgram(programToDelete) {
+    const programId = programToDelete.id;
+    const programName = programToDelete.title || "Program";
+
+    await deleteProgram(programId);
+
+    setPrograms((prevPrograms) =>
+      prevPrograms.filter((program) => program.id !== programId)
+    );
+
+    if (editingProgramID === programId) {
+      setEditingProgramID(null);
+    }
+
+    setDeletingProgram(null);
+    setDeleteSuccessMessage(`${programName} was successfully deleted and erased from database`);
+  }
+
   return (
     <div className="admin-programs-page">
       <h1>Programs</h1>
+
+      {deleteSuccessMessage && (
+        <p className="admin-program-delete-success" role="status" aria-live="polite">
+          {deleteSuccessMessage}
+        </p>
+      )}
       
       <CreateProgramForm
         onSaveCreate={onSaveCreate}
@@ -103,8 +131,17 @@ export default function AdminProgramsPage() {
         onSaveEdit={onSaveEdit}
 
         onToggleProgram={onToggleProgram}
+        onDeleteProgram={setDeletingProgram}
         featuredProgramCount={featuredProgramCount}
       />
+
+      {deletingProgram && (
+        <DeleteProgramConfirmModal
+          program={deletingProgram}
+          onConfirm={() => onDeleteProgram(deletingProgram)}
+          onClose={() => setDeletingProgram(null)}
+        />
+      )}
     </div>
   );
 }

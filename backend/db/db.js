@@ -24,6 +24,40 @@ export async function ensureEventColumns() {
     ALTER TABLE events
     ADD COLUMN IF NOT EXISTS capacity INTEGER CHECK (capacity >= 0);
   `);
+
+  await pool.query(`
+    ALTER TABLE events
+    ADD COLUMN IF NOT EXISTS color TEXT NOT NULL DEFAULT '#f0c15d';
+  `);
+
+  await pool.query(`
+    ALTER TABLE events
+    ADD COLUMN IF NOT EXISTS notes TEXT[] NOT NULL DEFAULT '{}';
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS event_occurrences (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+      occurrence_date DATE NOT NULL,
+      start_time TIME NOT NULL,
+      end_time TIME NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
+
+}
+
+export async function ensureProgramColumns() {
+  await pool.query(`
+    ALTER TABLE programs
+    ADD COLUMN IF NOT EXISTS location TEXT;
+  `);
+
+  await pool.query(`
+    ALTER TABLE programs
+    ADD COLUMN IF NOT EXISTS gallery_images TEXT[] NOT NULL DEFAULT '{}';
+  `);
 }
 
 export async function ensureRegistrationTables() {
@@ -47,6 +81,21 @@ export async function ensureRegistrationTables() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       status TEXT NOT NULL CHECK (status IN ('waitlisted', 'registered', 'cancelled'))
     );
+  `);
+
+  await pool.query(`
+    ALTER TABLE event_registrations
+    ADD COLUMN IF NOT EXISTS event_occurrence_id UUID REFERENCES event_occurrences(id) ON DELETE SET NULL;
+  `);
+
+  await pool.query(`
+    ALTER TABLE program_registrations
+    ADD COLUMN IF NOT EXISTS notes TEXT;
+  `);
+
+  await pool.query(`
+    ALTER TABLE event_registrations
+    ADD COLUMN IF NOT EXISTS notes TEXT;
   `);
 }
 

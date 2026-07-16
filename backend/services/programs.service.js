@@ -30,16 +30,38 @@ export async function listFeaturedPrograms() {
   return rows;
 }
 
-export async function getProgramById(id)  {
+export async function getProgramById(id) {
   const { rows } = await pool.query(
     `
-    SELECT * 
-    FROM programs 
-    WHERE id = $1 
-    AND is_active = true 
+    SELECT 
+      programs.*,
+
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'day_of_week', program_schedules.day_of_week,
+            'start_time', program_schedules.start_time,
+            'end_time', program_schedules.end_time
+          )
+        ) FILTER (
+          WHERE program_schedules.id IS NOT NULL
+        ),
+        '[]'
+      ) AS schedules
+
+    FROM programs
+
+    LEFT JOIN program_schedules
+      ON programs.id = program_schedules.program_id
+
+    WHERE programs.id = $1
+    AND programs.is_active = true
+
+    GROUP BY programs.id
+
     LIMIT 1;
-    `, 
-    [id],
+    `,
+    [id]
   );
 
   return rows[0] || null;

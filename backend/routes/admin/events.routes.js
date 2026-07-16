@@ -1,5 +1,6 @@
 // ADMIN
 import express from "express";
+import { requireAdmin } from "../../middleware/requireAdmin.js";
 import {
   getEventsForMonthController,
   postCreatedEventController, 
@@ -9,6 +10,8 @@ import {
 } from "../../controllers/admin/events.controller.js";
 
 const router = express.Router();
+
+router.use(requireAdmin);
 
 router.get("/", getEventsForMonthController);
 

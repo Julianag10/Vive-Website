@@ -1,3 +1,5 @@
+import { formatDisplayTimeRange } from "../../utils/dateFormat";
+
 export function isSameDay(dateA, dateB) {
   if (!dateA || !dateB) return false;
 
@@ -54,15 +56,5 @@ export function getMonthGridDates(year, month) {
 }
 
 export function formatTimeRange(startDate, endDate) {
-  const start = startDate.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-
-  const end = endDate.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-
-  return `${start} - ${end}`;
+  return formatDisplayTimeRange(startDate, endDate);
 }

@@ -1,7 +1,7 @@
 import ProgramCardAdmin from "./ProgramCardAdmin";
 
 
-export default function ProgramCardList({programs, editingProgramID, onStartEdit, onSaveEdit, onCancleEdit, onToggleProgram, featuredProgramCount}) {
+export default function ProgramCardList({programs, editingProgramID, onStartEdit, onSaveEdit, onCancleEdit, onToggleProgram, onDeleteProgram, featuredProgramCount}) {
 
   if (!programs || programs.length === 0) return <p>No programs.</p>;
 
@@ -25,6 +25,7 @@ export default function ProgramCardList({programs, editingProgramID, onStartEdit
           onSaveEdit={onSaveEdit}
           onCancleEdit={onCancleEdit}
           onToggleProgram={onToggleProgram}
+          onDeleteProgram={onDeleteProgram}
           featuredProgramCount={featuredProgramCount}
         />
       ))}

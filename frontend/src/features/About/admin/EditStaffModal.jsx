@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { compressStaffImage } from "../imageCompression";
 
 function imageSrc(imageUrl) {
   if (!imageUrl || imageUrl.startsWith("blob:") || imageUrl.startsWith("http")) {
@@ -46,7 +47,7 @@ export default function EditStaffModal({
     formData.append("display_order", form.display_order);
 
     if (image) {
-      formData.append("image", image);
+      formData.append("image", await compressStaffImage(image));
     }
 
     try {

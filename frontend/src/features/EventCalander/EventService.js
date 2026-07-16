@@ -9,11 +9,14 @@ import Event from "./Event";
 
 export default class EventService {
   normalizeOutgoingEvent(eventData) {
-    const { isRegisterable, ...rest } = eventData;
+    const { isRegisterable, notes_text, ...rest } = eventData;
+    const isEventRegisterable = isRegisterable ?? false;
 
     return {
       ...rest,
-      is_registerable: isRegisterable ?? false,
+      color: rest.color || "#f0c15d",
+      capacity: isEventRegisterable && rest.capacity !== "" ? Number(rest.capacity) : null,
+      is_registerable: isEventRegisterable,
     };
   }
 

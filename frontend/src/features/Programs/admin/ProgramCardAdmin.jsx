@@ -1,7 +1,28 @@
 import EditProgramForm from "./EditProgramForm";
 import { useNavigate } from "react-router-dom";
+import { programImageSrc } from "../programImages";
+import {
+  formatDisplayDate,
+  formatDisplayTime,
+} from "../../../utils/dateFormat";
 
-export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStartEdit, onCancleEdit, onToggleProgram, featuredProgramCount}) {
+function scheduleItems(schedules = []) {
+  if (!Array.isArray(schedules) || schedules.length === 0) {
+    return [];
+  }
+
+  return schedules
+      .map((schedule) => {
+      const day = schedule.day_of_week || "Day TBD";
+      const startTime = formatDisplayTime(schedule.start_time, "");
+      const endTime = formatDisplayTime(schedule.end_time, "");
+      const timeRange = startTime && endTime ? `${startTime} - ${endTime}` : "Time TBD";
+
+      return `${day}: ${timeRange}`;
+    });
+}
+
+export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStartEdit, onCancleEdit, onToggleProgram, onDeleteProgram, featuredProgramCount}) {
   
   //navigat to NEWpage: programregistrations page
   const navigate = useNavigate();
@@ -11,8 +32,6 @@ export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStar
   // render all first, dont show edit form until clicked
   return (
     <div className="admin-program-card">
-      {program.image_url && <img src={program.image_url} alt={program.title} />}
-
       {isEditing ? (
         <EditProgramForm
           program={program}
@@ -35,26 +54,57 @@ export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStar
               </div>
             </div>
 
+            {program.image_url && (
+              <img
+                className="admin-program-card-image"
+                src={programImageSrc(program.image_url)}
+                alt={program.title}
+              />
+            )}
+
             <p className="admin-program-card-description">{program.description}</p>
 
             <dl className="admin-program-card-meta">
               <div>
+                <dt>Location</dt>
+                <dd>{program.location || "No location"}</dd>
+              </div>
+              <div>
                 <dt>Dates</dt>
                 <dd>
-                  {program.start_date || "No start date"} → {program.end_date || "No end date"}
+                  {formatDisplayDate(program.start_date, "No start date")} → {formatDisplayDate(program.end_date, "No end date")}
+                </dd>
+              </div>
+              <div>
+                <dt>Schedule</dt>
+                <dd>
+                  {scheduleItems(program.schedules).length > 0 ? (
+                    scheduleItems(program.schedules).map((schedule, index) => (
+                      <div key={index}>{schedule}</div>
+                    ))
+                  ) : (
+                    "None"
+                  )}
                 </dd>
               </div>
               <div>
                 <dt>Capacity</dt>
                 <dd>{program.capacity ?? "N/A"}</dd>
               </div>
-              <div>
-                <dt>Image</dt>
-                <dd>{program.image_url ? "Provided" : "None"}</dd>
-              </div>
+
               <div>
                 <dt>Activities</dt>
-                <dd>{Array.isArray(program.activities) && program.activities.length > 0 ? `${program.activities.length} items` : "None"}</dd>
+                <dd>
+                  {Array.isArray(program.activities) && program.activities.length > 0 ? (
+                    <ul className="admin-program-card-activities">
+                      {program.activities.map((activity, index) => (
+                        <li key={index}>{activity}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    "None"
+                  )}
+                </dd>
               </div>
             </dl>
           </div>
@@ -78,6 +128,14 @@ export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStar
               onClick={() => navigate(`/admin/registrations/program/${program.id}`)}
             >
               View Registrations
+            </button>
+
+            <button
+              className="admin-program-card-action admin-program-card-action--delete"
+              type="button"
+              onClick={() => onDeleteProgram(program)}
+            >
+              Delete
             </button>
           </div>
         </>

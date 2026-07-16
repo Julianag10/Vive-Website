@@ -1,6 +1,7 @@
 import {
   getRegistrationStats,
   lookupRegistration,
+  lookupRegistrationsByEmail,
   registerForResource,
   unregisterFromResource,
 } from "../services/registrations.service.js";
@@ -32,7 +33,11 @@ export async function unregisterController(req, res) {
     const registration = await unregisterFromResource(
       req.params.type,
       req.params.id,
-      req.body.email
+      req.body.email,
+      {
+        occurrenceId: req.body.eventOccurrenceId || null,
+        registrationId: req.body.registrationId || null,
+      }
     );
 
     return res.json({
@@ -48,7 +53,9 @@ export async function unregisterController(req, res) {
 }
 
 export async function getRegistrationStatsController(req, res) {
-  const stats = await getRegistrationStats(req.params.type, req.params.id);
+  const stats = await getRegistrationStats(req.params.type, req.params.id, {
+    occurrenceId: req.query.occurrence_id || null,
+  });
 
   if (!stats) {
     const resourceLabel = req.params.type === "event" ? "Event" : "Program";
@@ -62,7 +69,10 @@ export async function lookupRegistrationController(req, res) {
   const registration = await lookupRegistration(
     req.params.type,
     req.params.id,
-    req.query.email
+    req.query.email,
+    {
+      occurrenceId: req.query.occurrence_id || null,
+    }
   );
 
   if (!registration) {
@@ -70,4 +80,14 @@ export async function lookupRegistrationController(req, res) {
   }
 
   res.json(registration);
+}
+
+export async function lookupRegistrationsByEmailController(req, res) {
+  const registrations = await lookupRegistrationsByEmail(req.query.email);
+
+  if (registrations.length === 0) {
+    return res.status(404).json({ error: "Registration not found" });
+  }
+
+  res.json(registrations);
 }

@@ -13,6 +13,7 @@ import LearnMorePage from "./pages/LearnMorePage";
 import EventsPage from "./pages/EventsPage";
 import AboutPage from "./pages/AboutPage";
 import VolunteerPage from "./pages/VolunteerPage";
+import ContactPage from "./pages/ContactPage";
 
 
 // Admin pages
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/programs/:id" element={<LearnMorePage/>} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/volunteer" element={<VolunteerPage />} />
         </Route>
 

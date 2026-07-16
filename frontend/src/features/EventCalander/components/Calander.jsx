@@ -22,7 +22,7 @@ export default function EventCalendar({ events, year, month, expandedDay, setExp
   // TODO show on all days?
   const groupedEvents = groupEventsByDate(events);
   const days = getMonthGridDates(year, month);
-  const weekDays = ["Sundy", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   // const days = getMonthDays(new Date().getFullYear(), new Date().getMonth() + 1);
 
@@ -51,4 +51,3 @@ export default function EventCalendar({ events, year, month, expandedDay, setExp
     </div>
   );
 }
-

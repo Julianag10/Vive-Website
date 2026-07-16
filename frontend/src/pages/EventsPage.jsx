@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import EventService from "../features/EventCalander/EventService";
 import Calander from "../features/EventCalander/components/Calander";
 import EventDetailsModal from "../features/EventCalander/components/EventDetailsModal";
+import { formatMonthYear } from "../utils/dateFormat";
 // Fetch data (via service)
 // OWNS + Manages all state for public EVENT CALANDER
 // controls modal display
@@ -47,10 +48,7 @@ export default function EventsPage() {
   }, [year, month]); // loads new active events whenever month or year changes
 
   const monthLabel = useMemo(() => {
-    return new Date(year, month - 1, 1).toLocaleString("en-US", {
-      month: "long",
-      year: "numeric",
-    });
+    return formatMonthYear(year, month);
   }, [year, month]);
 
   function goToPreviousMonth() {

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="title">
+  <title id="title">Colorado Health Foundation logo placeholder</title>
+  <rect width="420" height="220" rx="24" fill="#ffffff"/>
+  <rect x="18" y="18" width="384" height="184" rx="18" fill="#eef8f6" stroke="#0d7f71" stroke-width="3"/>
+  <circle cx="94" cy="110" r="38" fill="#0d7f71"/>
+  <path d="M76 112h36M94 94v36" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+  <text x="150" y="94" fill="#0b6056" font-family="Arial, sans-serif" font-size="26" font-weight="700">Colorado Health</text>
+  <text x="150" y="130" fill="#0b6056" font-family="Arial, sans-serif" font-size="26" font-weight="700">Foundation</text>
+</svg>

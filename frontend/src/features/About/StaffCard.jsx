@@ -22,8 +22,6 @@ export default function StaffCard({
   return (
     <div
       className={className}
-      draggable={draggable}
-      onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
       onDragEnd={onDragEnd}
@@ -47,11 +45,17 @@ export default function StaffCard({
       {isAdmin && (
         <div className="staff-card-actions">
           {draggable && (
-            <span
-              className="staff-drag-handle"
+            <button
+              type="button"
+              className="staff-drag-button"
               aria-label="Drag to reorder"
               title="Drag to reorder"
-            />
+              draggable
+              onDragStart={onDragStart}
+            >
+              <span className="staff-drag-dots" aria-hidden="true" />
+              Drag
+            </button>
           )}
           <button type="button" onClick={onEdit}>Edit</button>
           <button type="button" onClick={onDelete}>Delete</button>

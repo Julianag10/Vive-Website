@@ -9,13 +9,11 @@ export default function DeleteConfirmModal({
     <div className="modal-backdrop"> 
     <div className="modal">
 
-    <h2>Delete Event</h2>
+    <h2>Delete Event "{event.title}"</h2>
 
     <p>
-      Are you sure you want to delete:
+      Are you sure you want to delete this event ?
     </p>
-
-    <strong>{event.title}</strong>
 
     <div className="modal-actions">
       <button
