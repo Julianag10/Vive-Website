@@ -1,4 +1,4 @@
-const UPLOADS_ORIGIN = import.meta.env.VITE_UPLOADS_ORIGIN || "http://localhost:3000";
+const UPLOADS_ORIGIN = import.meta.env.VITE_UPLOADS_ORIGIN || "";
 
 export function programImageSrc(imageUrl) {
   if (!imageUrl) return `${UPLOADS_ORIGIN}/uploads/programs/placeHolder.png`;
