@@ -53,6 +53,17 @@ export async function ensureBaseTables() {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS program_schedules (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
+      day_of_week TEXT NOT NULL,
+      start_time TIME NOT NULL,
+      end_time TIME NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS events (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       title TEXT NOT NULL,
