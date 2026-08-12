@@ -1,6 +1,8 @@
 // ADMIN ENDPOINT CONTROLLERS
 // (HTTP → service translation for admin)
 
+import path from "path";
+
 import {
   listAllPrograms,
   createProgram,
@@ -50,6 +52,13 @@ function filesForField(req, fieldName) {
   return req.files?.[fieldName] || [];
 }
 
+function uploadUrlFromFile(file) {
+  const uploadsDir = path.join(process.cwd(), "uploads");
+  const relativePath = path.relative(uploadsDir, file.path).split(path.sep).join("/");
+
+  return `/uploads/${relativePath}`;
+}
+
 // HELPER FuNCTION - schedule parser
 function parseSchedule(value) {
   if (!value) return [];
@@ -67,12 +76,12 @@ function programDataFromRequest(req) {
   const uploadedGalleryImages = filesForField(req, "gallery_images");
 
   const image_url = mainImage
-    ? `/uploads/programs/${mainImage.filename}`
+    ? uploadUrlFromFile(mainImage)
     : req.body.image_url || null;
 
   const gallery_images = [
     ...parseGalleryImages(req.body.gallery_images),
-    ...uploadedGalleryImages.map((file) => `/uploads/programs/${file.filename}`),
+    ...uploadedGalleryImages.map((file) => uploadUrlFromFile(file)),
   ];
 
   return {

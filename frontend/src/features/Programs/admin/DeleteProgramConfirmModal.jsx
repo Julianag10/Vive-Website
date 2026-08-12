@@ -15,11 +15,19 @@ export default function DeleteProgramConfirmModal({
         
 
         <div className="modal-actions">
-          <button type="button" onClick={onConfirm}>
+          <button
+            className="admin-delete-program-confirm-button"
+            type="button"
+            onClick={onConfirm}
+          >
             Delete
           </button>
 
-          <button type="button" onClick={onClose}>
+          <button
+            className="admin-delete-program-cancel-button"
+            type="button"
+            onClick={onClose}
+          >
             Cancel
           </button>
         </div>

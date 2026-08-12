@@ -1,7 +1,11 @@
 // PUBLIC WRITE
 
 import { pool } from "../db/db.js";
-import { sendEmail } from "./email.service.js";
+import {
+  sendRegistrationConfirmationEmail,
+  sendWaitlistPromotedEmail,
+  sendWaitlistRegistrationEmail,
+} from "./email.service.js";
 
 const REGISTRATION_RESOURCES = {
   program: {
@@ -32,6 +36,108 @@ function getResourceConfig(type) {
 function buildNotFoundError(type) {
   const config = getResourceConfig(type);
   return new Error(config.notFoundMessage);
+}
+
+async function getResourceForRegistrationEmail(type, resourceId) {
+  if (type === "program") {
+    const { rows } = await pool.query(
+      `
+      SELECT
+        programs.*,
+        COALESCE(
+          json_agg(
+            json_build_object(
+              'day_of_week', program_schedules.day_of_week,
+              'start_time', program_schedules.start_time,
+              'end_time', program_schedules.end_time
+            )
+            ORDER BY program_schedules.day_of_week, program_schedules.start_time
+          ) FILTER (WHERE program_schedules.id IS NOT NULL),
+          '[]'
+        ) AS schedule_days
+      FROM programs
+      LEFT JOIN program_schedules
+        ON program_schedules.program_id = programs.id
+      WHERE programs.id = $1
+      GROUP BY programs.id
+      LIMIT 1
+      `,
+      [resourceId]
+    );
+
+    return rows[0] || null;
+  }
+
+  const { rows } = await pool.query(
+    `
+    SELECT
+      events.*,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'date', event_occurrences.occurrence_date,
+            'start_time', event_occurrences.start_time,
+            'end_time', event_occurrences.end_time
+          )
+          ORDER BY event_occurrences.occurrence_date, event_occurrences.start_time
+        ) FILTER (WHERE event_occurrences.id IS NOT NULL),
+        '[]'
+      ) AS occurrences
+    FROM events
+    LEFT JOIN event_occurrences
+      ON event_occurrences.event_id = events.id
+    WHERE events.id = $1
+    GROUP BY events.id
+    LIMIT 1
+    `,
+    [resourceId]
+  );
+
+  return rows[0] || null;
+}
+
+async function sendRegistrationEmailIfNeeded({
+  type,
+  resourceId,
+  name,
+  email,
+  status,
+  waitlistPosition,
+}) {
+  if (!["registered", "waitlisted"].includes(status) || !email) {
+    return;
+  }
+
+  try {
+    const item = await getResourceForRegistrationEmail(type, resourceId);
+
+    if (!item) {
+      return;
+    }
+
+    const sendEmailForStatus = status === "waitlisted"
+      ? sendWaitlistRegistrationEmail
+      : sendRegistrationConfirmationEmail;
+
+    await sendEmailForStatus({
+      email,
+      name,
+      type,
+      item: {
+        ...item,
+        waitlistPosition,
+      },
+      manageUrl: `${process.env.BASE_URL || "http://localhost:5173"}/${type === "event" ? "events" : "programs"}`,
+    });
+  } catch (error) {
+    console.error("Failed to send registration email:", {
+      email,
+      resourceId,
+      status,
+      type,
+      error: error.message,
+    });
+  }
 }
 
 export async function registerForResource(type, resourceId, registrationData) {
@@ -84,23 +190,65 @@ export async function registerForResource(type, resourceId, registrationData) {
     ? "registered"
     : "waitlisted";
 
+  let createdRegistration;
+
   if (occurrenceColumn) {
-    await pool.query(
+    const { rows } = await pool.query(
       `
       INSERT INTO ${registrationsTable} (${parentIdColumn}, ${occurrenceColumn}, name, email, notes, status)
       VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, created_at
       `,
       [resourceId, occurrenceId, name, email, notes, status]
     );
+    createdRegistration = rows[0];
   } else {
-    await pool.query(
+    const { rows } = await pool.query(
       `
       INSERT INTO ${registrationsTable} (${parentIdColumn}, name, email, notes, status)
       VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, created_at
       `,
       [resourceId, name, email, notes, status]
     );
+    createdRegistration = rows[0];
   }
+
+  let waitlistPosition = null;
+
+  if (status === "waitlisted" && createdRegistration) {
+    const waitlistOccurrenceFilter = occurrenceColumn && occurrenceId
+      ? `AND ${occurrenceColumn} = $4`
+      : "";
+    const waitlistPositionValues = occurrenceColumn && occurrenceId
+      ? [resourceId, createdRegistration.created_at, createdRegistration.id, occurrenceId]
+      : [resourceId, createdRegistration.created_at, createdRegistration.id];
+    const { rows } = await pool.query(
+      `
+      SELECT COUNT(*)::int AS position
+      FROM ${registrationsTable}
+      WHERE ${parentIdColumn} = $1
+        AND status = 'waitlisted'
+        AND (
+          created_at < $2
+          OR (created_at = $2 AND id <= $3)
+        )
+        ${waitlistOccurrenceFilter}
+      `,
+      waitlistPositionValues
+    );
+
+    waitlistPosition = Number(rows[0]?.position || 0);
+  }
+
+  await sendRegistrationEmailIfNeeded({
+    type,
+    resourceId,
+    name,
+    email,
+    status,
+    waitlistPosition,
+  });
 
   return { status };
 }
@@ -113,6 +261,7 @@ export const unregisterFromResource = async (
 ) => {
   const { parentTable, registrationsTable, parentIdColumn, occurrenceColumn } = getResourceConfig(type);
   const client = await pool.connect();
+  let promotedRegistrationEmail = null;
 
   try {
     await client.query("BEGIN");
@@ -215,15 +364,38 @@ export const unregisterFromResource = async (
         [nextRegistration.id]
       );
 
-      await sendEmail(
-        nextRegistration.email,
-        nextRegistration.name,
-        "You're off the waitlist!",
-        "A spot opened up and you are now registered."
-      );
+      promotedRegistrationEmail = {
+        email: nextRegistration.email,
+        name: nextRegistration.name,
+        type,
+        resourceId,
+      };
     }
 
     await client.query("COMMIT");
+
+    if (promotedRegistrationEmail) {
+      try {
+        const promotedItem = await getResourceForRegistrationEmail(
+          promotedRegistrationEmail.type,
+          promotedRegistrationEmail.resourceId
+        );
+
+        await sendWaitlistPromotedEmail({
+          email: promotedRegistrationEmail.email,
+          name: promotedRegistrationEmail.name,
+          type: promotedRegistrationEmail.type,
+          item: promotedItem || {},
+        });
+      } catch (emailError) {
+        console.error("Failed to send waitlist promoted email:", {
+          email: promotedRegistrationEmail.email,
+          resourceId: promotedRegistrationEmail.resourceId,
+          type: promotedRegistrationEmail.type,
+          error: emailError.message,
+        });
+      }
+    }
 
     return { removed: true };
   } catch (error) {

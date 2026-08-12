@@ -1,5 +1,6 @@
 // ADMIN
 import {
+  getAllEvents,
   getAllEventsForMonth,
   postCreatedEvent, 
   putUpdatedEvent,
@@ -7,6 +8,15 @@ import {
   deleteEvent,
 } from "../../services/admin/events.service.js";
 
+export async function getAllEventsController(_req, res) {
+  try {
+    const events = await getAllEvents();
+    res.json(events);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch events" });
+  }
+}
 
 export async function getEventsForMonthController(req, res) {
   try {

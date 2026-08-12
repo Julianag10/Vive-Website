@@ -1,0 +1,1853 @@
+.layout {
+  --surface-card: var(--public-card);
+  --surface-border: var(--public-border);
+  --surface-shadow: var(--shadow-soft);
+  --form-bg: #ffffff;
+  --form-text: var(--public-text);
+  --form-label: var(--public-text);
+  --form-border: var(--public-border);
+  --form-placeholder: var(--public-muted);
+  --form-focus: var(--brand-blue);
+  --form-focus-ring: rgba(60, 136, 244, 0.18);
+  --button-primary-bg: var(--brand-blue);
+  --button-primary-hover: var(--brand-blue-dark);
+  --button-secondary-bg: var(--brand-lime);
+  --button-secondary-hover: var(--brand-lime-dark);
+  --button-tertiary-text: var(--brand-blue);
+  --form-surface: #ffffff;
+}
+
+.layout p,
+.layout li {
+  font-size: var(--body-scale-size);
+  line-height: 1.65;
+}
+
+.layout * {
+  box-shadow: none;
+}
+
+.layout h1,
+.layout h2,
+.layout h3,
+.layout .contact-form-panel h2,
+.layout .registration-panel h2,
+.layout .registration-panel h3,
+.layout .registration-lookup-panel h2,
+.layout .registration-lookup-panel h3,
+.layout .donation-form h2 {
+  font-family: var(--heading-font) !important;
+  font-size: var(--heading-size) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+  letter-spacing: 0 !important;
+  margin-top: var(--heading-space-before) !important;
+  margin-bottom: var(--heading-space-after) !important;
+}
+
+.layout section + section {
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.layout .home-grid .features {
+  margin-top: 0 !important;
+}
+
+.layout .donate-main-grid,
+.layout .donate-main-grid + section {
+  margin-top: 0;
+}
+
+.layout button:not(.modal-close):not(.calendar-nav-button):not(.success-modal-close):not(.unregister-modal-close):not(.staff-modal-close),
+.layout .btn,
+.layout .button-primary,
+.layout .button-secondary,
+.layout .button-tertiary,
+.layout .learnmore-btn,
+.layout .register-btn,
+.layout .aboutus-btn,
+.layout .donate-btn,
+.layout .volunteer-btn,
+.layout .nav-donate-button,
+.layout .nav-volunteer-button,
+.layout .footer-donate-button,
+.layout .donation-submit,
+.layout .donation-tier-btn,
+.layout .donation-rewards-button,
+.layout .registration-form button,
+.layout .register-another-person-btn,
+.layout .already-registered-btn,
+.layout .registration-lookup-panel button,
+.layout .contact-form button,
+.layout .event-registration-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  line-height: 1;
+  min-height: var(--button-min-height);
+  padding: var(--button-padding);
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    filter 0.15s ease;
+}
+
+.layout .learnmore-btn,
+.layout .register-btn,
+.layout .aboutus-btn,
+.layout .donate-btn,
+.layout .nav-donate-button,
+.layout .footer-donate-button,
+.layout .donation-submit,
+.layout .donation-rewards-button,
+.layout .registration-form button,
+.layout .register-another-person-btn,
+.layout .registration-lookup-panel button,
+.layout .contact-form button,
+.layout .event-registration-actions button {
+  border: 1px solid var(--brand-blue);
+  background: var(--brand-blue);
+  color: #ffffff;
+}
+
+.layout .learnmore-btn:hover,
+.layout .register-btn:hover,
+.layout .aboutus-btn:hover,
+.layout .donate-btn:hover,
+.layout .nav-donate-button:hover,
+.layout .footer-donate-button:hover,
+.layout .donation-submit:hover,
+.layout .donation-rewards-button:hover,
+.layout .registration-form button:hover:not(:disabled),
+.layout .register-another-person-btn:hover,
+.layout .registration-lookup-panel button:hover:not(:disabled),
+.layout .contact-form button:hover,
+.layout .event-registration-actions button:hover {
+  background: var(--brand-blue-dark);
+  border-color: var(--brand-blue-dark);
+  color: #ffffff;
+}
+
+.layout button:not(.modal-close):not(.calendar-nav-button):not(.success-modal-close):not(.unregister-modal-close):not(.staff-modal-close):hover:not(:disabled),
+.layout .btn:hover,
+.layout .button-primary:hover,
+.layout .button-secondary:hover,
+.layout .button-tertiary:hover {
+  transform: translateY(-1px);
+}
+
+.layout button:not(.modal-close):not(.calendar-nav-button):not(.success-modal-close):not(.unregister-modal-close):not(.staff-modal-close):disabled,
+.layout .btn:disabled,
+.layout .button-primary:disabled,
+.layout .button-secondary:disabled,
+.layout .button-tertiary:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.layout .volunteer-btn,
+.layout .already-registered-btn,
+.layout .donation-tier-btn {
+  border: 1px solid var(--brand-lime);
+  background: var(--brand-lime);
+  color: #000000;
+}
+
+.layout .volunteer-btn:hover,
+.layout .already-registered-btn:hover,
+.layout .donation-tier-btn:hover {
+  background: var(--brand-lime-dark);
+  border-color: var(--brand-lime-dark);
+  color: #ffffff;
+}
+
+.layout .donation-tier-btn.selected {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #ffffff;
+}
+
+.layout .events-page .events-controls {
+  justify-content: center !important;
+  gap: clamp(0.8rem, 1.8vw, 1.25rem) !important;
+}
+
+.layout .events-page .calendar-nav-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: clamp(2.9rem, 4vw, 3.55rem) !important;
+  height: clamp(2.9rem, 4vw, 3.55rem) !important;
+  min-width: clamp(2.9rem, 4vw, 3.55rem) !important;
+  min-height: clamp(2.9rem, 4vw, 3.55rem) !important;
+  padding: 0 !important;
+  border: 2px solid var(--brand-blue) !important;
+  border-radius: var(--radius-pill) !important;
+  background: var(--brand-blue) !important;
+  color: #ffffff !important;
+  font: inherit !important;
+  font-size: clamp(1.65rem, 2.2vw, 2.05rem) !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: 0 10px 24px rgba(60, 136, 244, 0.24) !important;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease !important;
+}
+
+.layout .events-page .calendar-nav-button:hover,
+.layout .events-page .calendar-nav-button:focus-visible {
+  border-color: var(--brand-blue-dark) !important;
+  background: var(--brand-blue-dark) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 14px 28px rgba(60, 136, 244, 0.34) !important;
+}
+
+.layout .events-page .calendar-nav-button:focus-visible {
+  outline: 3px solid rgba(60, 136, 244, 0.28) !important;
+  outline-offset: 3px !important;
+}
+
+.layout .nav-links .nav-donate-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #ffffff;
+  font-weight: 700 !important;
+  line-height: 1;
+  min-height: 2.9rem;
+}
+
+.layout .nav-links .nav-donate-button:hover {
+  border-color: var(--brand-blue-dark);
+  background: var(--brand-blue-dark);
+  color: #ffffff;
+}
+
+.layout .nav-links .nav-volunteer-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-color: #ffffff;
+  background: #ffffff;
+  color: var(--brand-blue);
+  font-weight: 700 !important;
+  line-height: 1;
+  min-height: 2.9rem;
+}
+
+.layout .nav-links .nav-volunteer-button:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--brand-blue-dark);
+}
+
+.layout .registration-form,
+.layout .contact-form,
+.layout .registration-lookup-panel form,
+.layout .volunteer form,
+.layout .donate-form form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--form-gap);
+}
+
+.layout .registration-form label,
+.layout .contact-form label,
+.layout .registration-lookup-panel label,
+.layout .volunteer form label,
+.layout .donate-form form label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--public-text);
+  font-size: var(--form-control-font-size);
+  font-weight: var(--form-label-font-weight);
+  line-height: 1.2;
+}
+
+.layout .registration-form input,
+.layout .registration-form textarea,
+.layout .contact-form input,
+.layout .contact-form textarea,
+.layout .registration-lookup-panel input,
+.layout .volunteer form input,
+.layout .volunteer form textarea,
+.layout .donate-form form input,
+.layout .donate-form form textarea,
+.layout .stripe-like-input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--public-border);
+  border-radius: var(--form-control-radius);
+  background: #ffffff;
+  color: var(--public-text);
+  font: inherit;
+  font-size: var(--form-control-font-size);
+  min-height: var(--form-control-min-height);
+  padding: 0.72rem 0.9rem;
+}
+
+.layout .registration-form input::placeholder,
+.layout .registration-form textarea::placeholder,
+.layout .contact-form input::placeholder,
+.layout .contact-form textarea::placeholder,
+.layout .registration-lookup-panel input::placeholder,
+.layout .volunteer form input::placeholder,
+.layout .volunteer form textarea::placeholder,
+.layout .donate-form form input::placeholder,
+.layout .donate-form form textarea::placeholder,
+.layout .stripe-like-input::placeholder {
+  color: var(--public-muted);
+  opacity: 0.78;
+}
+
+.layout .registration-form input:focus,
+.layout .registration-form textarea:focus,
+.layout .contact-form input:focus,
+.layout .contact-form textarea:focus,
+.layout .registration-lookup-panel input:focus,
+.layout .volunteer form input:focus,
+.layout .volunteer form textarea:focus,
+.layout .donate-form form input:focus,
+.layout .donate-form form textarea:focus,
+.layout .stripe-like-input:focus {
+  border-color: var(--brand-blue);
+  outline: 3px solid rgba(60, 136, 244, 0.18);
+  box-shadow: none;
+}
+
+.layout .contact-form-panel h2,
+.layout .registration-panel h2,
+.layout .registration-panel h3,
+.layout .registration-lookup-panel h2,
+.layout .registration-lookup-panel h3,
+.layout .donation-form h2 {
+  color: var(--public-text);
+  text-align: center;
+}
+
+.layout .registration-notes-field,
+.layout .contact-form-full,
+.layout .registration-form .error,
+.layout .registration-form button,
+.layout .contact-form-success,
+.layout .contact-form button,
+.layout .volunteer form button,
+.layout .donate-form form button {
+  grid-column: 1 / -1;
+}
+
+.layout .registration-form .error,
+.layout .registration-panel .error,
+.layout .registration-lookup-panel .error,
+.layout .contact-form .error,
+.layout .donation-form .error,
+.layout .stripe-error-text {
+  color: #b00020;
+  font-size: var(--text-sm);
+  font-weight: 900;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.layout .registration-form button[type="submit"],
+.layout .contact-form button[type="submit"],
+.layout .registration-lookup-panel button[type="submit"],
+.layout .volunteer form button[type="submit"],
+.layout .donate-form form button[type="submit"],
+.layout .donation-submit {
+  justify-self: center;
+}
+
+.layout .registration-form button:disabled,
+.layout .contact-form button:disabled,
+.layout .registration-lookup-panel button:disabled,
+.layout .volunteer form button:disabled,
+.layout .donate-form form button:disabled,
+.layout .donation-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+@media (max-width: 760px) {
+  .layout .registration-form,
+  .layout .contact-form,
+  .layout .registration-lookup-panel form,
+  .layout .volunteer form,
+  .layout .donate-form form {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Public form standardization layer */
+.layout .contact-form,
+.layout .registration-form,
+.layout .registration-lookup-panel,
+.layout .registration-panel,
+.layout .contact-form-panel,
+.layout .donation-form,
+.layout .donation-controls-card,
+.layout .volunteer form,
+.layout .donate-form form {
+  border-radius: var(--form-radius) !important;
+  padding: var(--form-padding) !important;
+}
+
+.layout .contact-form,
+.layout .registration-form,
+.layout .registration-lookup-panel,
+.layout .registration-panel,
+.layout .contact-form-panel,
+.layout .donation-form,
+.layout .donation-controls-card {
+  background: var(--form-surface) !important;
+}
+
+.layout .registration-panel .registration-form,
+.layout .contact-form-panel .contact-form,
+.layout .registration-lookup-panel form,
+.layout .donation-form .donation-controls-card {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.layout .contact-form,
+.layout .registration-form,
+.layout .registration-lookup-panel form,
+.layout .volunteer form,
+.layout .donate-form form {
+  gap: var(--form-gap) !important;
+}
+
+.layout .contact-form label,
+.layout .registration-form label,
+.layout .registration-lookup-panel label,
+.layout .volunteer form label,
+.layout .donate-form form label {
+  color: var(--public-text) !important;
+  font-size: var(--form-control-font-size) !important;
+  font-weight: var(--form-label-font-weight) !important;
+  line-height: 1.2 !important;
+}
+
+.layout .contact-label-text span,
+.layout .registration-label-text span,
+.layout .required-mark {
+  color: #b00020 !important;
+  font-weight: var(--button-font-weight) !important;
+}
+
+.layout .contact-form input,
+.layout .contact-form textarea,
+.layout .registration-form input,
+.layout .registration-form textarea,
+.layout .registration-lookup-panel input,
+.layout .donation-form input,
+.layout .volunteer form input,
+.layout .volunteer form textarea,
+.layout .donate-form form input,
+.layout .donate-form form textarea {
+  min-height: var(--form-control-min-height) !important;
+  border: 1px solid var(--public-border) !important;
+  border-radius: var(--form-control-radius) !important;
+  background: #ffffff !important;
+  color: var(--public-text) !important;
+  font: inherit !important;
+  font-size: var(--form-control-font-size) !important;
+  padding: 0.72rem 0.9rem !important;
+}
+
+.layout .contact-form textarea,
+.layout .registration-form textarea,
+.layout .volunteer form textarea,
+.layout .donate-form form textarea {
+  min-height: 7.5rem !important;
+}
+
+.layout .contact-form input::placeholder,
+.layout .contact-form textarea::placeholder,
+.layout .registration-form input::placeholder,
+.layout .registration-form textarea::placeholder,
+.layout .registration-lookup-panel input::placeholder,
+.layout .donation-form input::placeholder,
+.layout .volunteer form input::placeholder,
+.layout .volunteer form textarea::placeholder,
+.layout .donate-form form input::placeholder,
+.layout .donate-form form textarea::placeholder {
+  color: var(--public-muted) !important;
+  opacity: 0.78 !important;
+}
+
+.layout .contact-form input:focus,
+.layout .contact-form textarea:focus,
+.layout .registration-form input:focus,
+.layout .registration-form textarea:focus,
+.layout .registration-lookup-panel input:focus,
+.layout .donation-form input:focus,
+.layout .volunteer form input:focus,
+.layout .volunteer form textarea:focus,
+.layout .donate-form form input:focus,
+.layout .donate-form form textarea:focus {
+  border-color: var(--brand-blue) !important;
+  outline: 3px solid rgba(60, 136, 244, 0.18) !important;
+}
+
+.layout .contact-form button[type="submit"],
+.layout .registration-form button[type="submit"],
+.layout .registration-lookup-panel button[type="submit"],
+.layout .donation-submit,
+.layout .volunteer form button[type="submit"],
+.layout .donate-form form button[type="submit"] {
+  border: 1px solid var(--brand-blue) !important;
+  background: var(--brand-blue) !important;
+  color: #ffffff !important;
+}
+
+.layout .contact-form button:disabled,
+.layout .registration-form button:disabled,
+.layout .registration-lookup-panel button:disabled,
+.layout .donation-submit:disabled,
+.layout .volunteer form button:disabled,
+.layout .donate-form form button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55 !important;
+}
+
+.layout button,
+.layout .btn,
+.layout .button-primary,
+.layout .button-secondary,
+.layout .button-tertiary,
+.layout .learnmore-btn,
+.layout .register-btn,
+.layout .aboutus-btn,
+.layout .donate-btn,
+.layout .volunteer-btn,
+.layout .nav-donate-button,
+.layout .nav-volunteer-button,
+.layout .footer-donate-button,
+.layout .donation-submit,
+.layout .donation-tier-btn,
+.layout .donation-rewards-button,
+.layout .registration-form button,
+.layout .register-another-person-btn,
+.layout .already-registered-btn,
+.layout .registration-lookup-panel button,
+.layout .contact-form button,
+.layout .event-registration-actions button {
+  font-weight: var(--button-font-weight) !important;
+}
+
+.layout .nav-links a,
+.layout .brand-title {
+  font-weight: 700 !important;
+}
+
+.layout .nav-links a {
+  color: #ffffff !important;
+  font-size: 1.12rem !important;
+  padding: 0.72rem 1.05rem !important;
+  text-decoration: none !important;
+}
+
+.layout .nav-links a:hover,
+.layout .nav-links a:focus,
+.layout .nav-links a:focus-visible,
+.layout .nav-links a:visited {
+  text-decoration: none !important;
+}
+
+.layout .nav-links .nav-volunteer-button {
+  color: var(--brand-blue) !important;
+}
+
+.layout .nav-links .nav-volunteer-button:hover {
+  color: var(--brand-blue-dark) !important;
+}
+
+.layout .nav-links .nav-donate-button,
+.layout .nav-links .nav-donate-button:hover {
+  color: #ffffff !important;
+}
+
+/* Final public heading and form surface standardization */
+.layout h1,
+.layout .contact-form-panel h2,
+.layout .registration-panel h2,
+.layout .registration-panel h3,
+.layout .registration-lookup-panel h2,
+.layout .registration-lookup-panel h3,
+.layout .donation-form h2 {
+  font-family: var(--heading-font) !important;
+  font-size: var(--heading-size) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+  letter-spacing: 0 !important;
+  margin-top: var(--heading-space-before) !important;
+  margin-bottom: var(--heading-space-after) !important;
+  text-align: center !important;
+}
+
+.layout .registration-panel,
+.layout .registration-lookup-panel,
+.layout .contact-form-panel,
+.layout .donation-form {
+  padding: var(--form-padding) !important;
+  border-radius: var(--form-radius) !important;
+  background: var(--form-surface) !important;
+}
+
+.layout .registration-panel .registration-form,
+.layout .registration-lookup-panel form,
+.layout .contact-form-panel .contact-form,
+.layout .donation-form .donation-controls-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+/* Final public form font standardization: no bold form text. */
+.layout .contact-form-panel h2,
+.layout .registration-panel h2,
+.layout .registration-panel h3,
+.layout .registration-lookup-panel h2,
+.layout .registration-lookup-panel h3,
+.layout .donation-form h2 {
+  font-weight: var(--form-title-font-weight) !important;
+}
+
+.layout .donation-form h2 {
+  font-weight: var(--heading-weight) !important;
+}
+
+.layout .contact-form,
+.layout .registration-form,
+.layout .registration-lookup-panel,
+.layout .donation-form,
+.layout .volunteer form,
+.layout .donate-form form,
+.layout .contact-form input,
+.layout .contact-form textarea,
+.layout .registration-form input,
+.layout .registration-form textarea,
+.layout .registration-lookup-panel input,
+.layout .donation-form input,
+.layout .stripe-like-input,
+.layout .registration-form .error,
+.layout .registration-panel .error,
+.layout .registration-lookup-panel .error,
+.layout .contact-form .error,
+.layout .donation-form .error,
+.layout .stripe-error-text {
+  font-weight: var(--form-font-weight) !important;
+}
+
+.layout .contact-form label,
+.layout .registration-form label,
+.layout .registration-lookup-panel label,
+.layout .volunteer form label,
+.layout .donate-form form label {
+  font-size: var(--form-control-font-size) !important;
+  font-weight: var(--form-label-font-weight) !important;
+}
+
+/* Final public h1 standardization */
+.layout h1 {
+  font-family: var(--heading-font) !important;
+  font-size: var(--heading-size) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  margin-top: var(--heading-space-before) !important;
+  margin-bottom: var(--heading-space-after) !important;
+}
+
+.layout .program-card-title {
+  font-family: var(--font-primary) !important;
+  font-size: var(--text-lg) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+.layout .registration-panel {
+  width: min(900px, calc(100vw - 2rem)) !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding-left: clamp(2rem, 5vw, 4rem) !important;
+  padding-right: clamp(2rem, 5vw, 4rem) !important;
+  padding-bottom: clamp(2.4rem, 5vw, 4rem) !important;
+  border-color: var(--brand-blue-dark) !important;
+  background: var(--brand-blue) !important;
+  color: #ffffff !important;
+}
+
+.layout .registration-panel h2,
+.layout .registration-panel h3,
+.layout .registration-panel p,
+.layout .registration-panel-title,
+.layout .registration-panel-title span {
+  color: #ffffff !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.layout .registration-panel .registration-form label,
+.layout .registration-panel .registration-label-text {
+  color: #ffffff !important;
+}
+
+.layout .registration-panel .required-mark {
+  color: #ffffff !important;
+}
+
+.layout .registration-panel .registration-form button[type="submit"] {
+  border: 2px solid #ffffff !important;
+  background: var(--brand-lime) !important;
+  color: #ffffff !important;
+}
+
+.layout .registration-panel .registration-form button[type="submit"]:hover:not(:disabled) {
+  border-color: #ffffff !important;
+  background: var(--brand-lime-dark) !important;
+  color: #ffffff !important;
+}
+
+.layout .registration-lookup-card {
+  display: grid !important;
+  justify-items: center !important;
+  gap: 1.1rem !important;
+  width: fit-content !important;
+  min-width: min(100%, 30rem) !important;
+  max-width: min(100%, 42rem) !important;
+  padding: clamp(1.75rem, 4vw, 2.6rem) clamp(1.5rem, 4vw, 2.8rem) !important;
+  border: 1px solid rgba(60, 136, 244, 0.32) !important;
+  border-radius: var(--form-radius) !important;
+  background: rgba(60, 136, 244, 0.08) !important;
+  color: var(--color-ink) !important;
+  text-align: center !important;
+}
+
+.layout .registration-lookup-panel {
+  display: grid !important;
+  justify-items: center !important;
+  gap: 1.1rem !important;
+  width: fit-content !important;
+  min-width: min(100%, 22rem) !important;
+  max-width: min(100%, 40rem) !important;
+  padding: clamp(1.75rem, 4vw, 2.6rem) clamp(1.5rem, 4vw, 2.8rem) !important;
+  border: 1px solid rgba(60, 136, 244, 0.32) !important;
+  border-radius: var(--form-radius) !important;
+  background: rgba(60, 136, 244, 0.08) !important;
+  color: var(--color-ink) !important;
+  text-align: center !important;
+}
+
+.layout .registration-lookup-card h2,
+.layout .registration-lookup-card p,
+.layout .registration-lookup-panel h2,
+.layout .registration-lookup-panel h3,
+.layout .registration-lookup-panel p {
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: var(--color-ink) !important;
+  overflow-wrap: anywhere !important;
+}
+
+.layout .registration-lookup-card h2 {
+  white-space: nowrap !important;
+}
+
+.layout .registration-lookup-panel h2,
+.layout .registration-lookup-panel h3 {
+  font-family: var(--heading-font) !important;
+  font-size: var(--heading-size) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+  text-align: center !important;
+}
+
+.layout .registration-lookup-card p {
+  margin-bottom: 0.45rem !important;
+}
+
+.layout .registration-lookup-card .already-registered-btn {
+  border: 2px solid var(--brand-lime) !important;
+  background: var(--brand-lime) !important;
+  color: #000000 !important;
+}
+
+.layout .registration-lookup-card .already-registered-btn:hover {
+  border-color: var(--brand-lime-dark) !important;
+  background: var(--brand-lime-dark) !important;
+  color: #000000 !important;
+}
+
+.layout .registration-lookup-panel form {
+  display: grid !important;
+  justify-items: center !important;
+  gap: 1rem !important;
+  width: min(100%, 420px) !important;
+}
+
+.layout .registration-lookup-card form {
+  display: grid !important;
+  justify-items: center !important;
+  gap: 1rem !important;
+  width: min(100%, 420px) !important;
+}
+
+.layout .registration-lookup-card input,
+.layout .registration-lookup-panel input {
+  width: min(100%, 320px) !important;
+  border: 1px solid var(--color-outline) !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: var(--color-ink) !important;
+  font: inherit !important;
+  padding: 0.7rem 0.8rem !important;
+  text-align: center !important;
+}
+
+.layout .registration-lookup-card input:focus,
+.layout .registration-lookup-panel input:focus {
+  border-color: var(--color-brand) !important;
+  outline: 3px solid rgba(13, 127, 113, 0.16) !important;
+}
+
+.layout .registration-lookup-card button[type="submit"],
+.layout .registration-lookup-panel button[type="submit"] {
+  border: 1px solid var(--color-brand) !important;
+  border-radius: var(--radius-pill) !important;
+  background: var(--color-brand) !important;
+  color: #ffffff !important;
+  font: inherit !important;
+  padding: 0.65rem 1rem !important;
+  justify-self: center !important;
+}
+
+.layout .registration-lookup-card button[type="submit"]:hover:not(:disabled),
+.layout .registration-lookup-panel button[type="submit"]:hover:not(:disabled) {
+  border-color: var(--color-brand-dark) !important;
+  background: var(--color-brand-dark) !important;
+  color: #ffffff !important;
+}
+
+.layout .registration-lookup-result {
+  width: fit-content !important;
+  min-width: min(100%, 20rem) !important;
+  max-width: 100% !important;
+  padding: 1.35rem 1.5rem !important;
+  border: 1px solid rgba(60, 136, 244, 0.34) !important;
+}
+
+.layout .registration-lookup-result h4 {
+  margin: 0 0 0.85rem !important;
+  font-family: var(--heading-font) !important;
+  font-size: clamp(1.25rem, 2vw, 1.55rem) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+}
+
+.layout .registration-lookup-result button:first-of-type {
+  margin-top: 0.9rem !important;
+}
+
+.layout .event-details-modal {
+  width: min(980px, calc(100vw - 2rem)) !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.layout .event-details-info-grid > section {
+  margin-top: 0 !important;
+}
+
+.layout .learn-more-details-grid > section {
+  margin-top: 0 !important;
+}
+
+.layout .learn-more-meta-grid > section {
+  margin-top: 0 !important;
+}
+
+.layout .event-details-modal .registration-lookup-section,
+.layout .event-details-modal .registration-panel,
+.layout .event-details-modal .registration-form {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+.layout .event-details-modal .registration-lookup-card,
+.layout .event-details-modal .registration-lookup-panel {
+  width: fit-content !important;
+  max-width: 100% !important;
+}
+
+.layout .registration-lookup-details-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 0.55rem !important;
+  border: 1px solid var(--color-brand) !important;
+  border-radius: var(--radius-pill) !important;
+  background: #ffffff !important;
+  color: var(--color-brand-dark) !important;
+  font: inherit !important;
+  padding: 0.65rem 1rem !important;
+  text-decoration: none !important;
+}
+
+.layout .registration-lookup-details-link:hover {
+  background: rgba(13, 127, 113, 0.1) !important;
+  color: var(--color-brand-dark) !important;
+}
+
+.layout .learn-more-copy h1 {
+  margin-top: 0 !important;
+  text-align: left !important;
+}
+
+.layout .registration-panel-title {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  width: 100% !important;
+}
+
+.layout .registration-panel-title span {
+  display: inline !important;
+}
+
+.layout .registration-panel-message {
+  width: min(100%, 46rem) !important;
+  justify-self: center !important;
+}
+
+.layout .registration-panel .registration-form {
+  gap: 2.15rem 1.35rem !important;
+  margin-top: 1.35rem !important;
+}
+
+.layout .registration-panel .registration-form input,
+.layout .registration-panel .registration-form textarea {
+  padding-inline: 1rem !important;
+}
+
+.layout .registration-panel .registration-form button[type="submit"] {
+  margin-top: 1.1rem !important;
+}
+
+.layout .contact-page {
+  align-items: center !important;
+  margin-top: 0 !important;
+}
+
+.layout .public-content:has(.about-page) {
+  padding-bottom: 0 !important;
+}
+
+.layout .public-content:has(.donate-page) {
+  width: 100% !important;
+  padding-top: 0 !important;
+}
+
+body.about-page-active .layout .public-content {
+  width: 100% !important;
+  padding-bottom: 0 !important;
+}
+
+.layout:has(.about-page) .public-footer {
+  border-top: 0 !important;
+}
+
+.layout .contact-page-title {
+  grid-column: 1 / -1 !important;
+  color: #000000 !important;
+  font-family: var(--font-display) !important;
+  font-size: clamp(4rem, 8vw, 8.8rem) !important;
+  font-weight: 600 !important;
+  line-height: 1em !important;
+  letter-spacing: -0.05em !important;
+  text-align: center !important;
+  margin: 0 0 clamp(1.5rem, 3vw, 2.5rem) !important;
+}
+
+.layout .public-display-page-title {
+  color: #000000 !important;
+  font-family: var(--font-display) !important;
+  font-size: clamp(4rem, 8vw, 8.8rem) !important;
+  font-weight: 600 !important;
+  line-height: 1em !important;
+  letter-spacing: -0.05em !important;
+  text-align: center !important;
+  margin: 0 0 clamp(1.5rem, 3vw, 2.5rem) !important;
+}
+
+.layout .about-page .staff-section > h2 {
+  color: #ffffff !important;
+  font-family: var(--font-display) !important;
+  font-size: clamp(4.5rem, 8.5vw, 8.8rem) !important;
+  font-weight: 600 !important;
+  line-height: 1em !important;
+  letter-spacing: -0.05em !important;
+  text-align: center !important;
+  margin: 0 !important;
+}
+
+.layout .about-page .staff-section-help {
+  color: #ffffff !important;
+  font-size: clamp(1rem, 1.4vw, 1.35rem) !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+.layout .about-page .staff-public-group > h3 {
+  color: var(--brand-lime) !important;
+  font-family: var(--font-primary) !important;
+  font-size: clamp(2.4rem, 4.3vw, 4.35rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+  margin: 0 !important;
+}
+
+.layout .about-page .staff-card-content h3,
+.layout .about-page .staff-card-content h4 {
+  color: #ffffff !important;
+}
+
+.layout .about-page .staff-card-content h4 {
+  font-size: clamp(1.18rem, 1.5vw, 1.45rem) !important;
+}
+
+.layout .staff-detail-modal .staff-modal-header h3,
+.layout .staff-detail-modal .staff-modal-header h4,
+.layout .staff-detail-modal p {
+  color: #ffffff !important;
+}
+
+.layout .contact-copy {
+  align-content: center !important;
+}
+
+.layout .contact-copy p {
+  color: #000000 !important;
+}
+
+.layout .contact-social-section {
+  gap: 0.3rem !important;
+}
+
+.layout .contact-form-panel {
+  align-self: center !important;
+  border-radius: var(--form-radius) !important;
+  background: var(--brand-blue) !important;
+}
+
+.layout .contact-form-panel h2 {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
+
+.layout .contact-form-panel .contact-form label,
+.layout .contact-form-panel .contact-label-text {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.layout .contact-form-panel .contact-form input,
+.layout .contact-form-panel .contact-form textarea {
+  border: 2px solid #1f5fb8 !important;
+  font-weight: 700 !important;
+}
+
+.layout .contact-form-panel .required-mark {
+  color: #b00020 !important;
+}
+
+.layout .contact-form-panel .contact-form button[type="submit"],
+.layout .contact-form-panel .contact-form .btn-primary {
+  min-width: 11rem !important;
+  border-width: 2px !important;
+  border-color: #ffffff !important;
+  background: var(--brand-lime) !important;
+  color: var(--brand-blue) !important;
+  font-weight: 700 !important;
+}
+
+.layout .contact-form-panel .contact-form button[type="submit"]:hover,
+.layout .contact-form-panel .contact-form .btn-primary:hover {
+  border-color: #ffffff !important;
+  background: var(--brand-lime-dark) !important;
+  color: var(--brand-blue-dark) !important;
+}
+
+.layout .contact-info-icon {
+  color: var(--brand-blue) !important;
+}
+
+.layout .contact-info-item {
+  color: var(--brand-blue) !important;
+  font-weight: 700 !important;
+}
+
+.layout .footer-donate-button {
+  font-weight: 700 !important;
+}
+
+.layout .public-footer-copy {
+  color: var(--brand-blue) !important;
+}
+
+.layout .hero .hero-text h1,
+.layout .hero h1.hero-title,
+.layout .home-donate-image h1,
+.layout .donate-impact-image .donate-intro h1 {
+  font-family: var(--font-display) !important;
+  font-size: clamp(4.5rem, 10vw, 10rem) !important;
+  font-weight: 600 !important;
+  line-height: 1em !important;
+  letter-spacing: -0.05em !important;
+  text-align: left !important;
+  margin: 0 !important;
+}
+
+.layout .hero .donate-btn {
+  border-color: var(--brand-lime) !important;
+  background: var(--brand-lime) !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.layout .hero .donate-btn:hover {
+  border-color: var(--brand-lime-dark) !important;
+  background: var(--brand-lime-dark) !important;
+  color: #000000 !important;
+}
+
+.layout .hero .volunteer-btn {
+  border-color: #ffffff !important;
+  background: #ffffff !important;
+  color: var(--brand-blue) !important;
+  font-weight: 700 !important;
+}
+
+.layout .hero .volunteer-btn:hover {
+  border-color: #ffffff !important;
+  background: #eef5ff !important;
+  color: var(--brand-blue) !important;
+}
+
+.layout .about .vision .aboutus-btn {
+  border: 2px solid var(--brand-blue) !important;
+  background: #ffffff !important;
+  color: var(--brand-blue) !important;
+  font-weight: 700 !important;
+}
+
+.layout .about .vision .vision-panel {
+  padding: clamp(1.5rem, 3vw, 2.25rem) clamp(2.5rem, 6vw, 5rem) !important;
+}
+
+.layout .about .vision .vision-panel h2,
+.layout .about .vision .vision-panel p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.layout .about .vision .aboutus-btn:hover {
+  border-color: var(--brand-blue) !important;
+  background: #eef5ff !important;
+  color: var(--brand-blue) !important;
+}
+
+.layout .about .mission h2 {
+  font-size: 4.214rem !important;
+  line-height: 1.85 !important;
+}
+
+.layout .program-card {
+  background: var(--brand-blue) !important;
+  border: 0 !important;
+  color: #ffffff !important;
+  padding-left: 1.6rem !important;
+  padding-right: 1.6rem !important;
+}
+
+.layout .program-card p,
+.layout .program-card li,
+.layout .program-card strong,
+.layout .program-card .learnmore-btn,
+.layout .program-card .register-btn {
+  font-family: var(--font-secondary) !important;
+}
+
+.layout .program-card p,
+.layout .program-card li,
+.layout .program-card strong,
+.layout .program-card-title {
+  color: #ffffff !important;
+}
+
+.layout .program-card .program-card-registration-status {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.layout .program-card .program-card-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+.layout .program-card .program-card-footer {
+  margin-top: auto !important;
+}
+
+.layout .program-card img {
+  border-radius: var(--radius-md) !important;
+}
+
+.layout .program-card .learnmore-btn {
+  border: 2px solid var(--brand-blue) !important;
+  background: #ffffff !important;
+  color: var(--brand-blue) !important;
+}
+
+.layout .program-card .learnmore-btn:hover {
+  border-color: var(--brand-blue) !important;
+  background: #eef5ff !important;
+  color: var(--brand-blue) !important;
+}
+
+.layout .program-card .register-btn {
+  border-color: var(--brand-lime) !important;
+  background: var(--brand-lime) !important;
+  color: #000000 !important;
+}
+
+.layout .program-card .register-btn:hover {
+  border-color: var(--brand-lime-dark) !important;
+  background: var(--brand-lime-dark) !important;
+  color: #000000 !important;
+}
+
+.layout .programs-page {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.layout .volunteer-cta {
+  display: grid !important;
+  grid-template-rows: minmax(clamp(11rem, 18vw, 18rem), auto) auto !important;
+  align-self: stretch !important;
+  width: min(100%, 900px) !important;
+  justify-self: center !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--brand-lime) !important;
+}
+
+.layout .volunteer-display-text {
+  align-self: center !important;
+  color: var(--brand-lime) !important;
+  font-family: var(--font-display) !important;
+  font-size: clamp(3rem, 6vw, 6.5rem) !important;
+  font-weight: 600 !important;
+  line-height: 1em !important;
+  letter-spacing: -0.05em !important;
+  margin: 0 !important;
+}
+
+.layout .volunteer-form-panel {
+  width: 100% !important;
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.4rem, 3vw, 2.5rem) !important;
+  border-radius: var(--form-radius) !important;
+  background: var(--brand-blue) !important;
+  color: #ffffff !important;
+  gap: clamp(2rem, 4vw, 3rem) !important;
+}
+
+.layout .volunteer-form-panel > h2 {
+  margin: 0 !important;
+  color: #ffffff !important;
+}
+
+.layout .volunteer-form-panel .success-modal h2,
+.layout .volunteer-form-panel .success-modal p,
+.layout .success-modal h2,
+.layout .success-modal p {
+  color: var(--color-ink) !important;
+}
+
+.layout .volunteer form {
+  display: grid !important;
+  justify-self: center !important;
+  gap: clamp(1.15rem, 2vw, 1.65rem) !important;
+  width: min(100%, 900px) !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.layout .volunteer form label {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-align: left !important;
+}
+
+.layout .volunteer form input {
+  border: 2px solid #1f5fb8 !important;
+  background: #ffffff !important;
+  color: var(--color-ink) !important;
+  font-weight: 700 !important;
+}
+
+.layout .volunteer .volunteer-checkbox-columns,
+.layout .volunteer-form .volunteer-checkbox-columns {
+  display: grid !important;
+  grid-column: 1 / -1 !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(1.5rem, 3vw, 2.5rem) !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.layout .volunteer .volunteer-fieldset,
+.layout .volunteer-form .volunteer-fieldset {
+  display: grid !important;
+  align-content: start !important;
+  gap: 1.15rem !important;
+}
+
+.layout .volunteer .volunteer-checkbox-grid,
+.layout .volunteer-form .volunteer-checkbox-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.85rem !important;
+}
+
+.layout .volunteer form button[type="submit"] {
+  justify-self: center !important;
+  min-width: 11rem !important;
+  margin-top: clamp(1rem, 2vw, 1.8rem) !important;
+  border: 2px solid #ffffff !important;
+  background: var(--brand-lime) !important;
+  color: var(--brand-blue) !important;
+  font-weight: 700 !important;
+}
+
+.layout .volunteer form button[type="submit"]:hover {
+  border-color: #ffffff !important;
+  background: var(--brand-lime-dark) !important;
+  color: var(--brand-blue-dark) !important;
+}
+
+.layout .volunteer .volunteer-checkbox-label input[type="checkbox"],
+.layout .volunteer-form .volunteer-checkbox-label input[type="checkbox"] {
+  width: 1rem !important;
+  min-width: 1rem !important;
+  height: 1rem !important;
+  min-height: 1rem !important;
+  margin-top: 0.15rem !important;
+  padding: 0 !important;
+  border-radius: 3px !important;
+  accent-color: var(--brand-lime) !important;
+}
+
+@media (max-width: 760px) {
+  .layout .programs-grid,
+  .layout .featured-programs-section {
+    grid-template-columns: 1fr !important;
+    width: min(100%, 360px) !important;
+    justify-content: center !important;
+    justify-self: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .layout .program-card {
+    width: 100% !important;
+  }
+
+  .layout .volunteer .volunteer-checkbox-columns,
+  .layout .volunteer-form .volunteer-checkbox-columns {
+    grid-template-columns: 1fr !important;
+  }
+
+  .layout .volunteer-form-panel {
+    width: min(100%, 430px) !important;
+    justify-self: center !important;
+  }
+
+  .layout .volunteer form,
+  .layout .volunteer-form {
+    width: 100% !important;
+  }
+
+  .layout .registration-lookup-card h2 {
+    white-space: normal !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  .layout p,
+  .layout li {
+    font-size: var(--body-scale-size);
+  }
+
+  .layout .hero-panel p,
+  .layout .features-benefits p,
+  .layout .fact-impact p,
+  .layout .contact-copy p,
+  .layout .home-donate-panel > p,
+  .layout .registration-panel-message {
+    font-size: var(--important-text-size) !important;
+  }
+
+  .layout .hero .hero-text h1,
+  .layout .hero h1.hero-title,
+  .layout .home-donate-image h1,
+  .layout .donate-impact-image .donate-intro h1 {
+    font-size: clamp(5.75rem, 9vw, 11.5rem) !important;
+  }
+
+  .layout .program-card-title {
+    font-family: var(--font-primary) !important;
+    font-size: var(--text-lg) !important;
+    font-weight: 800 !important;
+    line-height: 1.15 !important;
+  }
+
+  .layout .programs-grid,
+  .layout .featured-programs-section {
+    gap: clamp(1.25rem, 1.6vw, 2rem) !important;
+  }
+
+  .layout .program-card {
+    padding: clamp(1.35rem, 1.6vw, 2rem) clamp(1.8rem, 2vw, 2.4rem) !important;
+  }
+
+  .layout .features img {
+    max-width: calc(520px * var(--wide-media-scale)) !important;
+  }
+
+}
+
+@media (min-width: 1800px) {
+  .layout .hero .hero-text h1,
+  .layout .hero h1.hero-title,
+  .layout .home-donate-image h1,
+  .layout .donate-impact-image .donate-intro h1 {
+    font-size: clamp(6.5rem, 8.4vw, 13rem) !important;
+  }
+}
+
+/* Final copy scale: keep page-specific CSS from shrinking body copy. */
+.layout p,
+.layout li,
+.layout blockquote,
+.layout cite,
+.layout .hero-panel p,
+.layout .features p,
+.layout .fact-impact p,
+.layout .contact-copy p,
+.layout .about-panel p,
+.layout .program-card p,
+.layout .donate-support-copy,
+.layout .donate-tax-lines p,
+.layout .donation-rewards-copy p,
+.layout .registration-panel p,
+.layout .registration-lookup-panel p,
+.layout .events-list p {
+  font-size: var(--body-scale-size) !important;
+  line-height: 1.65 !important;
+}
+
+.layout .registration-panel-title,
+.layout .registration-panel-title span {
+  font-weight: 800 !important;
+}
+
+.layout .required-mark,
+.layout .contact-label-text .required-mark,
+.layout .registration-label-text .required-mark,
+.layout .volunteer-label-text .required-mark,
+.layout .volunteer-fieldset .required-mark,
+.layout .registration-panel .required-mark,
+.layout .contact-form-panel .required-mark {
+  color: #b00020 !important;
+  -webkit-text-fill-color: #b00020 !important;
+  font-weight: 900 !important;
+}
+
+.layout .success-modal-close {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  font-size: 2.25rem !important;
+  z-index: 2 !important;
+}
+
+.layout .success-modal-close:hover {
+  color: var(--brand-blue) !important;
+  -webkit-text-fill-color: var(--brand-blue) !important;
+}
+
+/* Public button ownership: all public button styling belongs here. */
+.layout button:not(.modal-close):not(.calendar-nav-button):not(.success-modal-close):not(.unregister-modal-close):not(.staff-modal-close),
+.layout .btn,
+.layout .btn-primary,
+.layout .btn-secondary,
+.layout .btn-tertiary,
+.layout .button-primary,
+.layout .button-secondary,
+.layout .button-tertiary,
+.layout .learnmore-btn,
+.layout .register-btn,
+.layout .aboutus-btn,
+.layout .donate-btn,
+.layout .volunteer-btn,
+.layout .nav-donate-button,
+.layout .nav-volunteer-button,
+.layout .footer-donate-button,
+.layout .view-all-programs-btn,
+.layout .donation-submit,
+.layout .donation-tier-btn,
+.layout .donation-rewards-button,
+.layout .registration-form button,
+.layout .register-another-person-btn,
+.layout .already-registered-btn,
+.layout .registration-lookup-panel button,
+.layout .registration-lookup-card button,
+.layout .registration-lookup-details-link,
+.layout .registration-lookup-result button,
+.layout .contact-form button,
+.layout .event-registration-actions button,
+.layout .events-list-details-button,
+.layout .event-details-register-button,
+.layout .success-modal-actions button,
+.layout .unregister-modal-actions button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--button-gap, 0.4rem) !important;
+  border-radius: var(--radius-pill) !important;
+  cursor: pointer !important;
+  font: inherit !important;
+  font-size: var(--button-font-size) !important;
+  font-weight: var(--button-font-weight) !important;
+  line-height: 1 !important;
+  min-height: var(--button-min-height) !important;
+  padding: var(--button-padding) !important;
+  text-decoration: none !important;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    filter 0.15s ease !important;
+}
+
+.layout button:not(.modal-close):not(.calendar-nav-button):not(.success-modal-close):not(.unregister-modal-close):not(.staff-modal-close):hover:not(:disabled),
+.layout .btn:hover,
+.layout .btn-primary:hover,
+.layout .btn-secondary:hover,
+.layout .btn-tertiary:hover,
+.layout .button-primary:hover,
+.layout .button-secondary:hover,
+.layout .button-tertiary:hover,
+.layout .learnmore-btn:hover,
+.layout .register-btn:hover,
+.layout .aboutus-btn:hover,
+.layout .donate-btn:hover,
+.layout .volunteer-btn:hover,
+.layout .nav-donate-button:hover,
+.layout .nav-volunteer-button:hover,
+.layout .footer-donate-button:hover,
+.layout .view-all-programs-btn:hover,
+.layout .donation-submit:hover,
+.layout .donation-tier-btn:hover,
+.layout .donation-rewards-button:hover,
+.layout .register-another-person-btn:hover,
+.layout .already-registered-btn:hover,
+.layout .registration-lookup-details-link:hover,
+.layout .events-list-details-button:hover,
+.layout .event-details-register-button:hover,
+.layout .success-modal-actions button:hover,
+.layout .unregister-modal-actions button:hover {
+  transform: translateY(-1px) !important;
+}
+
+.layout button:not(.modal-close):not(.calendar-nav-button):not(.success-modal-close):not(.unregister-modal-close):not(.staff-modal-close):disabled,
+.layout .btn:disabled,
+.layout .btn-primary:disabled,
+.layout .btn-secondary:disabled,
+.layout .btn-tertiary:disabled,
+.layout .button-primary:disabled,
+.layout .button-secondary:disabled,
+.layout .button-tertiary:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55 !important;
+  transform: none !important;
+}
+
+.layout .learnmore-btn,
+.layout .aboutus-btn,
+.layout .view-all-programs-btn,
+.layout .registration-lookup-details-link,
+.layout .unregister-keep-button {
+  border: 2px solid var(--brand-blue) !important;
+  background: #ffffff !important;
+  color: var(--brand-blue) !important;
+}
+
+.layout .learnmore-btn:hover,
+.layout .aboutus-btn:hover,
+.layout .view-all-programs-btn:hover,
+.layout .registration-lookup-details-link:hover,
+.layout .unregister-keep-button:hover {
+  border-color: var(--brand-blue-dark) !important;
+  background: #eef5ff !important;
+  color: var(--brand-blue-dark) !important;
+}
+
+.layout .register-btn,
+.layout .volunteer-btn,
+.layout .already-registered-btn,
+.layout .donation-tier-btn,
+.layout .registration-panel .registration-form button[type="submit"] {
+  border: 2px solid var(--brand-lime) !important;
+  background: var(--brand-lime) !important;
+  color: #000000 !important;
+}
+
+.layout .register-btn:hover,
+.layout .volunteer-btn:hover,
+.layout .already-registered-btn:hover,
+.layout .donation-tier-btn:hover,
+.layout .registration-panel .registration-form button[type="submit"]:hover:not(:disabled) {
+  border-color: var(--brand-lime-dark) !important;
+  background: var(--brand-lime-dark) !important;
+  color: #000000 !important;
+}
+
+.layout .donate-btn,
+.layout .nav-donate-button,
+.layout .footer-donate-button,
+.layout .donation-submit,
+.layout .donation-rewards-button,
+.layout .registration-form button,
+.layout .register-another-person-btn,
+.layout .registration-lookup-panel button,
+.layout .registration-lookup-card button,
+.layout .contact-form button,
+.layout .event-registration-actions button,
+.layout .events-list-details-button,
+.layout .event-details-register-button,
+.layout .success-modal-actions button {
+  border: 1px solid var(--brand-blue) !important;
+  background: var(--brand-blue) !important;
+  color: #ffffff !important;
+}
+
+.layout .donate-btn:hover,
+.layout .nav-donate-button:hover,
+.layout .footer-donate-button:hover,
+.layout .donation-submit:hover,
+.layout .donation-rewards-button:hover,
+.layout .registration-form button:hover:not(:disabled),
+.layout .register-another-person-btn:hover,
+.layout .registration-lookup-panel button:hover:not(:disabled),
+.layout .registration-lookup-card button:hover:not(:disabled),
+.layout .contact-form button:hover,
+.layout .event-registration-actions button:hover,
+.layout .events-list-details-button:hover,
+.layout .event-details-register-button:hover,
+.layout .success-modal-actions button:hover {
+  border-color: var(--brand-blue-dark) !important;
+  background: var(--brand-blue-dark) !important;
+  color: #ffffff !important;
+}
+
+.layout .nav-volunteer-button {
+  border: 1px solid #ffffff !important;
+  background: #ffffff !important;
+  color: var(--brand-blue) !important;
+}
+
+.layout .nav-volunteer-button:hover {
+  border-color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: var(--brand-blue-dark) !important;
+}
+
+.layout .nav-menu-toggle,
+.layout .nav-menu-toggle:hover,
+.layout .nav-menu-toggle:focus {
+  display: none !important;
+  width: 2.75rem !important;
+  min-width: 2.75rem !important;
+  height: 2.75rem !important;
+  min-height: 2.75rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.layout .nav-menu-toggle span {
+  background: #ffffff !important;
+}
+
+@media (max-width: 760px) {
+  .layout .partner-logos {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .layout .brand-logo-main {
+    height: 3rem !important;
+    max-width: 130px !important;
+  }
+
+  .layout .nav-actions .nav-donate-button,
+  .layout .nav-actions .nav-volunteer-button {
+    min-height: 2.5rem !important;
+    padding: 0.55rem 0.72rem !important;
+    font-size: 0.92rem !important;
+  }
+
+  .layout .nav-menu-toggle,
+  .layout .nav-menu-toggle:hover,
+  .layout .nav-menu-toggle:focus {
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .layout .brand-logo-main {
+    max-width: 96px !important;
+  }
+
+  .layout .nav-actions .nav-donate-button,
+  .layout .nav-actions .nav-volunteer-button {
+    min-height: 2.35rem !important;
+    padding: 0.48rem 0.55rem !important;
+    font-size: 0.82rem !important;
+  }
+}
+
+@media (min-width: 761px) {
+  .layout .nav-menu-toggle,
+  .layout .nav-menu-toggle:hover,
+  .layout .nav-menu-toggle:focus {
+    display: none !important;
+  }
+}
+
+.layout .donation-tier-btn.selected {
+  border-color: var(--brand-blue) !important;
+  background: var(--brand-blue) !important;
+  color: #ffffff !important;
+}
+
+.layout .unregister-confirm-button {
+  border: 1px solid #c64747 !important;
+  background: #c64747 !important;
+  color: #ffffff !important;
+}
+
+.layout .unregister-confirm-button:hover {
+  border-color: #a93636 !important;
+  background: #a93636 !important;
+  color: #ffffff !important;
+}
+
+/* Targeted form weight/spacing: public registration form. */
+.layout .registration-form,
+.layout .registration-form label,
+.layout .registration-form input,
+.layout .registration-form textarea,
+.layout .registration-form .error {
+  font-weight: 800 !important;
+}
+
+.layout .registration-form input::placeholder,
+.layout .registration-form textarea::placeholder {
+  font-weight: 800 !important;
+}
+
+.layout .registration-form > button,
+.layout .registration-form button[type="submit"] {
+  justify-self: center !important;
+}
+
+/* Final public form control text rule: typed values should not be bold. */
+.layout input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.layout textarea,
+.layout select,
+.layout .stripe-like-input {
+  font-weight: var(--form-font-weight) !important;
+}
+
+@media (max-width: 760px) {
+  .layout .public-footer-contact {
+    justify-self: center !important;
+    width: fit-content !important;
+    text-align: left !important;
+  }
+
+  .layout .public-footer .contact-info-list {
+    justify-items: start !important;
+    width: fit-content !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .layout .public-footer .contact-info-item {
+    justify-content: start !important;
+    text-align: left !important;
+  }
+
+  .layout .contact-page {
+    padding-left: clamp(1.25rem, 6vw, 2rem) !important;
+    padding-right: clamp(1.25rem, 6vw, 2rem) !important;
+  }
+
+  .layout .contact-form-panel {
+    width: min(100%, 430px) !important;
+    justify-self: center !important;
+  }
+}

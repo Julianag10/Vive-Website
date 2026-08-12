@@ -67,6 +67,8 @@ CREATE TABLE donations (
 
     donor_email TEXT,
 
+    donation_email_sent_at TIMESTAMPTZ,
+
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -193,10 +195,43 @@ CREATE TABLE IF NOT EXISTS staff (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   role TEXT NOT NULL,
+  staff_group TEXT NOT NULL DEFAULT 'staff',
   bio TEXT,
   image_url TEXT,
   display_order INTEGER DEFAULT 0,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
+);
+
+ALTER TABLE staff
+ADD COLUMN IF NOT EXISTS staff_group TEXT NOT NULL DEFAULT 'staff';
+-- ---------------------------------------
+
+CREATE TABLE IF NOT EXISTS volunteer_applications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  roles TEXT[] NOT NULL DEFAULT '{}',
+  availability TEXT[] NOT NULL DEFAULT '{}',
+  skills TEXT,
+  motivation TEXT,
+  manage_token TEXT UNIQUE,
+  status TEXT NOT NULL DEFAULT 'active',
+  withdrawn_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+-- ---------------------------------------
+
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  organization TEXT,
+  message TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 -- ---------------------------------------

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { compressStaffImage } from "../../About/imageCompression";
+import { compressProgramImage } from "../../About/imageCompression";
 import { programImageSrc } from "../programImages";
 
 const DAYS = [
@@ -65,6 +65,7 @@ export default function ProgramForm({
   submitLabel,
   onCancel,
   formClassName,
+  formTitle,
 }) {
   const [form, setForm] = useState(initialForm);
   const [image, setImage] = useState(null);
@@ -131,11 +132,14 @@ export default function ProgramForm({
     formData.append("schedule", JSON.stringify(schedule));
 
     if (image) {
-      formData.append("image", await compressStaffImage(image));
+      formData.append("image", await compressProgramImage(image, form.title));
     }
 
-    for (const galleryImage of galleryImages) {
-      formData.append("gallery_images", await compressStaffImage(galleryImage));
+    for (let index = 0; index < galleryImages.length; index += 1) {
+      formData.append(
+        "gallery_images",
+        await compressProgramImage(galleryImages[index], `gallery-photo-${index + 1}`),
+      );
     }
 
     return formData;
@@ -168,6 +172,19 @@ export default function ProgramForm({
 
   return (
     <form className={formClassName} onSubmit={handleSubmit}>
+      {onCancel && (
+        <button
+          type="button"
+          className="admin-form-close"
+          onClick={onCancel}
+          aria-label="Close form"
+        >
+          ×
+        </button>
+      )}
+
+      {formTitle && <h2 className="admin-form-title">{formTitle}</h2>}
+
       <label> Title </label>
       <input
         name="title"
@@ -209,25 +226,27 @@ export default function ProgramForm({
         onChange={handleChange}
       />
 
-      <div>
-        <label>Program Days</label>
-        {DAYS.map((day) => (
-          <label key={day}>
-            <input
-              type="checkbox"
-              checked={form.schedule_days.includes(day)}
-              onChange={() => {
-                setForm((prev) => ({
-                  ...prev,
-                  schedule_days: prev.schedule_days.includes(day)
-                    ? prev.schedule_days.filter((selectedDay) => selectedDay !== day)
-                    : [...prev.schedule_days, day],
-                }));
-              }}
-            />
-            {day}
-          </label>
-        ))}
+      <label className="admin-program-days-label">Program Days</label>
+      <div className="admin-program-days-field">
+        <div className="admin-program-days-grid">
+          {DAYS.map((day) => (
+            <label key={day}>
+              <input
+                type="checkbox"
+                checked={form.schedule_days.includes(day)}
+                onChange={() => {
+                  setForm((prev) => ({
+                    ...prev,
+                    schedule_days: prev.schedule_days.includes(day)
+                      ? prev.schedule_days.filter((selectedDay) => selectedDay !== day)
+                      : [...prev.schedule_days, day],
+                  }));
+                }}
+              />
+              {day}
+            </label>
+          ))}
+        </div>
       </div>
 
       <label> Start Time </label>
@@ -330,7 +349,6 @@ export default function ProgramForm({
       {onCancel ? (
         <div className="admin-edit-from-buttons">
           <button type="submit">{submitLabel}</button>
-          <button type="button" onClick={onCancel}>cancel</button>
         </div>
       ) : (
         <button type="submit">{submitLabel}</button>

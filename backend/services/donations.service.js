@@ -1,6 +1,7 @@
 // PUBLIC WRITE + STATUS UPDATES
 
 import { pool } from "../db/db.js";
+import { sendDonationConfirmationEmail } from "./email.service.js";
 
 // IDEMPOTENT INSERT OF DONATION RECORD
 // safe for RETRIES (webhook retries & stripe duplicate events)
@@ -90,3 +91,43 @@ export async function markDonationSucceeded({
     return rows[0] ?? null;
 }
 
+export async function sendDonationConfirmationIfNeeded({
+    stripeSessionId,
+    name,
+    email,
+    amount,
+}) {
+    if (!stripeSessionId || !email) {
+        return false;
+    }
+
+    const { rows } = await pool.query(
+        `
+        SELECT id, donation_email_sent_at
+        FROM donations
+        WHERE stripe_session_id = $1
+        LIMIT 1;
+        `,
+        [stripeSessionId]
+    );
+
+    const donation = rows[0];
+
+    if (!donation || donation.donation_email_sent_at) {
+        return false;
+    }
+
+    await sendDonationConfirmationEmail({ name, email, amount });
+
+    await pool.query(
+        `
+        UPDATE donations
+        SET donation_email_sent_at = now()
+        WHERE stripe_session_id = $1
+          AND donation_email_sent_at IS NULL;
+        `,
+        [stripeSessionId]
+    );
+
+    return true;
+}

@@ -2,6 +2,7 @@
 import express from "express";
 import { requireAdmin } from "../../middleware/requireAdmin.js";
 import {
+  getAllEventsController,
   getEventsForMonthController,
   postCreatedEventController, 
   putUpdatedEventController,
@@ -12,6 +13,8 @@ import {
 const router = express.Router();
 
 router.use(requireAdmin);
+
+router.get("/all", getAllEventsController);
 
 router.get("/", getEventsForMonthController);
 

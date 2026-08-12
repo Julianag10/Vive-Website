@@ -31,7 +31,7 @@ export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStar
   // if isEditing chnages between renders then EditProgrmaForm will unmount and remount with new program data.
   // render all first, dont show edit form until clicked
   return (
-    <div className="admin-program-card">
+    <div className={`admin-program-card${isEditing ? " is-editing" : ""}`}>
       {isEditing ? (
         <EditProgramForm
           program={program}
@@ -43,7 +43,7 @@ export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStar
         <>
           <div className="admin-program-card-copy">
             <div className="admin-program-card-heading-row">
-              <h3>{program.title}</h3>
+              <h2 className="admin-program-card-title">{program.title}</h2>
               <div className="admin-program-card-statuses">
                 <span className={`admin-program-status ${program.is_active ? "is-active" : "is-inactive"}`}>
                   {program.is_active ? "Active" : "Inactive"}
@@ -62,7 +62,10 @@ export default function ProgramCardAdmin({program, isEditing, onSaveEdit, onStar
               />
             )}
 
-            <p className="admin-program-card-description">{program.description}</p>
+            <div className="admin-program-card-description">
+              <span>Description</span>
+              <p>{program.description || "No description"}</p>
+            </div>
 
             <dl className="admin-program-card-meta">
               <div>

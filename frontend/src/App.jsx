@@ -13,6 +13,7 @@ import LearnMorePage from "./pages/LearnMorePage";
 import EventsPage from "./pages/EventsPage";
 import AboutPage from "./pages/AboutPage";
 import VolunteerPage from "./pages/VolunteerPage";
+import VolunteerApplicationPage from "./pages/VolunteerApplicationPage";
 import ContactPage from "./pages/ContactPage";
 
 
@@ -20,24 +21,19 @@ import ContactPage from "./pages/ContactPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminHome from "./pages/admin/AdminHome";
 import AdminDonations from "./pages/admin/AdminDonations";
-import AdminPrograms from "./pages/admin/AdminProgramsPage";
 import AdminEventsPage from "./pages/admin/AdminEventsPage";
 import AdminRegistrationsPage from "./pages/admin/AdminRegistrationsPage";
 import AdminAboutPage from "./pages/admin/AdminAboutPage";
-
-import "./styles/App.css";
+import AdminVolunteersPage from "./pages/admin/AdminVolunteersPage";
+import AdminContactPage from "./pages/admin/AdminContactPage";
 import AdminProgramsPage from "./pages/admin/AdminProgramsPage";
 
 export default function App() {
   return (
-    // BROWSER ROUTER = REACT ROUTER
     <BrowserRouter>
       <Routes>
-        {/* ---------- PUBLIC PAGE ROUTES (NAVIGATION REQ) ---------- */}
         <Route
           element={
-            // react renders layout componet first
-            // inside layout, OUTLET mached component is injected
             <Layout />
           }
         >
@@ -50,17 +46,15 @@ export default function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/volunteer" element={<VolunteerPage />} />
+          <Route path="/volunteer/application/:token" element={<VolunteerApplicationPage />} />
         </Route>
 
-        {/* ----------ADMIN LOGIN PAGE NOT PROTECTED ----------*/}
         <Route element={<AdminLayout />}>
           <Route path="/admin/login" element={<AdminLogin />} />
         </Route>
 
-        {/* ---------- PROTECTED ADMIN PAGE ROUTES (NAVIGATION) ---------- */}
         <Route
           element={
-            // a component tree react needs to render:
             <AdminGuard>
               <AdminLayout />
             </AdminGuard>
@@ -68,6 +62,8 @@ export default function App() {
         >
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/admin/donations" element={<AdminDonations />} />
+          <Route path="/admin/volunteers" element={<AdminVolunteersPage />} />
+          <Route path="/admin/contact" element={<AdminContactPage />} />
           <Route path="/admin/programs" element={<AdminProgramsPage />} />
           <Route path="/admin/events" element={<AdminEventsPage />} />
           <Route path="/admin/about" element={<AdminAboutPage />} />
@@ -80,15 +76,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
-/* 
-TODO UNDERSTAND HOW ROUTING WORKS:
-TODO ROUTING VS API CALLS FLOW
-1. main.jsx mounts <app/> in to DOM
-2. <App /> renders <BrowserRouter>(react) and <Routes>
-3. React Router checks the current URL
-4. If the URL matches a public path, it renders PublicLayout component first.
-5. Inside PublicLayout, <Outlet /> is where the matched page component is injected.
-6. If the URL matches an admin path, it renders AdminGuard → AdminLayout first, then injects the admin page into AdminLayout’s <Outlet />
-
-*/

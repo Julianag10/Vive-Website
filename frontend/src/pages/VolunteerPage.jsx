@@ -1,11 +1,8 @@
+import VolunteerSection from "../features/Volunteer/VolunteerSection";
+import "../features/Volunteer/volunteer.css";
+
 export default function VolunteerPage() {
   return (
-    <section className="volunteer-page">
-      <h1>Volunteer With ViVe</h1>
-      <p>
-        Join our community programs and help create access to movement,
-        wellness, and opportunity.
-      </p>
-    </section>
+    <VolunteerSection className="volunteer-page-section" />
   );
 }

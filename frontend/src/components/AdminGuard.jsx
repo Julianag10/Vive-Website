@@ -7,6 +7,8 @@ export default function AdminGuard({ children }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
+
     async function checkAuth() {
       try {
         // fetch == SIDEEFEFCT (talks to outside world. ...)
@@ -17,6 +19,11 @@ export default function AdminGuard({ children }) {
           credentials: "include",
         });
 
+        if (!res.ok) {
+          navigate("/admin/login");
+          return;
+        }
+
         const data = await res.json();
 
         // if admin was NOT authenticaed in backend redures to login
@@ -26,13 +33,19 @@ export default function AdminGuard({ children }) {
         }
 
         // schedules rerender -> next render it will skip authentications(useEffect)
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       } catch {
         navigate("/admin/login");
       }
     }
 
     checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [navigate]);
 
   if (loading) {

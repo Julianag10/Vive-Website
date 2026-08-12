@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "../../styles/admin-programs.css";
 import ProgramCardList from "../../features/Programs/admin/ProgramsCardList.jsx";
 import CreateProgramForm from "../../features/Programs/admin/CreateProgramForm.jsx";
+import EditProgramForm from "../../features/Programs/admin/EditProgramForm.jsx";
 import DeleteProgramConfirmModal from "../../features/Programs/admin/DeleteProgramConfirmModal.jsx";
 import {
   getPrograms,
@@ -33,6 +34,7 @@ export default function AdminProgramsPage() {
   if (errorMessage) return <p> Error: {errorMessage} </p>;
 
   const featuredProgramCount = programs.filter((program) => program.is_featured).length;
+  const editingProgram = programs.find((program) => program.id === editingProgramID);
 
   // CALLBACK: add program to programs array 
   async function onSaveCreate(newFormData) {
@@ -123,7 +125,7 @@ export default function AdminProgramsPage() {
         programs={programs}
         
         // "edit program" button is clicked, call onSaveEdit from program card to set editingID -> change state -> rerender with edit form
-        editingProgramID={editingProgramID} 
+        editingProgramID={null} 
 
         onStartEdit={onStartEdit}
         onCancleEdit={onCancleEdit}
@@ -134,6 +136,25 @@ export default function AdminProgramsPage() {
         onDeleteProgram={setDeletingProgram}
         featuredProgramCount={featuredProgramCount}
       />
+
+      {editingProgram && (
+        <div
+          className="modal-backdrop is-open"
+          onClick={onCancleEdit}
+        >
+          <div
+            className="modal admin-edit-modal admin-program-edit-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <EditProgramForm
+              program={editingProgram}
+              onSaveEdit={onSaveEdit}
+              onCancleEdit={onCancleEdit}
+              featuredProgramCount={featuredProgramCount}
+            />
+          </div>
+        </div>
+      )}
 
       {deletingProgram && (
         <DeleteProgramConfirmModal

@@ -1,11 +1,131 @@
 .admin-program-registrations {
+  display: grid;
+  gap: 1rem;
   padding: 2rem;
+  color: var(--admin-text);
 }
 
 .admin-program-registrations table {
   border-collapse: collapse;
   width: 100%;
 }
+
+.admin-registration-top-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+
+.admin-registration-heading {
+  display: grid;
+  gap: 0.25rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.admin-registration-heading p,
+.admin-registration-heading h1 {
+  margin: 0;
+}
+
+.admin-registration-heading p {
+  color: #c8c8c8;
+}
+
+.admin-registration-heading h1 {
+  color: #ffffff;
+}
+
+.admin-registration-email-success {
+  justify-self: center;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(192, 217, 105, 0.45);
+  border-radius: var(--radius-md);
+  background: rgba(192, 217, 105, 0.14);
+  color: #dff0a0;
+  text-align: center;
+}
+
+.admin-registration-split-sections {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.admin-registration-status-section {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-card);
+}
+
+.admin-registration-status-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.admin-registration-status-heading h4,
+.admin-registration-status-heading p {
+  margin: 0;
+}
+
+.admin-registration-status-heading h4 {
+  color: #ffffff;
+  font-size: clamp(1.3rem, 1.7vw, 1.65rem);
+}
+
+.admin-registration-status-heading p {
+  color: #c8c8c8;
+}
+
+.admin-program-registrations-table {
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  background: #151515;
+}
+
+.admin-program-registrations-table th,
+.admin-program-registrations-table td {
+  padding: 0.8rem 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--admin-text);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-program-registrations-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: #d8d8d8;
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-program-registrations-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.admin-registration-empty-slot td {
+  color: #8f969e;
+  font-style: italic;
+}
+
+.admin-registration-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 
 .admin-event-registration-groups {
   display: grid;
@@ -16,9 +136,9 @@
   display: grid;
   gap: 0.75rem;
   padding: 1rem;
-  border: 1px solid #d7d9dd;
-  border-radius: 12px;
-  background: #ffffff;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: #101010;
 }
 
 .admin-event-registration-group-header {
@@ -34,10 +154,123 @@
 }
 
 .admin-event-registration-group-header h3 {
+  color: #ffffff;
   font-size: 1.15rem;
 }
 
 .admin-event-registration-group-header p {
-  color: #5f646d;
+  color: #c8c8c8;
   font-weight: 700;
+}
+
+
+.modal.admin-email-composer-modal {
+  display: grid;
+  gap: 1.15rem;
+  width: min(620px, calc(100vw - 2rem));
+  padding: 2rem;
+  border: 1px solid #2d2d2d;
+  border-radius: 18px;
+  background: #000000 !important;
+  color: #f5f5f5 !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.68);
+}
+
+.modal.admin-email-composer-modal h2,
+.modal.admin-email-composer-modal p {
+  margin: 0;
+  text-align: center;
+}
+
+.modal.admin-email-composer-modal h2 {
+  color: #ffffff;
+}
+
+.modal.admin-email-composer-modal > p {
+  color: #c8c8c8;
+}
+
+.admin-email-composer-close {
+  position: absolute !important;
+  top: 0.75rem !important;
+  right: 0.9rem !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  cursor: pointer;
+  font-size: 2rem !important;
+  line-height: 1;
+  padding: 0.1rem !important;
+}
+
+.admin-email-composer-close:hover {
+  background: transparent !important;
+  color: var(--brand-lime) !important;
+}
+
+.admin-email-composer-form {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.admin-email-composer-form label {
+  display: grid;
+  gap: 0.55rem;
+  color: #f5f5f5;
+  font-size: var(--text-sm);
+}
+
+.modal.admin-email-composer-modal .admin-email-composer-form input,
+.modal.admin-email-composer-modal .admin-email-composer-form textarea {
+  width: 100%;
+  border: 1px solid #343434;
+  border-radius: 12px;
+  background: #0f0f0f !important;
+  color: #f5f5f5 !important;
+  font: inherit;
+  min-height: 2.75rem;
+  padding: 0.82rem 0.95rem;
+}
+
+.modal.admin-email-composer-modal .admin-email-composer-form input::placeholder,
+.modal.admin-email-composer-modal .admin-email-composer-form textarea::placeholder {
+  color: #9a9a9a;
+}
+
+.modal.admin-email-composer-modal .admin-email-composer-form textarea {
+  min-height: 12rem;
+  resize: vertical;
+}
+
+.modal.admin-email-composer-modal .admin-email-composer-form input:focus,
+.modal.admin-email-composer-modal .admin-email-composer-form textarea:focus {
+  border-color: var(--brand-blue);
+  outline: 3px solid rgba(60, 136, 244, 0.22);
+}
+
+.admin-email-composer-form .error {
+  margin: 0;
+  color: #ffb1b1;
+  text-align: center;
+}
+
+.admin-email-composer-actions {
+  justify-content: center;
+}
+
+
+@media (max-width: 760px) {
+  .admin-program-registrations {
+    padding: 1rem;
+  }
+
+  .admin-program-registrations-table {
+    display: block;
+    overflow-x: auto;
+  }
 }

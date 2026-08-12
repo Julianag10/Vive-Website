@@ -1,23 +1,62 @@
 import { useState } from "react";
-import {
-  ContactInfoList,
-  SocialLinks,
-} from "../components/PublicContactSections";
+import SuccessModal from "../components/SuccessModal";
+import { ContactInfoList, SocialLinks } from "../components/PublicContactSections";
 import "../styles/contact.css";
+
+function RequiredMark() {
+  return <span className="required-mark" aria-hidden="true">*</span>;
+}
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    setSubmitted(true);
+    setError("");
+    setSubmitting(true);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.get("firstName"),
+          lastName: formData.get("lastName"),
+          email: formData.get("email"),
+          phone: formData.get("phone"),
+          organization: formData.get("organization"),
+          message: formData.get("message"),
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || "Unable to submit contact message.");
+      }
+
+      form.reset();
+      setSubmitted(true);
+    } catch (submitError) {
+      setError(submitError.message);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <div className="contact-page">
+      <h1 className="contact-page-title">Contact Us</h1>
+
       <section className="contact-copy">
         <div className="contact-copy-text">
-          <h1>Contact Us</h1>
           <p>
             Please contact us for more information about our programs, to inquire
             about partnerships, to offer ViVe programs to people in your
@@ -26,7 +65,7 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <ContactInfoList />
+        <ContactInfoList showLabels />
         <SocialLinks />
       </section>
 
@@ -35,28 +74,28 @@ export default function ContactPage() {
         <form className="contact-form" onSubmit={handleSubmit}>
           <label>
             <span className="contact-label-text">
-              First Name <span aria-hidden="true">*</span>
+              First Name <RequiredMark />
             </span>
             <input name="firstName" type="text" required />
           </label>
 
           <label>
             <span className="contact-label-text">
-              Last Name <span aria-hidden="true">*</span>
+              Last Name <RequiredMark />
             </span>
             <input name="lastName" type="text" required />
           </label>
 
           <label>
             <span className="contact-label-text">
-              Email <span aria-hidden="true">*</span>
+              Email <RequiredMark />
             </span>
             <input name="email" type="email" required />
           </label>
 
           <label>
             <span className="contact-label-text">
-              Phone <span aria-hidden="true">*</span>
+              Phone <RequiredMark />
             </span>
             <input name="phone" type="tel" required />
           </label>
@@ -68,20 +107,28 @@ export default function ContactPage() {
 
           <label className="contact-form-full">
             <span className="contact-label-text">
-              How can we help you? Are there any issues you want to share with us? <span aria-hidden="true">*</span>
+              How can we help you? Are there any issues you want to share with us? <RequiredMark />
             </span>
             <textarea name="message" rows="6" required />
           </label>
 
-          {submitted && (
-            <p className="contact-form-success" role="status">
-              Thank you. Your message has been prepared.
-            </p>
-          )}
+          {error && <p className="error">{error}</p>}
 
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={submitting}>
+            {submitting ? "Submitting..." : "Submit"}
+          </button>
         </form>
       </section>
+
+      {submitted && (
+        <SuccessModal
+          onClose={() => setSubmitted(false)}
+          title="Thank you for contacting us!"
+        >
+          <p>Your message has been submitted.</p>
+          <p>We will review your message and follow up when needed.</p>
+        </SuccessModal>
+      )}
     </div>
   );
 }

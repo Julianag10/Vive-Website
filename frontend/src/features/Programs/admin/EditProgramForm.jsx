@@ -17,8 +17,10 @@ export default function EditProgramForm({
       featuredProgramCount={featuredProgramCount}
       isExistingFeatured={program.is_featured}
       existingProgram={program}
-      submitLabel="save"
+      submitLabel="Save Program"
       onCancel={onCancleEdit}
+      formClassName="create-program-form admin-program-edit-form"
+      formTitle="Edit Program"
     />
   );
 }

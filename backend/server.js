@@ -21,6 +21,8 @@ import registrationsRouter from "./routes/registrations.routes.js";
 import programsRouter from "./routes/programs.routes.js";
 import eventsRouter from "./routes/events.routes.js";
 import staffRouter from "./routes/staff.routes.js";
+import volunteersRouter from "./routes/volunteers.routes.js";
+import contactRouter from "./routes/contact.routes.js";
 
 import adminAuthRouter from "./routes/admin/auth.routes.js";
 import adminDonationsRouter from "./routes/admin/donations.routes.js";
@@ -28,7 +30,9 @@ import adminRegistrationsRouter from "./routes/admin/registrations.routes.js";
 import adminProgramsRouter from "./routes/admin/programs.routes.js";
 import adminEventsRouter from "./routes/admin/events.routes.js";
 import adminStaffRouter from "./routes/admin/staff.routes.js";
-import { ensureEventColumns, ensureProgramColumns, ensureRegistrationTables } from "./db/db.js";
+import adminVolunteersRouter from "./routes/admin/volunteers.routes.js";
+import adminContactRouter from "./routes/admin/contact.routes.js";
+import { ensureContactMessagesTable, ensureDonationColumns, ensureEventColumns, ensureProgramColumns, ensureRegistrationTables, ensureStaffColumns, ensureVolunteerApplicationTable } from "./db/db.js";
 
 
 // ---------- EXPRESS APP SETUP ----------------------------------------
@@ -157,6 +161,8 @@ app.use("/api/registrations", registrationsRouter);
 app.use("/api/programs", programsRouter);
 app.use("/api/events", eventsRouter);
 app.use("/api/staff", staffRouter);
+app.use("/api/volunteers", volunteersRouter);
+app.use("/api/contact", contactRouter);
 
 // ADMIN
 app.use("/admin/api/auth", adminAuthRouter);
@@ -165,6 +171,8 @@ app.use("/admin/api/registrations", adminRegistrationsRouter);
 app.use("/admin/api/programs", adminProgramsRouter);
 app.use("/admin/api/events", adminEventsRouter);
 app.use("/admin/api/staff", adminStaffRouter);
+app.use("/admin/api/volunteers", adminVolunteersRouter);
+app.use("/admin/api/contact", adminContactRouter);
 
 // ---------- HEALTH API ROUTE ----------------------------------------
 // checks :
@@ -191,8 +199,12 @@ app.use((err, _req, res, _next) => {
 const PORT = process.env.PORT || 3000;
 
 await ensureEventColumns();
+await ensureDonationColumns();
 await ensureProgramColumns();
+await ensureStaffColumns();
 await ensureRegistrationTables();
+await ensureVolunteerApplicationTable();
+await ensureContactMessagesTable();
 
 app.listen(PORT, () => {
     console.log("🚀 Server started");

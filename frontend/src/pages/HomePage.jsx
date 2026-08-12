@@ -1,54 +1,175 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/home.css";
-import DonationForm from "../components/DonationForm";
+import DonationSplitSection from "../components/DonationSplitSection";
 import FeaturedProgramsSection from "../features/Programs/components/FeaturedProgramsSection";
+import VolunteerSection from "../features/Volunteer/VolunteerSection";
+import SuccessModal from "../components/SuccessModal";
 
+const PARTNER_IMAGES = [
+  {
+    name: "City of Denver Parks and Recreation",
+    src: "/uploads/home/partners/City of Denver Parks and Rec.png",
+  },
+  {
+    name: "CityWILD",
+    src: "/uploads/home/partners/City-Wild.png",
+  },
+  {
+    name: "Colorado Parks and Wildlife",
+    src: "/uploads/home/partners/Colorado Parks and Wildlife.png",
+  },
+  {
+    name: "Denver Urban Gardens",
+    src: "/uploads/home/partners/Denver Urban Gardens.png",
+  },
+  {
+    name: "Boys and Girls Club",
+    src: "/uploads/home/partners/boys-and-girls-club-logo.png",
+  },
+  {
+    name: "Caring for Denver",
+    src: "/uploads/home/partners/caring-for-denver-logo.png",
+  },
+  {
+    name: "Denver Afterschool Alliance",
+    src: "/uploads/home/partners/denver-afterschool-alliance.png",
+  },
+  {
+    name: "Denver Public Schools",
+    src: "/uploads/home/partners/dps-logo.png",
+  },
+  {
+    name: "GRASP",
+    src: "/uploads/home/partners/grasp.png",
+  },
+  {
+    name: "The Greenway Foundation",
+    src: "/uploads/home/partners/greenway-foundation-logo.png",
+  },
+  {
+    name: "Groundwork Denver",
+    src: "/uploads/home/partners/groundwork-logo.png",
+  },
+  {
+    name: "Kiva Center",
+    src: "/uploads/home/partners/kiva-center-logo.png",
+  },
+  {
+    name: "Lincoln Healthcare",
+    src: "/uploads/home/partners/lincoln-Healthcare-logo.png",
+  },
+  {
+    name: "Metro Caring",
+    src: "/uploads/home/partners/metro-caring.png",
+  },
+  {
+    name: "Mile High Corps",
+    src: "/uploads/home/partners/mile-high-corps.jpeg",
+  },
+];
 
 export default function HomePage() {
+  const [donationStatus, setDonationStatus] = useState(null);
+
+  useEffect(() => {
+    document.body.classList.add("home-page-active");
+
+    return () => {
+      document.body.classList.remove("home-page-active");
+    };
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const donationSessionId = params.get("donation_session_id");
+
+    if (!donationSessionId) {
+      return;
+    }
+
+    fetch(`/api/checkout/session-status?session_id=${donationSessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setDonationStatus(data.payment_status);
+        params.delete("donation_session_id");
+        const query = params.toString();
+        window.history.replaceState(
+          {},
+          "",
+          `${window.location.pathname}${query ? `?${query}` : ""}`
+        );
+      })
+      .catch(() => setDonationStatus("error"));
+  }, []);
+
+  function closeDonationModal() {
+    setDonationStatus(null);
+  }
   
   return (
     <div className="home-grid">
       {/* HERO */}
       <section className="hero">
-        <img src="/img/Untitled_Artwork 3.png" alt="" />
+        <img src="/uploads/home/hero.png" alt="" />
         <div className="hero-text">
-          <h1>Breaking Barriers to Health Inequities</h1>
-        </div>
-        <div className="hero-cta">
-          <Link to="/donate" className="donate-btn">
-            Donate Today
-          </Link>
-          <Link to="/volunteer" className="volunteer-btn">
-            Volunteer With us
-          </Link>
+          <h1 className="hero-title">
+            <span className="hero-title-nowrap">Breaking Barriers</span>
+            <br />
+            to Health
+            <br />
+            Inequities
+          </h1>
+          <div className="hero-panel">
+            <p>
+              ViVe Wellness creates culturally relevant programs that promote
+              physical, mental, and social well-being for underserved communities
+              across Denver.
+            </p>
+            <div className="hero-cta">
+              <Link to="/donate" className="donate-btn">
+                Donate Today
+              </Link>
+              <Link to="/volunteer" className="volunteer-btn">
+                Volunteer With us
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ABOUT */}
       <section className="about">
-        <div className="vision">
-          <h2>
-            We foster social justice, health, and gender equity through
-            culturally relevant physical, mental, and social wellness programs.
-          </h2>
-        </div>
         <div className="mission">
-          <h2>Our Vision</h2>
-          <p>
-            We envision a world where gender, race, ethnicity, disability,
-            education, income, origin and sexual orientation are no longer
-            predictors of life and health outcomes.
-          </p>
-          <Link to="/about" className="aboutus-btn">
-            About Us
-          </Link>
+          <h2>
+              We foster social justice, health, and gender equity through culturally relevant physical, mental, and social wellness programs.
+          </h2>
+          
+        </div>
+        <div className="vision">
+          <div className="vision-panel">
+            <h2>
+              Our Vision
+            </h2>
+            <p>
+              We envision a world where gender, race, ethnicity, disability,
+              education, income, origin and sexual orientation are no longer
+              predictors of life and health outcomes.
+            </p>
+            <Link to="/about" className="aboutus-btn">
+              About Us
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* PROGRAMS */}
       <section className="featured-programs">
         <h2>Our Top Programs</h2>
-          <FeaturedProgramsSection/>
+        <FeaturedProgramsSection/>
+        <Link to="/programs" className="view-all-programs-btn">
+          View all programs
+        </Link>
       </section>
 
       {/* FEATURES */}
@@ -61,11 +182,11 @@ export default function HomePage() {
               opportunities to stay active through sports, dance, and play.
             </p>
           </div>
-          <img src="/img/empty.png" alt="" />
+          <img src="/uploads/home/features/volleyball.png" alt="" />
         </div>
 
         <div className="features-row">
-          <img src="/img/empty.png" alt="" />
+          <img src="/uploads/home/features/cute-girl.png" alt="" />
           <div className="features-benefits">
             <h2>Families feel respected and included</h2>
             <p>
@@ -84,13 +205,19 @@ export default function HomePage() {
               expand reach and reduce systemic barriers.
             </p>
           </div>
-          <img src="/img/empty.png" alt="" />
+          <img src="/uploads/home/features/crafting.png" alt="" />
         </div>
       </section>
 
       {/* IMPACT */}
       <section className="impact">
         <div className="fact-impact">
+          <img
+            className="fact-impact-icon"
+            src="/uploads/icons/life-preserver.svg"
+            alt=""
+            aria-hidden="true"
+          />
           <h2>Fact</h2>
           <p>
             Over 60% of Latino and African American children do not know how to
@@ -106,6 +233,12 @@ export default function HomePage() {
         </div>
 
         <div className="fact-impact">
+          <img
+            className="fact-impact-icon"
+            src="/uploads/icons/leaf-fill.svg"
+            alt=""
+            aria-hidden="true"
+          />
           <h2>Fact</h2>
           <p>
             Minority children lack the access and opportunity of outdoor nature
@@ -121,6 +254,12 @@ export default function HomePage() {
         </div>
 
         <div className="fact-impact">
+          <img
+            className="fact-impact-icon"
+            src="/uploads/icons/non-profit-organization.png"
+            alt=""
+            aria-hidden="true"
+          />
           <h2>Fact</h2>
           <p>
             30,000 newcomers arrived in Denver Colorado in 2023. Most of them
@@ -175,38 +314,45 @@ export default function HomePage() {
       </section>
 
       {/* DONATE */}
-      <section className="donate">
-        <div className="donate-cta">
-          <h1>Make an Impact </h1>
-          <p>Support our mission by contributing a donation.</p>
-        </div>
-
-        <div className="donate-form">
-          <DonationForm />
-        </div>
-      </section>
+      <DonationSplitSection className="donate" heading="Make an Impact" />
 
       {/* VOLUNTEER */}
-      <section className="volunteer">
-        <div className="volunteer-cta">
-          <h2>Volunteer </h2>
-          <p>Create impact in your community.</p>
-          <form>
-            <input type="text" name="name" placeholder="Your Name" />
-            <input type="email" name="email" placeholder="Your Email" />
-            <button type="submit" className="btn secondary">
-              Sign Up
-            </button>
-          </form>
-        </div>
-        <img src="/img/empty.png" alt="" />
-      </section>
+      <VolunteerSection />
 
       {/* PARTNERS */}
       <section className="partners">
         <h2>Our Partners</h2>
-        <div className="partner-logos">{/* partner logos here */}</div>
+        <div className="partner-logos">
+          {PARTNER_IMAGES.map((partner) => (
+            <img
+              src={partner.src}
+              alt={`${partner.name} logo`}
+              key={partner.src}
+            />
+          ))}
+        </div>
       </section>
+
+      {donationStatus === "paid" && (
+        <SuccessModal
+          onClose={closeDonationModal}
+          title="Thank you for your donation!"
+        >
+          <p>Your payment was successful.</p>
+          <p>Your support helps ViVe Wellness continue serving our community.</p>
+          <p>You will be emailed with your receipt.</p>
+        </SuccessModal>
+      )}
+
+      {donationStatus === "error" && (
+        <SuccessModal
+          onClose={closeDonationModal}
+          title="Donation status unavailable"
+        >
+          <p>We could not verify your donation status right now.</p>
+          <p>If your payment completed, Stripe will still send your receipt.</p>
+        </SuccessModal>
+      )}
     </div>
   );
 }

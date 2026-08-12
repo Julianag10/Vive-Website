@@ -34,10 +34,10 @@ export default class RegistrationService {
 
     if (!res.ok) {
       const error = await res.json();
-      throw new Error(error.error || "Unable to unregister.");
+      throw new Error(error.error || error.message || "Unable to unregister.");
     }
 
-    return true;
+    return await res.json();
   }
 
   // PUBLIC
@@ -94,24 +94,42 @@ export default class RegistrationService {
   }
 
   // ADMIN
-  async emailRegistrant(type, id, emailData) {
-    const res = await fetch(
-      `/admin/api/${type}/${id}/email`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(emailData),
-      }
-    );
+  async emailRegistrationRecipient(type, id, registrationId, emailData) {
+    const res = await fetch(`/admin/api/registrations/${type}/${id}/email/${registrationId}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(emailData),
+    });
+
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      throw new Error("Failed to send email.");
+      throw new Error(data.error || data.message || "Failed to send email.");
     }
 
-    return true;
+    return data;
+  }
+
+  async emailRegistered(type, id, emailData) {
+    const res = await fetch(`/admin/api/registrations/${type}/${id}/email-all`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(emailData),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(data.error || data.message || "Failed to send email.");
+    }
+
+    return data;
   }
 
 // piublic or amdin ????

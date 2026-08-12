@@ -10,7 +10,7 @@ export default function ProgramSection({ title, programs }) {
 
   return (
     <section className="programs-section">
-      <h2>{title}</h2>
+      {title && <h2>{title}</h2>}
       <div className="programs-grid">
         {programs.map((program) => (
           <ProgramCard key={program.id} program={program} />
@@ -19,4 +19,3 @@ export default function ProgramSection({ title, programs }) {
     </section>
   );
 }
-

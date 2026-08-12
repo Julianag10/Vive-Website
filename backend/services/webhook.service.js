@@ -1,11 +1,14 @@
 import { pool } from "../db/db.js";
 import {
-    sendConfirmationEmail,
     sendPaymentFailedEmail,
     sendRefundEmail,
     sendDisputeAlertEmail,
     sendAbandonedCheckoutEmail,
-} from "../utils/email.js";
+} from "./email.service.js";
+import {
+    sendDonationConfirmationIfNeeded,
+    markDonationSucceeded,
+} from "./donations.service.js";
 
 
 // --------------  HANDELS EACH EVENT TYPE --------------
@@ -23,26 +26,25 @@ export async function handleCheckoutCompleted(session) {
     // SEND RECIPT / THANKYOU EMAIL 
     console.log("🔔 Sending receipt email to:", email);
 
+    // INSERT DONATION INTO DB
+    // .none bc not expexting any returned rows 
+    await markDonationSucceeded({
+        stripeSessionId: session.id,
+        stripePaymentIntentId: paymentIntentId,
+        donorEmail: email,
+    });
+
     try {
-        await sendConfirmationEmail({ name, email, amount });
-        console.log("✅ Email sent");
+        await sendDonationConfirmationIfNeeded({
+            stripeSessionId: session.id,
+            name,
+            email,
+            amount,
+        });
+        console.log("✅ Email sent or already sent");
     } catch (err) {
         console.error("❌ Error sending email:", err);
     }
-
-    // INSERT DONATION INTO DB
-    // .none bc not expexting any returned rows 
-    await pool.query(
-        `
-        UPDATE donations
-        SET
-        donor_email = $2,
-        stripe_payment_intent_id = $3,
-        status = 'succeeded'
-        WHERE stripe_session_id = $1;
-        `,
-        [session.id, email, paymentIntentId]
-    );
 
     console.log("💾 Saved donation to DB:", session.id);
 }

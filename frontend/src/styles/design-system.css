@@ -1,0 +1,415 @@
+@import url("https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Fraunces:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap");
+
+:root {
+  --brand-lime: #c0d969;
+  --brand-blue: #3c88f4;
+  --brand-blue-dark: #266fd6;
+  --brand-lime-dark: #8fa33f;
+
+  --font-primary: "Fraunces", Georgia, serif;
+  --font-secondary: "Manrope", "Segoe UI", sans-serif;
+  --font-display: "ADLaM Display", cursive;
+  --font-display-letter-spacing: -0.05em;
+  --font-body: var(--font-secondary);
+  --font-size-h1: 8.8rem;
+  --heading-font: var(--font-primary);
+  --heading-size: var(--text-2xl);
+  --heading-weight: 600;
+  --heading-line-height: 1.15;
+  --heading-space-before: clamp(1.25rem, 3vw, 2.25rem);
+  --heading-space-after: clamp(1rem, 2.5vw, 1.75rem);
+  --card-heading-font: var(--font-secondary);
+  --card-heading-size: 1.12rem;
+  --card-heading-weight: 500;
+  --card-heading-line-height: 1.2;
+
+  --text-xs: 0.78rem;
+  --text-sm: 1.05rem;
+  --text-md: 1.22rem;
+  --text-lg: 1.38rem;
+  --text-xl: 1.62rem;
+  --text-2xl: clamp(1.7rem, 3vw, 2.35rem);
+  --text-3xl: clamp(2rem, 4vw, 3rem);
+  --body-scale-size: var(--text-md);
+  --important-text-size: var(--text-lg);
+  --nav-link-size: 1rem;
+  --layout-max-width: 1160px;
+  --wide-media-scale: 1;
+
+  /* TODO what and where is space used */
+  /*TODO industry standard for spacing on websites  */
+  --space-1: 0.35rem;
+  --space-2: 0.6rem;
+  --space-3: 0.85rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --page-block-spacing: clamp(1.5rem, 3.5vw, 3rem);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+  --form-radius: 18px;
+  --form-control-radius: 10px;
+  --form-control-min-height: 2.75rem;
+  --form-control-font-size: var(--body-scale-size);
+  --form-gap: 1.15rem;
+  --form-padding: 1.25rem;
+  --button-min-height: 2.55rem;
+  --button-padding-y: 0.82rem;
+  --button-padding-x: 1.3rem;
+  --button-padding: var(--button-padding-y) var(--button-padding-x);
+  --button-font-size: var(--body-scale-size);
+  --button-font-weight: 600;
+  --nav-font-weight: 500;
+  --form-font-weight: 400;
+  --form-title-font-weight: 400;
+  --form-label-font-weight: 800;
+
+
+  /* i think delte these */
+  --shadow-soft: 0 10px 30px rgba(14, 20, 36, 0.08);
+  --shadow-admin: 0 18px 40px rgba(0, 0, 0, 0.22);
+
+  --public-bg: #f5f4ef;
+  --public-surface: #ffffff;
+  --public-card: #ffffff;
+  --public-text: #2b2b2b;
+  --public-muted: #5f646d;
+  --public-border: #d7d9dd;
+  --public-primary: var(--brand-blue);
+  --public-primary-hover: var(--brand-blue-dark);
+  --public-secondary: var(--brand-lime);
+  --public-secondary-hover: var(--brand-lime-dark);
+
+  --admin-bg: #151515;
+  --admin-surface: #1d1d1d;
+  --admin-card: #151515;
+  --admin-field: #202020;
+  --admin-text: #f5f5f5;
+  --admin-muted: #c8c8c8;
+  --admin-border: #343434;
+  --admin-primary: #0d7f71;
+  --admin-primary-hover: #0b6056;
+  --admin-secondary: var(--brand-lime);
+  --admin-secondary-hover: var(--brand-lime-dark);
+
+  --color-bg: var(--public-bg);
+  --color-primary: #dff3ef;
+  --color-surface: var(--public-surface);
+  --color-ink: var(--public-text);
+  --color-muted: var(--public-muted);
+  --color-brand: var(--brand-blue);
+  --color-brand-dark: var(--brand-blue-dark);
+  --color-accent: var(--brand-lime);
+  --color-card: var(--public-card);
+  --color-outline: var(--public-border);
+}
+
+/* what is this for  */
+* {
+  box-sizing: border-box;
+}
+
+/* what is this for ,root??? */
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--body-scale-size);
+  color: var(--public-text);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--heading-font);
+  line-height: var(--heading-line-height);
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: var(--heading-size);
+  font-weight: var(--heading-weight);
+  text-align: center;
+  margin-top: var(--heading-space-before);
+  margin-bottom: var(--heading-space-after);
+}
+
+h2 {
+  font-size: var(--card-heading-size);
+  font-family: var(--card-heading-font);
+  font-weight: var(--card-heading-weight);
+  line-height: var(--card-heading-line-height);
+}
+
+h3 {
+  font-size: var(--heading-size);
+}
+
+a {
+  color: inherit;
+}
+
+.page-shell {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border: 1px solid var(--surface-border, var(--public-border));
+  border-radius: var(--radius-lg);
+  background: var(--surface-card, var(--public-card));
+  box-shadow: var(--surface-shadow, var(--shadow-soft));
+}
+
+.section-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.panel,
+.form-shell,
+.card-shell {
+  border: 1px solid var(--surface-border, var(--public-border));
+  border-radius: var(--radius-md);
+  background: var(--surface-card, var(--public-card));
+  box-shadow: var(--surface-shadow, var(--shadow-soft));
+}
+
+.panel,
+.form-shell {
+  padding: var(--space-5);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--form-gap);
+}
+
+.form-stack,
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field,
+.form-grid label,
+.form-stack label {
+  color: var(--form-label, var(--public-text));
+  font-size: var(--form-control-font-size);
+  font-weight: var(--form-label-font-weight);
+  line-height: 1.2;
+}
+
+.field-full,
+.form-grid .field-full {
+  grid-column: 1 / -1;
+}
+
+.form-grid input,
+.form-grid textarea,
+.form-grid select,
+.form-stack input,
+.form-stack textarea,
+.form-stack select,
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--form-border, var(--public-border));
+  border-radius: var(--form-control-radius);
+  background: var(--form-bg, #ffffff);
+  color: var(--form-text, var(--public-text));
+  font: inherit;
+  font-size: var(--form-control-font-size);
+  min-height: var(--form-control-min-height);
+  padding: 0.72rem 0.9rem;
+}
+
+.form-grid textarea,
+.form-stack textarea,
+.field textarea {
+  resize: vertical;
+}
+
+.form-grid input::placeholder,
+.form-grid textarea::placeholder,
+.form-stack input::placeholder,
+.form-stack textarea::placeholder,
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--form-placeholder, var(--public-muted));
+}
+
+.form-grid input:focus,
+.form-grid textarea:focus,
+.form-grid select:focus,
+.form-stack input:focus,
+.form-stack textarea:focus,
+.form-stack select:focus,
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--form-focus, var(--brand-blue));
+  outline: 3px solid var(--form-focus-ring, rgba(60, 136, 244, 0.18));
+}
+
+.required-mark {
+  color: #b00020;
+  font-weight: 900;
+}
+
+.btn,
+.button-primary,
+.button-secondary,
+.button-tertiary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  line-height: 1;
+  min-height: var(--button-min-height);
+  padding: var(--button-padding);
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    filter 0.15s ease;
+}
+
+.btn:hover,
+.button-primary:hover,
+.button-secondary:hover,
+.button-tertiary:hover {
+  transform: translateY(-1px);
+}
+
+.btn:disabled,
+.button-primary:disabled,
+.button-secondary:disabled,
+.button-tertiary:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.btn-primary,
+.button-primary {
+  border-color: var(--button-primary-bg, var(--brand-blue));
+  background: var(--button-primary-bg, var(--brand-blue));
+  color: var(--button-primary-text, #ffffff);
+}
+
+.btn-primary:hover,
+.button-primary:hover {
+  background: var(--button-primary-hover, var(--brand-blue-dark));
+  border-color: var(--button-primary-hover, var(--brand-blue-dark));
+}
+
+.btn-secondary,
+.button-secondary {
+  border-color: var(--button-secondary-bg, var(--brand-lime));
+  background: var(--button-secondary-bg, var(--brand-lime));
+  color: var(--button-secondary-text, #1f2a12);
+}
+
+.btn-secondary:hover,
+.button-secondary:hover {
+  background: var(--button-secondary-hover, var(--brand-lime-dark));
+  border-color: var(--button-secondary-hover, var(--brand-lime-dark));
+  color: #ffffff;
+}
+
+.btn-tertiary,
+.button-tertiary {
+  border-color: var(--button-tertiary-border, currentColor);
+  background: transparent;
+  color: var(--button-tertiary-text, var(--brand-blue));
+}
+
+.btn-tertiary:hover,
+.button-tertiary:hover {
+  background: var(--button-tertiary-hover-bg, rgba(60, 136, 244, 0.12));
+}
+
+.alert-error,
+.error {
+  color: var(--error-text, #b00020);
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .page-shell {
+    padding: var(--space-4);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1400px) {
+  :root {
+    --text-md: 1.28rem;
+    --text-lg: 1.45rem;
+    --text-xl: 1.75rem;
+    --text-2xl: clamp(2rem, 2.4vw, 3.1rem);
+    --text-3xl: clamp(2.4rem, 3.8vw, 4rem);
+    --body-scale-size: 1.28rem;
+    --important-text-size: 1.25rem;
+    --heading-size: var(--text-2xl);
+    --heading-space-before: clamp(1.75rem, 3vw, 3rem);
+    --heading-space-after: clamp(1.25rem, 2.4vw, 2.25rem);
+    --card-heading-size: 1.25rem;
+    --nav-link-size: 1.1rem;
+    --layout-max-width: 1360px;
+    --page-block-spacing: clamp(2.25rem, 4vw, 4.75rem);
+    --space-5: 1.45rem;
+    --space-6: 1.8rem;
+    --space-8: 2.4rem;
+    --form-gap: 1.05rem;
+    --form-padding: 1.55rem;
+    --form-control-min-height: 2.95rem;
+    --wide-media-scale: 1.08;
+  }
+}
+
+@media (min-width: 1800px) {
+  :root {
+    --text-md: 1.35rem;
+    --text-lg: 1.52rem;
+    --text-xl: 1.9rem;
+    --text-2xl: clamp(2.25rem, 2.15vw, 3.35rem);
+    --text-3xl: clamp(2.8rem, 3.4vw, 4.6rem);
+    --body-scale-size: 1.35rem;
+    --important-text-size: 1.32rem;
+    --card-heading-size: 1.35rem;
+    --nav-link-size: 1.18rem;
+    --layout-max-width: 1540px;
+    --page-block-spacing: clamp(2.75rem, 4vw, 5.5rem);
+    --space-5: 1.65rem;
+    --space-6: 2rem;
+    --space-8: 2.8rem;
+    --form-gap: 1.18rem;
+    --form-padding: 1.8rem;
+    --form-control-min-height: 3.1rem;
+    --wide-media-scale: 1.15;
+  }
+}

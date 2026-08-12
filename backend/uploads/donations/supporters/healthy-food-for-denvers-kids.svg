@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="title">
-  <title id="title">Healthy Food for Denver's Kids logo placeholder</title>
-  <rect width="420" height="220" rx="24" fill="#ffffff"/>
-  <rect x="18" y="18" width="384" height="184" rx="18" fill="#fff8ed" stroke="#e76f51" stroke-width="3"/>
-  <path d="M102 58c24 10 40 32 40 60 0 25-18 45-40 45s-40-20-40-45c0-28 16-50 40-60Z" fill="#e76f51"/>
-  <path d="M103 57c4-15 15-24 32-27" stroke="#4f8a4b" stroke-width="8" stroke-linecap="round"/>
-  <text x="178" y="76" fill="#2b2b2b" font-family="Arial, sans-serif" font-size="23" font-weight="700">Healthy Food for</text>
-  <text x="178" y="110" fill="#2b2b2b" font-family="Arial, sans-serif" font-size="23" font-weight="700">Denver&apos;s Kids</text>
-</svg>

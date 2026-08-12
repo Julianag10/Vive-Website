@@ -1,4 +1,7 @@
-import { formatDisplayTimeRange } from "../../utils/dateFormat";
+import {
+  formatDisplayDate,
+  formatDisplayTimeRange,
+} from "../../utils/dateFormat";
 
 export function isSameDay(dateA, dateB) {
   if (!dateA || !dateB) return false;
@@ -57,4 +60,26 @@ export function getMonthGridDates(year, month) {
 
 export function formatTimeRange(startDate, endDate) {
   return formatDisplayTimeRange(startDate, endDate);
+}
+
+function occurrenceScheduleRow(occurrence) {
+  const date = formatDisplayDate(occurrence.occurrence_date || occurrence.date);
+  const time = formatDisplayTimeRange(occurrence.start_time, occurrence.end_time);
+
+  return { date, time };
+}
+
+export function getEventScheduleRows(event) {
+  if (Array.isArray(event?.occurrences) && event.occurrences.length > 0) {
+    return event.occurrences.map(occurrenceScheduleRow);
+  }
+
+  return [{
+    date: formatDisplayDate(event?.startDate),
+    time: formatDisplayTimeRange(event?.startDate, event?.endDate),
+  }];
+}
+
+export function isMultiDayEvent(event) {
+  return getEventScheduleRows(event).length > 1;
 }

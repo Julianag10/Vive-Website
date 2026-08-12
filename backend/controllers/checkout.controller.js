@@ -16,6 +16,7 @@ import {
 import { 
     insertDonation,
     markDonationSucceeded,
+    sendDonationConfirmationIfNeeded,
 } from "../services/donations.service.js";
 
 
@@ -78,6 +79,17 @@ export async function getSessionStatusController(req, res) {
                 stripePaymentIntentId: session.payment_intent_id,
                 donorEmail: session.donor_email,
             });
+
+            try {
+                await sendDonationConfirmationIfNeeded({
+                    stripeSessionId: session_id,
+                    name: session.donor_name,
+                    email: session.donor_email,
+                    amount: session.amount_total ? session.amount_total / 100 : null,
+                });
+            } catch (emailError) {
+                console.error("❌ Error sending donation confirmation email from session status:", emailError);
+            }
         }
 
         // return stats paid to front end

@@ -48,6 +48,13 @@ export async function ensureEventColumns() {
 
 }
 
+export async function ensureDonationColumns() {
+  await pool.query(`
+    ALTER TABLE donations
+    ADD COLUMN IF NOT EXISTS donation_email_sent_at TIMESTAMPTZ;
+  `);
+}
+
 export async function ensureProgramColumns() {
   await pool.query(`
     ALTER TABLE programs
@@ -57,6 +64,13 @@ export async function ensureProgramColumns() {
   await pool.query(`
     ALTER TABLE programs
     ADD COLUMN IF NOT EXISTS gallery_images TEXT[] NOT NULL DEFAULT '{}';
+  `);
+}
+
+export async function ensureStaffColumns() {
+  await pool.query(`
+    ALTER TABLE staff
+    ADD COLUMN IF NOT EXISTS staff_group TEXT NOT NULL DEFAULT 'staff';
   `);
 }
 
@@ -99,6 +113,48 @@ export async function ensureRegistrationTables() {
   `);
 }
 
+export async function ensureVolunteerApplicationTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS volunteer_applications (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      roles TEXT[] NOT NULL DEFAULT '{}',
+      availability TEXT[] NOT NULL DEFAULT '{}',
+      skills TEXT,
+      motivation TEXT,
+      manage_token TEXT UNIQUE,
+      status TEXT NOT NULL DEFAULT 'active',
+      withdrawn_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
+
+  await pool.query(`
+    ALTER TABLE volunteer_applications
+    ADD COLUMN IF NOT EXISTS manage_token TEXT UNIQUE,
+    ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active',
+    ADD COLUMN IF NOT EXISTS withdrawn_at TIMESTAMPTZ;
+  `);
+}
+
+export async function ensureContactMessagesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS contact_messages (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      organization TEXT,
+      message TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
+}
+
 // Now anywhere in the backend can import:
 // import { pool } from "../db/db.js";
 
@@ -135,9 +191,6 @@ psql postgres
 7. quit psql shell RUN:
 \q
 
-9. PROVE CONNECTIVITY:rerun you db test:
-node backend/test-db.js
---------------------
 check postgres server status RUN:   
 brew services list
 

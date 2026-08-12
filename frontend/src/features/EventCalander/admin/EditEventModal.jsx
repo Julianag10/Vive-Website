@@ -85,7 +85,7 @@ export default function EditEventModal({ event, onSave, onClose, onDelete }) {
           initialForm={eventToForm(event)}
           onSubmit={handleSubmit}
           actions={(
-            <div className="modal-actions">
+            <div className="modal-actions admin-event-modal-actions">
               <button type="submit">
                 Save
               </button>
@@ -102,13 +102,6 @@ export default function EditEventModal({ event, onSave, onClose, onDelete }) {
                 onClick={onDelete}
               >
                 Delete
-              </button>
-
-              <button
-                type="button"
-                onClick={handleClose}
-              >
-                Cancel
               </button>
             </div>
           )}

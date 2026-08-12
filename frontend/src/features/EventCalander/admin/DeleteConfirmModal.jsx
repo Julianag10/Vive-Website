@@ -7,7 +7,7 @@ export default function DeleteConfirmModal({
 
   return ( 
     <div className="modal-backdrop"> 
-    <div className="modal">
+    <div className="modal admin-event-delete-modal">
 
     <h2>Delete Event "{event.title}"</h2>
 
@@ -17,6 +17,7 @@ export default function DeleteConfirmModal({
 
     <div className="modal-actions">
       <button
+        className="admin-event-delete-confirm-button"
         type="button"
         onClick={onConfirm}
       >
@@ -24,6 +25,7 @@ export default function DeleteConfirmModal({
       </button>
 
       <button
+        className="admin-event-delete-cancel-button"
         type="button"
         onClick={onClose}
       >

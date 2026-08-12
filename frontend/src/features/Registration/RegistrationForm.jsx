@@ -32,7 +32,7 @@ export default function RegistrationForm({
     setError("");
 
     if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim()) {
-      setError("First name, last name, and email are required.");
+      setError("Participant first name, participant last name, and email are required.");
       return;
     }
 
@@ -56,11 +56,11 @@ export default function RegistrationForm({
 
   return (
 
-    <form className="registration-form" onSubmit={handleSubmit}>
+    <form className="registration-form form-grid" onSubmit={handleSubmit}>
 
-      <label>
+      <label className="field">
         <span className="registration-label-text">
-          First Name <span aria-hidden="true">*</span>
+          Participant First Name <span className="required-mark" aria-hidden="true">*</span>
         </span>
         <input
           name="firstName"
@@ -71,9 +71,9 @@ export default function RegistrationForm({
         />
       </label>
 
-      <label>
+      <label className="field">
         <span className="registration-label-text">
-          Last Name <span aria-hidden="true">*</span>
+          Participant Last Name <span className="required-mark" aria-hidden="true">*</span>
         </span>
         <input
           name="lastName"
@@ -84,9 +84,9 @@ export default function RegistrationForm({
         />
       </label>
 
-      <label>
+      <label className="field">
         <span className="registration-label-text">
-          Email <span aria-hidden="true">*</span>
+          Email <span className="required-mark" aria-hidden="true">*</span>
         </span>
         <input
           name="email"
@@ -98,7 +98,7 @@ export default function RegistrationForm({
         />
       </label>
 
-      <label>
+      <label className="field">
         <span className="registration-label-text">Phone Number</span>
         <input
           name="phone"
@@ -108,7 +108,7 @@ export default function RegistrationForm({
         />
       </label>
 
-      <label>
+      <label className="field">
         <span className="registration-label-text">Emergency Contact</span>
         <input
           name="emergencyContact"
@@ -118,7 +118,7 @@ export default function RegistrationForm({
         />
       </label>
 
-      <label>
+      <label className="field">
         <span className="registration-label-text">Emergency Contact Phone</span>
         <input
           name="emergencyPhone"
@@ -128,7 +128,7 @@ export default function RegistrationForm({
         />
       </label>
 
-      <label className="registration-notes-field">
+      <label className="registration-notes-field field field-full">
         <span className="registration-label-text">Notes</span>
         <textarea
           name="notes"
@@ -146,6 +146,7 @@ export default function RegistrationForm({
       )}
 
       <button
+        className="btn btn-primary"
         type="submit"
         disabled={submitting}
       >

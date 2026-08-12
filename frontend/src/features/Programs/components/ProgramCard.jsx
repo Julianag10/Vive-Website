@@ -21,7 +21,7 @@ export default function ProgramCard({ program }) {
   return (
     <div className="program-card">
 
-      <h3 className="program-card-title">{program.title}</h3>
+      <h2 className="program-card-title">{program.title}</h2>
 
       <div className="program-card-media">
         <img
@@ -60,18 +60,20 @@ export default function ProgramCard({ program }) {
           </div>
         )}
 
-        <p className="program-card-registration-status">
-          {registrationStatusText}
-        </p>
+        <div className="program-card-footer">
+          <p className="program-card-registration-status">
+            {registrationStatusText}
+          </p>
 
-        <div className="program-actions">
-          <Link to={`/programs/${program.id}`} className="learnmore-btn">
-            Learn more
-          </Link>
+          <div className="program-actions">
+            <Link to={`/programs/${program.id}`} className="learnmore-btn btn btn-primary">
+              Learn more
+            </Link>
 
-          <Link to={`/programs/${program.id}?register=1`} className="register-btn">
-            {loading ? "Register" : isWaitlistOnly ? "Join Waitlist" : "Register"}
-          </Link>
+            <Link to={`/programs/${program.id}?register=1`} className="register-btn btn btn-primary">
+              {loading ? "Register" : isWaitlistOnly ? "Join Waitlist" : "Register"}
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -1,34 +1,63 @@
 // OUTLET ->  used for rendering the matched child route inside a layout
+import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 import {
   ContactInfoList,
   SocialLinks,
 } from "./PublicContactSections";
-import "../styles/App.css";
 import "../styles/contact.css";
 
-const MAIN_LOGO = "/uploads/logo/main_logo.png";
-const SUB_LOGO = "/uploads/logo/sub_logo.png";
+const VIVE_LOGO = "/uploads/logo/Vive-logo.png";
 
 // TODO why layout? with grid?
 export default function Layout() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/about", label: "About Us" },
+    { to: "/programs", label: "Programs" },
+    { to: "/events", label: "Events" },
+    { to: "/contact", label: "Contact Us" },
+  ];
+
   return (
     <div className="layout">
       <header className="header">
         <div className="nav">
           <div className="nav-brand">
             <Link to="/" className="brand-logo-link" aria-label="ViVe Wellness home">
-              <img className="brand-logo brand-logo-main" src={MAIN_LOGO} alt="ViVe Wellness" />
+              <img className="brand-logo brand-logo-main" src={VIVE_LOGO} alt="ViVe Wellness" />
             </Link>
           </div>
 
-          <nav className="nav-links" aria-label="Primary">
-            <Link to="/about">About Us</Link>
-            <Link to="/programs">Programs</Link>
-            <Link to="/events"> Events</Link>
-            <Link to="/contact">Contact</Link>
-            <Link to="/donate" className="nav-donate-button">Donate</Link>
+          <nav
+            className={`nav-links${isMenuOpen ? " is-open" : ""}`}
+            aria-label="Primary"
+            id="public-primary-menu"
+          >
+            {navLinks.map((link) => (
+              <Link key={link.to} to={link.to} onClick={() => setIsMenuOpen(false)}>
+                {link.label}
+              </Link>
+            ))}
           </nav>
+
+          <div className="nav-actions">
+            <Link to="/donate" className="nav-donate-button">Donate</Link>
+            <Link to="/volunteer" className="nav-volunteer-button">Volunteer</Link>
+            <button
+              type="button"
+              className="nav-menu-toggle"
+              aria-controls="public-primary-menu"
+              aria-expanded={isMenuOpen}
+              aria-label="Toggle navigation menu"
+              onClick={() => setIsMenuOpen((open) => !open)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -44,7 +73,7 @@ export default function Layout() {
 
           <div className="public-footer-center">
             <Link to="/" className="brand-logo-link" aria-label="ViVe Wellness home">
-              <img className="brand-logo brand-logo-sub" src={SUB_LOGO} alt="ViVe Wellness" />
+              <img className="brand-logo brand-logo-sub" src={VIVE_LOGO} alt="ViVe Wellness" />
             </Link>
             <Link to="/donate" className="footer-donate-button">
               Donate

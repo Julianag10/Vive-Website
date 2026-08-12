@@ -1,0 +1,97 @@
+.admin-volunteers {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-content:has(.admin-volunteers) {
+  width: min(1500px, calc(100% - clamp(0.5rem, 1.2vw, 1.25rem)));
+}
+
+.admin-volunteers h1 {
+  margin: 0;
+}
+
+.admin-volunteers > p {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-card);
+  color: var(--admin-text);
+}
+
+.admin-volunteers-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-card);
+  box-shadow: var(--shadow-admin);
+}
+
+.admin-volunteers-table {
+  width: 100%;
+  min-width: 1080px;
+  border-collapse: collapse;
+}
+
+.admin-volunteers-table th,
+.admin-volunteers-table td {
+  padding: 0.78rem 0.72rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--admin-text);
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-volunteers-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: #d8d8d8;
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-volunteers-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.admin-volunteers-table tbody tr:hover {
+  background: rgba(13, 127, 113, 0.12);
+}
+
+.admin-volunteer-contact {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.admin-volunteer-contact a {
+  color: #bff4e9;
+  text-decoration: none;
+}
+
+.admin-volunteer-contact a:hover {
+  text-decoration: underline;
+}
+
+.admin-volunteer-choice-list {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.admin-volunteer-empty {
+  color: #a8a8a8;
+}
+
+.admin-volunteer-email-success {
+  justify-self: center;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(192, 217, 105, 0.45);
+  border-radius: var(--radius-md);
+  background: rgba(192, 217, 105, 0.14);
+  color: #dff0a0;
+  text-align: center;
+}
+

@@ -1,86 +1,52 @@
-import DonationForm from "../components/DonationForm";
+import DonationSplitSection from "../components/DonationSplitSection";
 import "../styles/donate.css";
 
 // TODO CHANEG NAEM TO PAGE
-
-const DONATION_IMAGES = [
-  "/uploads/donations/donation-1.jpg",
-  "/uploads/donations/donation-2.jpg",
-  "/uploads/donations/donation-3.jpg",
-];
 
 const KING_SOOPERS_LOGO = "/uploads/donations/king-soopers-logo.png";
 const AMAZON_SMILE_LOGO = "/uploads/donations/amazon-smile-logo.png";
 const COLORADO_GIVES_LOGO = "/uploads/donations/colorado-gives-logo.png";
 const PAYPAL_LOGO = "/uploads/donations/paypal-logo.png";
-const DIRECT_DONATION_LOGO = "/uploads/donations/logo_text.png";
+const DIRECT_DONATION_LOGO = "/uploads/logo/Vive-logo.png";
 const SUPPORTER_LOGOS = [
   {
     name: "Colorado Health Foundation",
-    src: "/uploads/donations/supporters/colorado-health-foundation.svg",
+    src: "/uploads/donations/supporters/colorado-foundation-logo.png",
   },
   {
     name: "Caring for Denver Foundation",
-    src: "/uploads/donations/supporters/caring-for-denver-foundation.svg",
+    src: "/uploads/donations/supporters/caring-for-denver-logo.png",
   },
   {
     name: "Great Outdoors Colorado",
-    src: "/uploads/donations/supporters/great-outdoors-colorado.svg",
+    src: "/uploads/donations/supporters/GOCO_logo.png",
   },
   {
     name: "Healthy Food for Denver's Kids",
-    src: "/uploads/donations/supporters/healthy-food-for-denvers-kids.svg",
+    src: "/uploads/donations/supporters/healthy-foods-for-denvers-kids-logo.png",
   },
   {
     name: "Margulf Foundation",
-    src: "/uploads/donations/supporters/margulf-foundation.svg",
+    src: "/uploads/donations/supporters/margulf-foundation-logo.png",
   },
   {
     name: "Denver Children's Affairs",
-    src: "/uploads/donations/supporters/denver-childrens-affairs.svg",
+    src: "/uploads/donations/supporters/Office-of-Childrens-Affairs.png",
   },
   {
     name: "USA Triathlon Foundation",
-    src: "/uploads/donations/supporters/usa-triathlon-foundation.svg",
+    src: "/uploads/donations/supporters/usa-triatholon-logo.png",
   },
   {
     name: "Rose Foundation",
-    src: "/uploads/donations/supporters/rose-foundation.svg",
+    src: "/uploads/donations/supporters/RoseFound_logo.png",
   },
 ];
 
 export default function Donate() {
   return (
     <div className="donate-page">
-      <section className="donate-intro">
-        <h1>Your support matters. Please consider making a donation.</h1>
-        <p>
-          We provide children and their families opportunities to engage in
-          physical activities, wellness education, sports and Youth Workforce
-          that would otherwise be inaccessible to them. Any amount, big or small
-          goes a long way in this organization. All contributions are tax
-          deductible. VIVE 501 (c)(3) charitable organization.
-        </p>
-      </section>
-
-      <section className="donate-main-grid">
-        <div className="donate-image-grid" aria-label="Donation impact photos">
-          {DONATION_IMAGES.map((imageUrl, index) => (
-            <img
-              key={imageUrl}
-              src={imageUrl}
-              alt={`ViVe donation impact placeholder ${index + 1}`}
-              onError={(event) => {
-                event.currentTarget.removeAttribute("src");
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="donate-form-column">
-          <DonationForm />
-        </div>
-      </section>
+      <DonationSplitSection />
 
       <section className="donate-other-ways">
         <h1>Other Ways to Donate</h1>
@@ -127,6 +93,7 @@ export default function Donate() {
         <article className="donation-rewards-card">
           <div className="donation-rewards-logo-card">
             <img
+              className="donation-rewards-logo donation-rewards-logo-large"
               src={AMAZON_SMILE_LOGO}
               alt="Amazon Smile logo"
               onError={(event) => {
@@ -165,6 +132,7 @@ export default function Donate() {
         <article className="donation-rewards-card">
           <div className="donation-rewards-logo-card">
             <img
+              className="donation-rewards-logo donation-rewards-logo-large"
               src={COLORADO_GIVES_LOGO}
               alt="ColoradoGives logo"
               onError={(event) => {
@@ -205,6 +173,7 @@ export default function Donate() {
         <article className="donation-rewards-card">
           <div className="donation-rewards-logo-card">
             <img
+              className="donation-rewards-logo donation-rewards-logo-large"
               src={PAYPAL_LOGO}
               alt="PayPal logo"
               onError={(event) => {

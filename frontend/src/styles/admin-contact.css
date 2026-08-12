@@ -1,0 +1,108 @@
+.admin-contact {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-contact h1,
+.admin-contact h2,
+.admin-contact p {
+  margin: 0;
+}
+
+.admin-contact > p {
+  padding: 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-card);
+  color: var(--admin-text);
+}
+
+.admin-contact-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.admin-contact-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-card);
+  color: var(--admin-text);
+}
+
+.admin-contact-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-contact-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-contact-card h2 {
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.admin-contact-card-header p,
+.admin-contact-message {
+  color: #c8c8c8;
+}
+
+.admin-contact-card-header span {
+  border: 1px solid #343434;
+  border-radius: 999px;
+  background: #242424;
+  color: #ffffff;
+  padding: 0.35rem 0.55rem;
+}
+
+.admin-contact-email-success {
+  justify-self: center;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(192, 217, 105, 0.45);
+  border-radius: var(--radius-md);
+  background: rgba(192, 217, 105, 0.14);
+  color: #dff0a0;
+  text-align: center;
+}
+
+
+.admin-contact-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.admin-contact-meta a {
+  color: #bff4e9;
+  text-decoration: none;
+}
+
+.admin-contact-meta a:hover {
+  text-decoration: underline;
+}
+
+.admin-contact-message {
+  max-width: 78ch;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 680px) {
+  .admin-contact-card-header {
+    flex-direction: column;
+  }
+
+  .admin-contact-card-actions {
+    justify-content: flex-start;
+  }
+}

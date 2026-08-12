@@ -2,13 +2,19 @@ import { useState } from "react";
 import RegistrationForm from "./RegistrationForm";
 import RegistrationService from "./RegistrationService";
 import useRegistrationStats from "./useRegistrationStats";
+import SuccessModal from "../../components/SuccessModal";
 
 const registrationService = new RegistrationService();
 
-function waitlistText(count = 0) {
-  return count === 1
-    ? "1 person is currently on the waitlist."
-    : `${count} people are currently on the waitlist.`;
+function waitlistText(count = 0, capacity = null) {
+  const waitlistCountText = count === 1
+    ? "1 person is currently on the waitlist"
+    : `${count} people are currently on the waitlist`;
+  const capacityText = capacity === null || capacity === undefined
+    ? ""
+    : ` for this capacity of ${capacity}`;
+
+  return `${waitlistCountText}${capacityText}.`;
 }
 
 export default function RegistrationPanel({
@@ -19,6 +25,7 @@ export default function RegistrationPanel({
   loading: providedLoading = false,
   error: providedError = null,
   onRegistrationChange,
+  onRegistrationSuccess,
 }) {
   const [status, setStatus] = useState(null);
   const [submittedStats, setSubmittedStats] = useState(null);
@@ -52,12 +59,25 @@ export default function RegistrationPanel({
       name,
     });
 
+    let refreshedStats;
+
     if (onRegistrationChange) {
-      const refreshedStats = await onRegistrationChange();
+      refreshedStats = await onRegistrationChange();
       setSubmittedStats(refreshedStats);
     } else {
-      const refreshedStats = await refreshStats();
+      refreshedStats = await refreshStats();
       setSubmittedStats(refreshedStats);
+    }
+
+    if (onRegistrationSuccess) {
+      onRegistrationSuccess({
+        item,
+        resourceLabel,
+        stats: refreshedStats,
+        status: result.status,
+        type,
+      });
+      return;
     }
 
     setStatus(result.status);
@@ -65,65 +85,62 @@ export default function RegistrationPanel({
 
   if (status === "registered") {
     return (
-      <section className="registration-panel registration-panel-success" id="registration">
-        <h3>Thank you!</h3>
+      <SuccessModal
+        actions={[
+          {
+            label: stats && stats.remaining === 0 ? "Join waitlist" : "Register someone else",
+            onClick: () => setStatus(null),
+            className: "register-another-person-btn",
+          },
+        ]}
+        onClose={() => setStatus(null)}
+        title="Thank you!"
+      >
         <p>You are registered.</p>
         <p>An email has been sent with confirmation details and further emails regarding your registration.</p>
-        {stats && stats.remaining === 0 ? (
-          <>
+        {stats && stats.remaining === 0 && (
             <p>
               This {resourceLabel} is now at capacity. New submissions will join
               the waitlist.
             </p>
-            <button
-              className="register-another-person-btn"
-              type="button"
-              onClick={() => setStatus(null)}
-            >
-              Join waitlist
-            </button>
-          </>
-        ) : (
-          <button
-            className="register-another-person-btn"
-            type="button"
-            onClick={() => setStatus(null)}
-          >
-            Register someone else
-          </button>
         )}
-      </section>
+      </SuccessModal>
     );
   }
 
   if (status === "waitlisted") {
     return (
-      <section className="registration-panel" id="registration">
-        <h3>You are now on the waitlist</h3>
+      <SuccessModal
+        actions={[
+          {
+            label: "Add someone else to waitlist",
+            onClick: () => setStatus(null),
+            className: "register-another-person-btn",
+          },
+        ]}
+        onClose={() => setStatus(null)}
+        title="You are now on the waitlist"
+      >
         <p>
           If a spot opens up you will be notified via email and automatically
           registered for the {resourceLabel}.
         </p>
         {stats && (
-          <p>{waitlistText(stats.waitlisted)}</p>
+          <p>{waitlistText(stats.waitlisted, stats.capacity)}</p>
         )}
-        <button
-          className="register-another-person-btn"
-          type="button"
-          onClick={() => setStatus(null)}
-        >
-          Add someone else to waitlist
-        </button>
-      </section>
+      </SuccessModal>
     );
   }
 
   return (
     <section className="registration-panel" id="registration">
-      <h2>
-        {stats && stats.remaining === 0
-          ? `Join the waitlist for ${item.title}`
-          : `Register for ${item.title}`}
+      <h2 className="registration-panel-title">
+        <span>
+          {stats && stats.remaining === 0
+            ? "Join the waitlist for"
+            : "Register for"}
+        </span>
+        <span>{item.title}</span>
       </h2>
 
       {loading && <p>Loading registration details…</p>}
@@ -132,22 +149,22 @@ export default function RegistrationPanel({
 
       {stats && stats.remaining === 0 && (
         <>
-          <p>
+          <p className="registration-panel-message registration-panel-message-bold">
             This {resourceLabel} is at capacity. If you submit this form, you will be
             automatically added to the waitlist and emailed if a spot opens up.
           </p>
-          <p>{waitlistText(stats.waitlisted)}</p>
+          <p className="registration-panel-message">{waitlistText(stats.waitlisted, stats.capacity)}</p>
         </>
       )}
 
       {stats && stats.capacity === null && (
-        <p>
+        <p className="registration-panel-message">
           {stats.registered} registered. No capacity limit.
         </p>
       )}
 
-      {stats && stats.capacity !== null && stats.remaining >= 0 && (
-        <p>
+      {stats && stats.capacity !== null && stats.remaining > 0 && (
+        <p className="registration-panel-message">
           {stats.registered} of {stats.capacity} spots filled.
         </p>
       )}

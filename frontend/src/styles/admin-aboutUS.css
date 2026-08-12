@@ -42,25 +42,6 @@
   box-shadow: 0 16px 34px rgba(21, 44, 35, .14);
 }
 
-.staff-card-draggable {
-  cursor: grab;
-}
-
-.staff-card-draggable:active {
-  cursor: grabbing;
-}
-
-.staff-card-dragging {
-  opacity: 0.55;
-  transform: none;
-}
-
-.staff-card-drag-over {
-  border-color: #2f7d4f;
-  outline: 3px solid rgba(77, 139, 93, .22);
-  outline-offset: 3px;
-}
-
 /* IMAGE ON LEFT */
 .staff-image-container{
   width:128px;
@@ -135,54 +116,6 @@
 }
 
 
-/* ADMIN BUTTON */
-.staff-card-actions{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:stretch;
-  gap:8px;
-  min-width:112px;
-}
-.staff-card-actions button{
-  width:112px;
-  min-height:38px;
-  padding:9px 12px;
-  border:1px solid #d1d5db;
-  border-radius:8px;
-  background:#f9fafb;
-  color:#1f2937;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.staff-card-actions button:hover {
-  background:#eef7f1;
-  border-color:#9ac7aa;
-}
-
-.staff-drag-button {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  background:#1f6f46 !important;
-  border-color:#1f6f46 !important;
-  color:white !important;
-  cursor: grab;
-}
-
-.staff-drag-button:active {
-  cursor:grabbing;
-}
-
-.staff-drag-dots {
-  width:18px;
-  height:18px;
-  background:
-    radial-gradient(circle, currentColor 1.7px, transparent 2px) 0 0 / 6px 6px;
-}
-
 .staff-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -219,6 +152,7 @@
 }
 
 .staff-modal input,
+.staff-modal select,
 .staff-modal textarea {
   width: 100%;
   box-sizing: border-box;
@@ -253,28 +187,17 @@
   border: 4px solid #e9f4ed;
   box-shadow: 0 8px 18px rgba(21, 44, 35, .12);
   display: block;
-  margin: 0 0 18px;
+  margin: 0 auto 18px;
   background: #eee;
 }
 
 .staff-modal-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 10px;
   margin-top: 8px;
 }
 
-.staff-modal-actions button {
-  padding: 10px 14px;
-  border: 0;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.staff-modal-actions button:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
 
 .staff-action-error {
   padding: 10px 12px;
@@ -305,6 +228,7 @@
 }
 
 .create-staff-modal input,
+.create-staff-modal select,
 .create-staff-modal textarea {
   width: 100%;
   box-sizing: border-box;
@@ -325,20 +249,11 @@
   resize: vertical;
 }
 
-.create-staff-modal button {
-  justify-self: start;
-  padding: 12px 20px;
-  background: #1f6f46;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
+.create-staff-modal .staff-modal-actions {
+  grid-column: 1 / -1;
+  justify-self: center;
 }
 
-.create-staff-modal button:hover {
-  background: #18583a;
-}
 
 @media(max-width:900px){
   .staff-card-grid{
@@ -370,12 +285,181 @@
     flex-wrap:wrap;
   }
 
-  .staff-card-actions button{
-    width:auto;
-    min-width:96px;
-  }
+  
 
   .create-staff-modal form{
     grid-template-columns:1fr;
   }
+}
+
+/* Admin theme overrides for staff management */
+.admin-layout .admin-about-page {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.admin-layout .staff-section {
+  margin-top: 0;
+}
+
+.admin-layout .staff-card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  justify-items: center;
+  gap: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.admin-layout .staff-card {
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  gap: 0.75rem;
+  width: min(100%, 280px);
+  min-height: 0;
+  padding: 1.25rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md);
+  background: #242424;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.admin-layout .staff-card:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.24);
+  transform: translateY(-4px);
+}
+
+.admin-layout .staff-card:hover .staff-image-container {
+  outline: 4px solid var(--brand-lime);
+  outline-offset: 8px;
+}
+
+.admin-layout .staff-image-container {
+  width: clamp(170px, 18vw, 230px);
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.admin-layout .staff-card-content {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-layout .staff-card-content h3 {
+  width: 100%;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-secondary);
+  font-size: var(--text-lg);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.admin-layout .staff-card-content h4 {
+  margin: 0;
+  color: #bff4e9;
+  font-size: var(--body-scale-size);
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.admin-layout .staff-card-content p {
+  color: var(--admin-muted);
+}
+
+.admin-layout .staff-card-group {
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+  margin: 0.35rem 0 0;
+  color: #f5f5f5;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.admin-layout .staff-card-group span {
+  color: var(--admin-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-layout .staff-card-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0.35rem;
+}
+
+
+.admin-layout .create-staff-modal,
+.admin-layout .staff-modal {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--form-radius);
+  box-shadow: var(--shadow-admin);
+  color: var(--admin-text);
+}
+
+.admin-layout .create-staff-modal {
+  display: grid;
+  justify-self: center;
+  width: min(100%, 640px);
+  max-width: 640px;
+  margin: 0 0 1.25rem;
+  padding: var(--form-padding);
+}
+
+.admin-layout .create-staff-modal h3,
+.admin-layout .staff-modal h3 {
+  margin: 0 0 1rem;
+  color: var(--admin-text);
+  font-family: var(--font-secondary);
+  font-size: var(--text-xl);
+  font-weight: 900;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.admin-layout .create-staff-modal form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--form-gap);
+}
+
+
+.admin-layout .staff-upload-preview,
+.admin-layout .staff-modal-preview {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: #222;
+  box-shadow: none;
+}
+
+.admin-layout .staff-action-error {
+  border: 1px solid rgba(198, 71, 71, 0.42);
+  background: rgba(198, 71, 71, 0.18);
+  color: #ffdede;
+  text-align: center;
 }

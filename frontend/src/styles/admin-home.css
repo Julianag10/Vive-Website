@@ -70,6 +70,11 @@
   font-size: 1.25rem;
 }
 
+.admin-home .admin-dashboard-panel p.experiment,
+.admin-home .admin-dashboard-panel p.expirement {
+  font-size: 20.48px !important;
+}
+
 .admin-dashboard-list {
   display: grid;
   gap: 0.55rem;
@@ -86,12 +91,31 @@
 }
 
 .admin-dashboard-list li {
+  padding: 0.75rem;
+}
+
+.admin-dashboard-registration-link {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  margin: -0.75rem;
   padding: 0.75rem;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.admin-dashboard-list li:has(.admin-dashboard-registration-link) {
+  transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+}
+
+
+.admin-dashboard-registration-link:focus-visible {
+  outline: 3px solid rgba(13, 127, 113, 0.28);
+  outline-offset: 3px;
 }
 
 .admin-dashboard-list li div {
@@ -134,12 +158,77 @@
   gap: 0.55rem;
 }
 
+.admin-dashboard-monthly-donation-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(13, 127, 113, 0.38);
+  border-radius: 10px;
+  background: rgba(13, 127, 113, 0.12);
+}
+
+.admin-dashboard-monthly-donation-total span {
+  color: #c8c8c8;
+}
+
+.admin-dashboard-monthly-donation-total strong {
+  color: #bff4e9;
+  font-size: 1.35rem;
+}
+
+.admin-dashboard-volunteer-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
 .admin-dashboard-donation-row {
   display: grid;
   grid-template-columns: 120px 110px minmax(170px, 1fr) minmax(160px, 1fr);
   gap: 0.75rem;
   align-items: center;
   padding: 0.75rem;
+}
+
+.admin-dashboard-volunteer-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.85fr) minmax(0, 1.35fr) max-content;
+  gap: 0.55rem 0.85rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid rgba(13, 127, 113, 0.38);
+  border-radius: 10px;
+  background: rgba(13, 127, 113, 0.12);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.admin-dashboard-volunteer-row > * {
+  min-width: 0;
+}
+
+
+.admin-dashboard-volunteer-row strong {
+  color: #ffffff;
+  overflow-wrap: anywhere;
+}
+
+.admin-dashboard-volunteer-row span {
+  color: #c8c8c8;
+}
+
+.admin-dashboard-volunteer-row .admin-dashboard-response-email {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.admin-dashboard-volunteer-row .admin-dashboard-response-date {
+  justify-self: end;
+  color: #ffffff;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .admin-dashboard-message {
@@ -164,6 +253,15 @@
   .admin-dashboard-donation-row {
     grid-template-columns: 1fr 1fr;
   }
+
+  .admin-dashboard-volunteer-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .admin-dashboard-volunteer-row strong,
+  .admin-dashboard-volunteer-row .admin-dashboard-response-email {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 680px) {
@@ -177,9 +275,14 @@
   }
 
   .admin-dashboard-list li,
-  .admin-dashboard-donation-row {
+  .admin-dashboard-donation-row,
+  .admin-dashboard-volunteer-row {
     align-items: start;
     grid-template-columns: 1fr;
+  }
+
+  .admin-dashboard-volunteer-row .admin-dashboard-response-date {
+    justify-self: start;
   }
 
   .admin-dashboard-list li .admin-dashboard-count-pair {

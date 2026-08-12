@@ -89,62 +89,64 @@ export default function DonationForm() {
 
   // RENDER OUTPUT (JSX -> DOM)
   return (
-    <div className="donation-form">
-      <h2>Support ViVe</h2>
+    <div className="donation-form form-shell">
+      <div className="donation-controls-card">
+        <h2>Support ViVe</h2>
 
-      {/* PRESET DONATION BUTTONS */}
-      <div className="donation-tiers">
-        {DONATION_TIERS.map((tier) => (
-          <button
-            key={tier.priceID}
-            className={`donation-tier-btn ${
-              priceID === tier.priceID ? "selected" : ""
-            }`}
-            onClick={() => selectPresetAmount(tier.priceID, tier.amount)}
-          >
-            {tier.label}
-          </button>
-        ))}
-      </div>
-
-      {/* CUSTOM DONATION AMOUNT */}
-      <div className="donation-field">
-        <input
-          type="number"
-          min="1"
-          value={amountInput}
-          placeholder="Custom Donation"
-          onChange={onCustomAmountChange}
-          className={`stripe-like-input ${amountError ? "error" : ""}`}
-        />
-
-        {amountError && <div className="stripe-error-text">{amountError}</div>}
-      </div>
-
-      {/* CONDITIONAL RENDERING */}
-
-      {/* ERROR MESSAGE (conditonal RENDERING)*/}
-      {error && (
-        <div className="error">
-          <p>{error}</p>
-          <button
-            onClick={() => {
-              setError(null);
-              // unmounts <CheckoutWrapper> so stripe dosetn load -> triggers a re-render -> start over donatino process
-              setShowCheckout(false);
-            }}
-          >
-            Try again
-          </button>
+        {/* PRESET DONATION BUTTONS */}
+        <div className="donation-tiers">
+          {DONATION_TIERS.map((tier) => (
+            <button
+              key={tier.priceID}
+              className={`donation-tier-btn btn btn-secondary ${
+                priceID === tier.priceID ? "selected" : ""
+              }`}
+              onClick={() => selectPresetAmount(tier.priceID, tier.amount)}
+            >
+              {tier.label}
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* DONATE BUTTON */}
-      {!showCheckout && !error && (
-        <button className="donation-submit" onClick={handleDonateClick}>
-          Donate {amountCents ? `$${(amountCents / 100).toFixed(2)}` : ""}
-        </button>
-      )}
+        {/* CUSTOM DONATION AMOUNT */}
+        <div className="donation-field">
+          <input
+            type="number"
+            min="1"
+            value={amountInput}
+            placeholder="Custom Donation"
+            onChange={onCustomAmountChange}
+            className={`stripe-like-input ${amountError ? "error" : ""}`}
+          />
+
+          {amountError && <div className="stripe-error-text">{amountError}</div>}
+        </div>
+
+        {/* CONDITIONAL RENDERING */}
+
+        {/* ERROR MESSAGE (conditonal RENDERING)*/}
+        {error && (
+          <div className="error">
+            <p>{error}</p>
+            <button
+              onClick={() => {
+                setError(null);
+                // unmounts <CheckoutWrapper> so stripe dosetn load -> triggers a re-render -> start over donatino process
+                setShowCheckout(false);
+              }}
+            >
+              Try again
+            </button>
+          </div>
+        )}
+
+        {/* DONATE BUTTON */}
+        {!showCheckout && !error && (
+          <button className="donation-submit btn btn-primary" onClick={handleDonateClick}>
+            Donate {amountCents ? `$${(amountCents / 100).toFixed(2)}` : ""}
+          </button>
+        )}
+      </div>
 
       {/* STRIPE CEHKOUT (conditional MOUNT) */}
       {showCheckout && (
@@ -155,11 +157,13 @@ export default function DonationForm() {
         // showCheckout == true:
         // CheckoutWrapper is MOUNTED -> stripe checkoutsession created
         // Stripe UI is initalize ONCE
-        <CheckoutWrapper
-          priceID={priceID}
-          amountCents={amountCents}
-          onError={handleCheckoutError}
-        />
+        <div className="donation-checkout-area">
+          <CheckoutWrapper
+            priceID={priceID}
+            amountCents={amountCents}
+            onError={handleCheckoutError}
+          />
+        </div>
       )}
     </div>
   );

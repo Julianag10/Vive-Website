@@ -1,8 +1,101 @@
 .admin-donations {
-  padding: 2rem;
+  display: grid;
+  gap: 1rem;
 }
 
-.admin-donations table {
-  border-collapse: collapse;
+.admin-donations h1 {
+  margin: 0;
+}
+
+.admin-donations > p {
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-card);
+  color: var(--admin-text);
+}
+
+.admin-donations-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-card);
+  box-shadow: var(--shadow-admin);
+}
+
+.admin-donations-table {
   width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.admin-donations-table th,
+.admin-donations-table td {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.admin-donations-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: #d8d8d8;
+  font-size: var(--text-xs);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-donations-table td {
+  color: var(--admin-text);
+}
+
+.admin-donations-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.admin-donations-table tbody tr:hover {
+  background: rgba(13, 127, 113, 0.12);
+}
+
+.admin-donation-amount {
+  color: #bff4e9;
+  font-weight: 900;
+}
+
+.admin-donation-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 6rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  color: #d8d8d8;
+  font-size: var(--text-xs);
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
+.admin-donation-status.status-succeeded,
+.admin-donation-status.status-paid,
+.admin-donation-status.status-complete {
+  border-color: rgba(13, 127, 113, 0.4);
+  background: rgba(13, 127, 113, 0.18);
+  color: #bff4e9;
+}
+
+.admin-donation-status.status-pending {
+  border-color: rgba(240, 193, 93, 0.42);
+  background: rgba(240, 193, 93, 0.16);
+  color: #ffe7ae;
+}
+
+.admin-donation-status.status-failed,
+.admin-donation-status.status-canceled {
+  border-color: rgba(198, 71, 71, 0.42);
+  background: rgba(198, 71, 71, 0.18);
+  color: #ffdede;
 }

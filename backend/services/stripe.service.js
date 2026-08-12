@@ -39,7 +39,7 @@ export async function createCheckoutSession({ priceID, amountCents }) {
         billing_address_collection: 'auto',
         line_items: [lineItem],
         // after payment, stripe redirects user to this URL
-        return_url: `${process.env.BASE_URL}/complete?session_id={CHECKOUT_SESSION_ID}`,
+        return_url: `${process.env.BASE_URL}/?donation_session_id={CHECKOUT_SESSION_ID}`,
     });
 
     // returns what the controller needs to send back to frontend
@@ -76,5 +76,9 @@ export async function getCheckoutSessionStatus(sessionId) {
             session.customer_details?.email ||
             session.customer_email ||
             null,
+        donor_name:
+            session.customer_details?.name ||
+            null,
+        amount_total: session.amount_total,
     };
 }

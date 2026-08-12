@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import EventService from "../../features/EventCalander/EventService";
 import RegistrationService from "../../features/Registration/RegistrationService";
 import { getPrograms } from "../../features/Programs/ProgramService";
@@ -39,12 +40,24 @@ function formatDonationAmount(donation) {
   return `${(Number(donation.amount_cents || 0) / 100).toFixed(2)} USD`;
 }
 
+function isDonationFromCurrentMonth(donation) {
+  const donationDate = new Date(donation.created_at);
+  const today = new Date();
+
+  return (
+    donationDate.getFullYear() === today.getFullYear() &&
+    donationDate.getMonth() === today.getMonth()
+  );
+}
+
 export default function AdminHome() {
   const [dashboardData, setDashboardData] = useState({
     programs: [],
     events: [],
     donations: [],
     registrationItems: [],
+    volunteerApplications: [],
+    contactMessages: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -59,10 +72,12 @@ export default function AdminHome() {
           eventService.getAllEventsForMonth(month, year)
         );
 
-        const [programs, eventGroups, donationsResponse] = await Promise.all([
+        const [programs, eventGroups, donationsResponse, volunteersResponse, contactResponse] = await Promise.all([
           getPrograms(),
           Promise.all(monthRequests),
           fetch("/admin/api/donations", { credentials: "include" }),
+          fetch("/admin/api/volunteers", { credentials: "include" }),
+          fetch("/admin/api/contact", { credentials: "include" }),
         ]);
 
         if (!donationsResponse.ok) {
@@ -70,8 +85,20 @@ export default function AdminHome() {
           throw new Error(errorData.error || "Failed to load donations");
         }
 
+        if (!volunteersResponse.ok) {
+          const errorData = await volunteersResponse.json();
+          throw new Error(errorData.error || "Failed to load volunteer applications");
+        }
+
+        if (!contactResponse.ok) {
+          const errorData = await contactResponse.json();
+          throw new Error(errorData.error || "Failed to load contact messages");
+        }
+
         const events = uniqueEvents(eventGroups.flat());
         const donations = await donationsResponse.json();
+        const volunteerApplications = await volunteersResponse.json();
+        const contactMessages = await contactResponse.json();
 
         const programRegistrationItems = await Promise.all(
           programs.map(async (program) => {
@@ -116,6 +143,8 @@ export default function AdminHome() {
           programs,
           events,
           donations,
+          volunteerApplications,
+          contactMessages,
           registrationItems: registrationItems
             .filter((item) => item.registered > 0 || item.waitlisted > 0)
             .sort(
@@ -146,6 +175,15 @@ export default function AdminHome() {
     .filter((event) => event.startDate >= today)
     .sort((a, b) => a.startDate - b.startDate);
   const recentDonations = [...dashboardData.donations]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 5);
+  const currentMonthDonationTotal = dashboardData.donations
+    .filter(isDonationFromCurrentMonth)
+    .reduce((total, donation) => total + Number(donation.amount_cents || 0), 0);
+  const recentVolunteerApplications = [...dashboardData.volunteerApplications]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 5);
+  const recentContactMessages = [...dashboardData.contactMessages]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, 5);
   const totalWaitlisted = dashboardData.registrationItems.reduce(
@@ -209,6 +247,9 @@ export default function AdminHome() {
         <article className="admin-dashboard-panel">
           <div className="admin-dashboard-panel-heading">
             <h2>Registration Counts</h2>
+            <p className="experiment">
+              what size am i , thisisi sixe 20.48px
+            </p>
             <p>
               {totalRegistered} registered and {totalWaitlisted} waitlisted across programs and events.
             </p>
@@ -218,22 +259,27 @@ export default function AdminHome() {
             <ul className="admin-dashboard-list">
               {dashboardData.registrationItems.map((item) => (
                 <li key={`${item.type}-${item.id}`}>
-                  <div>
-                    <strong>{item.title}</strong>
-                    <span>{item.type}</span>
-                  </div>
-                  <div className="admin-dashboard-count-pair">
-                    <span>
-                      {item.registered === 1
-                        ? "1 registered"
-                        : `${item.registered} registered`}
-                    </span>
-                    <span>
-                      {item.waitlisted === 1
-                        ? "1 waitlisted"
-                        : `${item.waitlisted} waitlisted`}
-                    </span>
-                  </div>
+                  <Link
+                    className="admin-dashboard-registration-link"
+                    to={`/admin/registrations/${item.type.toLowerCase()}/${item.id}`}
+                  >
+                    <div>
+                      <strong>{item.title}</strong>
+                      <span>{item.type}</span>
+                    </div>
+                    <div className="admin-dashboard-count-pair">
+                      <span>
+                        {item.registered === 1
+                          ? "1 registered"
+                          : `${item.registered} registered`}
+                      </span>
+                      <span>
+                        {item.waitlisted === 1
+                          ? "1 waitlisted"
+                          : `${item.waitlisted} waitlisted`}
+                      </span>
+                    </div>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -243,10 +289,88 @@ export default function AdminHome() {
         </article>
       </section>
 
+      <section className="admin-dashboard-live-grid">
+        <article className="admin-dashboard-panel admin-dashboard-volunteers-panel">
+          <div className="admin-dashboard-panel-heading">
+            <h2>Volunteer Form Responses</h2>
+            <p>
+              {dashboardData.volunteerApplications.length === 1
+                ? "1 volunteer application has been submitted."
+                : `${dashboardData.volunteerApplications.length} volunteer applications have been submitted.`}
+            </p>
+          </div>
+
+          {recentVolunteerApplications.length > 0 ? (
+            <div className="admin-dashboard-volunteer-list">
+              {recentVolunteerApplications.map((application) => (
+                <Link
+                  className="admin-dashboard-volunteer-row"
+                  key={application.id}
+                  to="/admin/volunteers"
+                >
+                  <strong>
+                    {application.first_name} {application.last_name}
+                  </strong>
+                  <span className="admin-dashboard-response-email">{application.email}</span>
+                  <span className="admin-dashboard-response-date">
+                    {formatDisplayDate(application.created_at)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="admin-dashboard-empty">No volunteer form responses yet.</p>
+          )}
+        </article>
+
+        <article className="admin-dashboard-panel admin-dashboard-contact-panel">
+          <div className="admin-dashboard-panel-heading">
+            <h2>Contact Us Responses</h2>
+            <p>
+              {dashboardData.contactMessages.length === 1
+                ? "1 contact message has been submitted."
+                : `${dashboardData.contactMessages.length} contact messages have been submitted.`}
+            </p>
+          </div>
+
+          {recentContactMessages.length > 0 ? (
+            <div className="admin-dashboard-volunteer-list">
+              {recentContactMessages.map((message) => (
+                <Link
+                  className="admin-dashboard-volunteer-row"
+                  key={message.id}
+                  to="/admin/contact"
+                >
+                  <strong>
+                    {message.first_name} {message.last_name}
+                  </strong>
+                  <span className="admin-dashboard-response-email">{message.email}</span>
+                  <span className="admin-dashboard-response-date">
+                    {formatDisplayDate(message.created_at)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="admin-dashboard-empty">No contact messages yet.</p>
+          )}
+        </article>
+      </section>
+
       <section className="admin-dashboard-panel">
         <div className="admin-dashboard-panel-heading">
           <h2>Recent Donations</h2>
           <p>Latest donation records from the admin donations endpoint.</p>
+        </div>
+
+        <div className="admin-dashboard-monthly-donation-total">
+          <span>This Month</span>
+          <strong>
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(currentMonthDonationTotal / 100)}
+          </strong>
         </div>
 
         {recentDonations.length > 0 ? (

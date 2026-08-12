@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import RegistrationService from "./RegistrationService";
+import SuccessModal from "../../components/SuccessModal";
 
 const registrationService = new RegistrationService();
 
@@ -14,9 +15,11 @@ export default function UnregisterModal({
 
   const [loading, setLoading] = useState(false);
   const [complete, setComplete] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleConfirm() {
     setLoading(true);
+    setError("");
 
     try{
       await registrationService.unregister(type, item.id, registration.email, {
@@ -25,9 +28,23 @@ export default function UnregisterModal({
       });
       setComplete(true);
     }
+    catch(err){
+      setError(err.message);
+    }
     finally{
       setLoading(false);
     }
+  }
+
+  if (complete) {
+    return (
+      <SuccessModal
+        onClose={onClose}
+        title="Registration Removed"
+      >
+        <p>You have been successfully unregistered.</p>
+      </SuccessModal>
+    );
   }
 
   return(
@@ -37,9 +54,17 @@ export default function UnregisterModal({
     >
 
       <div
-        className="modal"
+        className="modal unregister-modal"
         onClick={(e)=>e.stopPropagation()}
       >
+        <button
+          aria-label="Close cancel registration modal"
+          className="unregister-modal-close"
+          onClick={onClose}
+          type="button"
+        >
+          ×
+        </button>
 
         {!complete && (
           <>
@@ -55,41 +80,31 @@ export default function UnregisterModal({
               {registration.name || `${registration.firstName || ""} ${registration.lastName || ""}`.trim()}
             </p>
 
-            <button
-              onClick={handleConfirm}
-              disabled={loading}
-            >
-              {loading
-                ? "Removing..."
-                : "Yes, Unregister"}
-            </button>
+            {error && <p className="error">{error}</p>}
 
-            <button
-              onClick={onClose}
-            >
-              Keep Registration
-            </button>
+            <div className="unregister-modal-actions">
+              <button
+                className="unregister-confirm-button"
+                onClick={handleConfirm}
+                disabled={loading}
+                type="button"
+              >
+                {loading
+                  ? "Removing..."
+                  : "Yes, Unregister"}
+              </button>
+
+              <button
+                className="unregister-keep-button"
+                onClick={onClose}
+                type="button"
+              >
+                Keep Registration
+              </button>
+            </div>
           </>
         )}
 
-        {complete && (
-          <>
-            <h2>
-              Registration Removed
-            </h2>
-
-            <p>
-              You have been successfully
-              unregistered.
-            </p>
-
-            <button
-              onClick={onClose}
-            >
-              Close
-            </button>
-          </>
-        )}
       </div>
     </div>
   );

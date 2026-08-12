@@ -15,18 +15,26 @@ export default function CreateEventModal({ onClose, onCreate }) {
   }
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal admin-event-modal">
+    <div className="modal-backdrop is-open" onClick={onClose}>
+      <div className="modal admin-event-modal" onClick={(event) => event.stopPropagation()}>
+        <button
+          type="button"
+          className="modal-close"
+          onClick={onClose}
+          aria-label="Close create event modal"
+        >
+          ×
+        </button>
+
         <h2>Create Event</h2>
 
         <EventForm
           initialForm={createBlankEventForm()}
           onSubmit={handleSubmit}
           actions={(
-            <>
+            <div className="modal-actions admin-event-modal-actions">
               <button type="submit">Save</button>
-              <button type="button" onClick={onClose}>Cancel</button>
-            </>
+            </div>
           )}
         />
       </div>

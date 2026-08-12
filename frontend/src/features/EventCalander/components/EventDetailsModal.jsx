@@ -4,6 +4,8 @@ import RegistrationLookup from "../../Registration/RegistrationLookup";
 import useRegistrationStats from "../../Registration/useRegistrationStats";
 import { 
   formatTimeRange,
+  getEventScheduleRows,
+  isMultiDayEvent,
 } from "../dateUtils";
 import { formatDisplayDate } from "../../../utils/dateFormat";
 // DISPLAYS selectedEvent
@@ -31,8 +33,7 @@ import { formatDisplayDate } from "../../../utils/dateFormat";
 // delete button
 // save button
 // cancel button
-export default function EventDetailsModal({event, onClose}) {
-  const [showRegistration, setShowRegistration] = useState(false);
+export default function EventDetailsModal({event, onClose, onRegistrationSuccess}) {
   const occurrence = event?.occurrence || null;
   const isRegisterable = event?.isRegisterable ?? false;
   const {
@@ -72,6 +73,8 @@ export default function EventDetailsModal({event, onClose}) {
       ? "1 person is currently on the waitlist."
       : `${stats.waitlisted} people are currently on the waitlist.`
     : "";
+  const scheduleRows = getEventScheduleRows(event);
+  const showFullSchedule = isMultiDayEvent(event);
 
   function handleClose() {
     if (isClosing) return;
@@ -107,28 +110,58 @@ export default function EventDetailsModal({event, onClose}) {
 
         {event.description && <p>{event.description}</p>}
 
-        {Array.isArray(event.notes) && event.notes.length > 0 && (
-          <section className="event-details-notes">
-            <h3>Notes</h3>
-            <ul>
-              {event.notes.map((note, index) => (
-                <li key={`${note}-${index}`}>{note}</li>
-              ))}
-            </ul>
+        <div className="event-details-info-grid">
+          {Array.isArray(event.notes) && event.notes.length > 0 && (
+            <section className="event-details-notes">
+              <h3>Notes</h3>
+              <ul>
+                {event.notes.map((note, index) => (
+                  <li key={`${note}-${index}`}>{note}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {showFullSchedule ? (
+            <section className="event-details-schedule">
+              <h3>Schedule</h3>
+              <ul>
+                {scheduleRows.map((row) => (
+                  <li key={`${row.date}-${row.time}`}>
+                    <strong>{row.date}</strong>
+                    <span>{row.time}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : (
+            <section className="event-details-schedule">
+              <h3>Schedule</h3>
+              <p>
+                <strong>Date:</strong> {formatDisplayDate(occurrenceDate)}
+              </p>
+
+              <p>
+                <strong>Time:</strong> {formatTimeRange(occurrenceStart, occurrenceEnd)}
+              </p>
+            </section>
+          )}
+        </div>
+
+        {event.location && (
+          <section className="event-details-location">
+            <h3>Location</h3>
+            <p>{event.location}</p>
           </section>
         )}
 
-        <p>
-          <strong>Date:</strong> {formatDisplayDate(occurrenceDate)}
-        </p>
-
-        <p>
-          <strong>Time:</strong> {formatTimeRange(occurrenceStart, occurrenceEnd)}
-        </p>
-
-        {event.location && 
-          <p> <strong>Location:</strong> {event.location}</p>
-        }
+        {isRegisterable && (
+          <RegistrationLookup
+            type="event"
+            item={event}
+            registrationData={{ eventOccurrenceId: occurrence?.id }}
+          />
+        )}
 
         {isRegisterable && stats && (
           <>
@@ -147,34 +180,7 @@ export default function EventDetailsModal({event, onClose}) {
           </>
         )}
 
-
-
         {isRegisterable && (
-          <>
-              {!showRegistration && (
-                <button
-                  onClick={() => setShowRegistration(true)}
-                >
-                  {loadingStats
-                    ? "Register"
-                    : stats && stats.remaining === 0
-                      ? "Join Waitlist"
-                      : "Register"}
-                </button>
-              )}
-
-          </>
-        )}
-
-        {isRegisterable && (
-          <RegistrationLookup
-            type="event"
-            item={event}
-            registrationData={{ eventOccurrenceId: occurrence?.id }}
-          />
-        )}
-
-        {isRegisterable && showRegistration && (
           <RegistrationPanel
             type="event"
             item={event}
@@ -183,6 +189,7 @@ export default function EventDetailsModal({event, onClose}) {
             loading={loadingStats}
             error={statsError}
             onRegistrationChange={refreshStats}
+            onRegistrationSuccess={onRegistrationSuccess}
           />
         )}
         

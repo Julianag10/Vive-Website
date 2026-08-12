@@ -3,6 +3,10 @@
   gap: 1.5rem;
 }
 
+.admin-content:has(.admin-programs-page) {
+  width: min(1440px, calc(100% - clamp(1.5rem, 3vw, 4rem)));
+}
+
 .admin-programs-page h1 {
   margin: 0;
   color: #f5f5f5;
@@ -10,6 +14,15 @@
   font-size: 1.7rem;
   font-weight: 700;
   letter-spacing: 0;
+  text-align: center;
+}
+
+.admin-program-create-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: calc((430px * 3) + (1.35rem * 2));
+  margin: 0 auto;
 }
 
 .create-program-form,
@@ -23,19 +36,26 @@
 }
 
 .create-program-form {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.9rem;
+  justify-self: center;
+  width: min(100%, 640px);
   padding: 1rem;
 }
 
-.create-program-form textarea,
-.create-program-form input[name="image_url"],
-.create-program-form label,
-.admin-program-gallery-preview,
-.create-program-form button {
+.admin-form-title {
   grid-column: 1 / -1;
+  margin: 0 0 0.35rem;
+  color: #f5f5f5;
+  font-family: var(--font-secondary);
+  font-size: 1.65rem;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
 }
+
 
 .create-program-form input,
 .create-program-form textarea,
@@ -83,24 +103,6 @@
   opacity: 0.9;
 }
 
-.create-program-form input[type="file"]::file-selector-button,
-.admin-program-card input[type="file"]::file-selector-button {
-  margin-right: 0.8rem;
-  border: 1px solid #343434;
-  border-radius: 6px;
-  background: #202020;
-  color: #8d8d8d;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-  padding: 0.45rem 0.7rem;
-}
-
-.create-program-form input[type="file"]::file-selector-button:hover,
-.admin-program-card input[type="file"]::file-selector-button:hover {
-  border-color: #7e7e7e;
-  color: #d8d8d8;
-}
 
 .create-program-form input:focus,
 .create-program-form textarea:focus,
@@ -129,6 +131,8 @@
 .admin-program-card input[type="checkbox"] {
   width: 1rem;
   height: 1rem;
+  min-height: 1rem;
+  padding: 0;
   accent-color: #0d7f71;
 }
 
@@ -158,47 +162,41 @@
   font-weight: 800;
 }
 
-.create-program-form button,
-.admin-program-card button {
-  border: 1px solid #3b3b3b;
-  border-radius: 6px;
-  background-color: #2a2a2a;
-  color: #f5f5f5;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
-  min-height: 2.35rem;
-  padding: 0.6rem 0.9rem;
+
+.admin-create-program-toggle:hover {
+  background: #0b6056;
 }
 
-.create-program-form button {
-  justify-self: start;
-  background-color: #0d7f71;
-  border-color: #0d7f71;
+.admin-program-edit-modal {
+  width: min(640px, 100%);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.create-program-form button:hover,
-.admin-program-card button:hover {
-  background-color: #3a3a3a;
-}
-
-.create-program-form button:hover {
-  background-color: #0b6056;
-}
 
 .admin-program-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.15rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 430px));
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.35rem;
+  width: 100%;
+  max-width: calc((430px * 3) + (1.35rem * 2));
+  margin: 0 auto;
 }
 
 .admin-program-card {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
   gap: 0.95rem;
-  padding: 1.1rem;
+  min-height: 100%;
+  padding: 1.25rem;
   position: relative;
   overflow: hidden;
+  text-align: center;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
@@ -208,12 +206,30 @@
   box-shadow: 0 22px 42px rgba(0, 0, 0, 0.26);
 }
 
+.admin-program-card.is-editing {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.admin-program-card.is-editing:hover {
+  transform: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.admin-program-card.is-editing .create-program-form {
+  width: 100%;
+}
+
 .admin-program-card-image {
-  width: min(100%, 260px);
+  width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
   justify-self: center;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid #303030;
   background-color: #222;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -223,41 +239,62 @@
   min-width: 0;
   display: grid;
   gap: 0.9rem;
+  align-content: start;
 }
 
 .admin-program-card-heading-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.85rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
 }
 
 .admin-program-card-statuses {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.45rem;
 }
 
+.admin-program-card h2,
 .admin-program-card h3,
 .admin-program-card p {
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
+.admin-program-card h2,
 .admin-program-card h3 {
   margin: 0;
   color: #ffffff;
-  font-family: var(--font-secondary);
-  font-size: 1.12rem;
-  font-weight: 800;
+  font-family: var(--card-heading-font);
+  font-size: var(--card-heading-size);
+  font-weight: var(--card-heading-weight);
   letter-spacing: 0;
 }
 
 .admin-program-card-description {
+  display: grid;
+  gap: 0.25rem;
   margin: 0;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
   color: #cfcfcf;
   line-height: 1.55;
+  text-align: left;
+}
+
+.admin-program-card-description span {
+  color: #9f9f9f;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-program-card-description p {
+  margin: 0;
 }
 
 .admin-program-card-meta {
@@ -272,6 +309,7 @@
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
 }
 
 .admin-program-card-meta dt {
@@ -325,87 +363,64 @@
   border-color: rgba(198, 71, 71, 0.22);
 }
 
-.admin-program-card-actions,
-.admin-edit-from-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-}
-
-.admin-program-card-actions {
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.admin-program-card-action {
-  border: 1px solid #3b3b3b;
-  border-radius: 999px;
-  background-color: #242424;
-  color: #f5f5f5;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 800;
-  min-height: 2.5rem;
-  padding: 0.65rem 1rem;
-  transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease, color 140ms ease;
-}
-
-.admin-program-card-action:hover {
-  transform: translateY(-1px);
-}
-
-.admin-program-card-action--edit {
-  background: linear-gradient(135deg, #f0c15d, #dba43a);
-  border-color: #f0c15d;
-  color: #1d1d1d;
-}
-
-.admin-program-card-action--edit:hover {
-  background: linear-gradient(135deg, #f3cd7d, #d89a28);
-}
-
-.admin-program-card-action--toggle {
-  background: linear-gradient(135deg, #0d7f71, #0b6056);
-  border-color: #0d7f71;
-}
-
-.admin-program-card-action--toggle:hover {
-  background: linear-gradient(135deg, #0b6056, #08463e);
-}
-
-.admin-program-card-action--registrations {
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.18);
-}
-
-.admin-program-card-action--registrations:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.admin-program-card-action--delete {
-  background: rgba(198, 71, 71, 0.18);
-  border-color: rgba(198, 71, 71, 0.42);
-  color: #ffdede;
-}
-
-.admin-program-card-action--delete:hover {
-  background: rgba(198, 71, 71, 0.28);
-}
 
 .admin-program-card form {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.85rem;
 }
 
-.admin-program-card form textarea,
-.admin-program-card form input[name="image_url"],
-.admin-program-card form label,
-.admin-program-card .admin-program-gallery-preview,
-.admin-program-form-error,
-.admin-edit-from-buttons {
+
+.admin-program-days-field {
+  display: grid;
+  gap: 0.55rem;
+  min-height: var(--form-control-min-height);
+  padding: 0.72rem 0.9rem;
+  border: 1px solid #343434;
+  border-radius: 12px;
+  background: #202020;
+}
+
+.admin-program-days-label {
+  align-self: start;
+}
+
+.admin-program-days-title {
+  color: #d8d8d8;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.admin-program-days-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem 0.8rem;
+}
+
+.admin-program-days-grid label {
+  grid-column: auto;
+  margin: 0;
+}
+
+.admin-program-card form textarea[name="activities_text"],
+.create-program-form textarea[name="activities_text"],
+.admin-program-card form input[type="file"],
+.create-program-form input[type="file"],
+.admin-program-card form .admin-program-image-preview,
+.create-program-form .admin-program-image-preview,
+.admin-program-card form .admin-program-days-label,
+.create-program-form .admin-program-days-label,
+.admin-program-card form .admin-program-days-field,
+.create-program-form .admin-program-days-field {
   grid-column: 1 / -1;
+}
+
+.admin-program-card form .admin-program-days-field,
+.create-program-form .admin-program-days-field {
+  max-width: 520px;
+  width: 100%;
 }
 
 .admin-program-gallery-preview {
@@ -452,11 +467,7 @@
     width: min(100%, 100%);
   }
 
-  .admin-program-card-actions,
-  .admin-edit-from-buttons {
-    flex-direction: column;
-    align-items: stretch;
-  }
+  
 
   .admin-program-card-meta {
     grid-template-columns: 1fr;

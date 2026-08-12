@@ -6,10 +6,12 @@ import bcrypt from "bcrypt"; // one way password hasshign algo
 import {pool} from "../../db/db.js"; // need to check if crediential are saved in db
 
 export async function authenticateAdmin(email, password) {
+    const normalizedEmail = String(email || "").trim().toLowerCase();
+
     // returns the db row for the email
     const {rows} = await pool.query(
         "SELECT * FROM admins WHERE email  = $1",
-        [email]
+        [normalizedEmail]
     );
 
     const admin = rows[0];

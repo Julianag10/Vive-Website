@@ -1,18 +1,47 @@
 import * as staffService from "../../services/staff.service.js";
+import fs from "fs/promises";
+import path from "path";
+
+const DEFAULT_STAFF_IMAGE_URL = "/uploads/staff/StaffPlaceHolder.png";
+
+function staffImageFilename(name) {
+  const slug = String(name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${slug || "staff-photo"}.avif`;
+}
+
+async function staffImageUrlFromUpload(file, name) {
+  if (!file) {
+    return undefined;
+  }
+
+  const filename = staffImageFilename(name);
+  const uploadDir = path.join(process.cwd(), "uploads", "staff");
+  const destinationPath = path.join(uploadDir, filename);
+
+  if (file.path !== destinationPath) {
+    await fs.rename(file.path, destinationPath);
+  }
+
+  return `/uploads/staff/${filename}`;
+}
 
 // CREATE STAFF
 export async function createStaff(req, res) {
   try {
-    const { name, role, bio, display_order } = req.body;
+    const { name, role, staff_group, bio, display_order } = req.body;
 
-    const image_url = req.file
-      ? `/uploads/staff/${req.file.filename}`
-      // ? `http://localhost:5000/uploads/staff/${req.file.filename}`
-      : null;
+    const image_url =
+      (await staffImageUrlFromUpload(req.file, name)) || DEFAULT_STAFF_IMAGE_URL;
 
     const newStaff = await staffService.createStaff({
       name,
       role,
+      staff_group,
       bio,
       display_order: Number(display_order), // ✅ FIX
       image_url,
@@ -28,15 +57,14 @@ export async function createStaff(req, res) {
 export async function updateStaff(req, res) {
   try {
     const { id } = req.params;
-    const { name, role, bio, display_order } = req.body;
+    const { name, role, staff_group, bio, display_order } = req.body;
 
-    const image_url = req.file
-      ? `/uploads/staff/${req.file.filename}`
-      : undefined;
+    const image_url = await staffImageUrlFromUpload(req.file, name);
 
     const updateData = {
       name,
       role,
+      staff_group,
       bio,
       display_order: Number(display_order),
     };

@@ -99,27 +99,38 @@ export default function AdminDonations() {
 
       {/* DONATIONS TABLE */}
 
-      <table border="1" cellPadding="8" cellSpacing="0">
-        <thead>
-          <tr>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Donor Email</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {donations.map((donation) => (
-            <tr key={donation.id}>
-              <td>{(donation.amount_cents / 100).toFixed(2)} USD</td>
-              <td>{donation.status}</td>
-              <td>{new Date(donation.created_at).toLocaleString()}</td>
-              <td>{donation.donor_email || "—"}</td>
+      <div className="admin-donations-table-wrap">
+        <table className="admin-donations-table">
+          <thead>
+            <tr>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Donor Email</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {donations.map((donation) => (
+              <tr key={donation.id}>
+                <td className="admin-donation-amount">
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  }).format((donation.amount_cents || 0) / 100)}
+                </td>
+                <td>
+                  <span className={`admin-donation-status status-${donation.status}`}>
+                    {donation.status}
+                  </span>
+                </td>
+                <td>{new Date(donation.created_at).toLocaleString()}</td>
+                <td>{donation.donor_email || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

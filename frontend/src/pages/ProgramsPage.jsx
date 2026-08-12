@@ -75,8 +75,8 @@ export default function ProgramsPage() {
 
   return (
     <div className="programs-page">
-      <h1>Our Programs</h1>
-      <ProgramSection title="Active Programs" programs={activePrograms} />
+      <h1 className="public-display-page-title">Our Programs</h1>
+      <ProgramSection programs={activePrograms} />
     </div>
   );
 }

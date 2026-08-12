@@ -8,18 +8,10 @@ import StaffGrid from "../../features/About/StaffGrid";
 
 import {
   getStaff,
-  deleteStaff, 
-  updateStaff, 
-  createStaff
+  deleteStaff,
+  updateStaff,
+  createStaff,
 } from "../../features/About/StaffService";
- 
-function addStaffFields(formData, staffMember) {
-  formData.append("id", staffMember.id);
-  formData.append("name", staffMember.name);
-  formData.append("role", staffMember.role);
-  formData.append("bio", staffMember.bio || "");
-  formData.append("display_order", staffMember.display_order);
-}
 
 
 export default function AdminAboutPage() {
@@ -60,46 +52,6 @@ export default function AdminAboutPage() {
     }
   }
 
-  async function onReorderStaff(sourceStaffId, targetStaffId) {
-    if (sourceStaffId === targetStaffId) return;
-
-    const sourceIndex = staffMembers.findIndex((staff) => staff.id === sourceStaffId);
-    const targetIndex = staffMembers.findIndex((staff) => staff.id === targetStaffId);
-
-    if (sourceIndex === -1 || targetIndex === -1) return;
-
-    const previousStaffMembers = staffMembers;
-    const nextStaffMembers = [...staffMembers];
-    const [movedStaff] = nextStaffMembers.splice(sourceIndex, 1);
-    nextStaffMembers.splice(targetIndex, 0, movedStaff);
-
-    const reorderedStaffMembers = nextStaffMembers.map((staff, index) => ({
-      ...staff,
-      display_order: index + 1,
-    }));
-
-    setActionError(null);
-    setStaffMembers(reorderedStaffMembers);
-
-    try {
-      const changedStaffMembers = reorderedStaffMembers.filter((staff) => {
-        const previousStaff = previousStaffMembers.find((item) => item.id === staff.id);
-        return previousStaff?.display_order !== staff.display_order;
-      });
-
-      await Promise.all(
-        changedStaffMembers.map((staff) => {
-          const formData = new FormData();
-          addStaffFields(formData, staff);
-          return updateStaff(staff.id, formData);
-        })
-      );
-    } catch (err) {
-      setStaffMembers(previousStaffMembers);
-      setActionError(`Failed to save staff order: ${err.message}`);
-    }
-  }
-
   async function onSaveUpdate(formData) {
     try {
       setActionError(null);
@@ -137,8 +89,6 @@ export default function AdminAboutPage() {
       {actionError && <p className="staff-action-error">{actionError}</p>}
   
       <div>
-        <h2>Add New Staff Member</h2>
-  
         <CreateStaffModal onSaveCreate={onSaveCreate} />
       </div>
   
@@ -154,7 +104,6 @@ export default function AdminAboutPage() {
             setActionError(null);
             setDeletingStaff(staffMember);
           }}
-          onReorder={onReorderStaff}
         />
       </div>
   

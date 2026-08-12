@@ -1,0 +1,1233 @@
+.admin-layout {
+  --surface-card: var(--admin-card);
+  --surface-border: var(--admin-border);
+  --surface-shadow: var(--shadow-admin);
+  --form-bg: var(--admin-field);
+  --form-text: var(--admin-text);
+  --form-label: var(--admin-text);
+  --form-border: var(--admin-border);
+  --form-placeholder: #9a9a9a;
+  --form-focus: var(--brand-blue);
+  --form-focus-ring: rgba(60, 136, 244, 0.22);
+  --admin-button-primary-bg: var(--admin-primary);
+  --admin-button-primary-hover: var(--admin-primary-hover);
+  --admin-button-primary-text: #ffffff;
+  --admin-button-secondary-bg: #2a2a2a;
+  --admin-button-secondary-hover: #3a3a3a;
+  --admin-button-secondary-text: #f5f5f5;
+  --admin-button-warning-bg: #f0c15d;
+  --admin-button-warning-hover: #dba43a;
+  --admin-button-warning-text: #1f1f1f;
+  --admin-button-danger-bg: #c64747;
+  --admin-button-danger-hover: #a93636;
+  --admin-button-danger-text: #ffffff;
+  --button-primary-bg: var(--admin-button-primary-bg);
+  --button-primary-hover: var(--admin-button-primary-hover);
+  --button-secondary-bg: var(--brand-lime);
+  --button-secondary-hover: var(--brand-lime-dark);
+  --button-tertiary-text: var(--admin-text);
+  --form-surface: var(--admin-card);
+  color: var(--admin-text);
+}
+
+.admin-layout p,
+.admin-layout li {
+  font-size: var(--body-scale-size);
+  line-height: 1.65;
+}
+
+.admin-layout .admin-create-event-button,
+.admin-layout .create-program-form button[type="submit"],
+.admin-layout .admin-event-modal button[type="submit"],
+.admin-layout .admin-edit-modal .modal-actions button[type="submit"],
+.admin-layout .admin-program-card-action--edit {
+  border-color: var(--admin-button-primary-bg);
+  background: var(--admin-button-primary-bg);
+  color: #ffffff;
+}
+
+.admin-layout .admin-create-event-button:hover,
+.admin-layout .create-program-form button[type="submit"]:hover,
+.admin-layout .admin-event-modal button[type="submit"]:hover,
+.admin-layout .admin-edit-modal .modal-actions button[type="submit"]:hover,
+.admin-layout .admin-program-card-action--edit:hover {
+  border-color: var(--admin-button-primary-hover);
+  background: var(--admin-button-primary-hover);
+}
+
+.admin-layout .admin-public-link {
+  border-color: var(--brand-lime);
+  background: var(--brand-lime);
+  color: #1f2a12;
+}
+
+.admin-layout .admin-public-link:hover {
+  border-color: var(--brand-lime-dark);
+  background: var(--brand-lime-dark);
+  color: #ffffff;
+}
+
+.admin-layout .admin-program-card-action--toggle {
+  border-color: var(--admin-button-warning-bg);
+  background: var(--admin-button-warning-bg);
+  color: var(--admin-button-warning-text);
+}
+
+.admin-layout .admin-program-card-action--toggle:hover {
+  border-color: var(--admin-button-warning-hover);
+  background: var(--admin-button-warning-hover);
+  color: var(--admin-button-warning-text);
+}
+
+.admin-layout .admin-program-card-action--delete {
+  border-color: var(--admin-button-danger-bg);
+  background: var(--admin-button-danger-bg);
+  color: var(--admin-button-danger-text);
+}
+
+.admin-layout .admin-program-card-action--delete:hover {
+  border-color: var(--admin-button-danger-hover);
+  background: var(--admin-button-danger-hover);
+  color: var(--admin-button-danger-text);
+}
+
+.admin-layout button:not(.modal-close):not(.admin-form-close):not(.calendar-nav-button):not(.event-color-choice),
+.admin-layout .btn,
+.admin-layout .button-primary,
+.admin-layout .button-secondary,
+.admin-layout .button-tertiary,
+.admin-layout .admin-nav button,
+.admin-layout .admin-nav-link,
+.admin-layout .admin-public-link,
+.admin-layout .admin-create-program-toggle,
+.admin-layout .admin-program-card-action,
+.admin-layout .create-program-form button,
+.admin-layout .admin-event-modal button,
+.admin-layout .admin-edit-modal .modal-actions button,
+.admin-layout .modal-actions button,
+.admin-layout .event-occurrence-delete-button,
+.admin-layout .event-occurrence-add-button,
+.admin-layout .staff-modal-actions button,
+.admin-layout .admin-login button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--button-gap, 0.4rem);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
+  line-height: 1;
+  min-height: var(--button-min-height);
+  padding: var(--button-padding);
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    filter 0.15s ease;
+}
+
+.admin-layout button:not(.modal-close):not(.admin-form-close):not(.calendar-nav-button):not(.event-color-choice):hover:not(:disabled),
+.admin-layout .btn:hover,
+.admin-layout .button-primary:hover,
+.admin-layout .button-secondary:hover,
+.admin-layout .button-tertiary:hover,
+.admin-layout .admin-nav-link:hover,
+.admin-layout .admin-public-link:hover {
+  transform: translateY(-1px);
+}
+
+.admin-layout button:not(.modal-close):not(.admin-form-close):not(.calendar-nav-button):not(.event-color-choice):disabled,
+.admin-layout .btn:disabled,
+.admin-layout .button-primary:disabled,
+.admin-layout .button-secondary:disabled,
+.admin-layout .button-tertiary:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+}
+
+.admin-layout .create-program-form,
+.admin-layout .admin-event-modal form,
+.admin-layout .admin-edit-modal form,
+.admin-layout .admin-login form,
+.admin-layout .staff-modal form,
+.admin-layout .create-staff-modal form {
+  gap: var(--form-gap);
+}
+
+.admin-layout .create-program-form label,
+.admin-layout .admin-event-modal label,
+.admin-layout .admin-edit-modal label,
+.admin-layout .admin-login label,
+.admin-layout .staff-modal label,
+.admin-layout .create-staff-modal label,
+.admin-layout .admin-program-card label,
+.admin-layout .admin-event-modal legend {
+  color: var(--admin-text);
+  font-size: var(--form-control-font-size);
+  font-weight: var(--form-label-font-weight);
+  line-height: 1.2;
+}
+
+.admin-layout .create-program-form input,
+.admin-layout .create-program-form textarea,
+.admin-layout .admin-program-card input,
+.admin-layout .admin-program-card textarea,
+.admin-layout .admin-event-modal input,
+.admin-layout .admin-event-modal textarea,
+.admin-layout .admin-edit-modal input,
+.admin-layout .admin-edit-modal textarea,
+.admin-layout .admin-login input,
+.admin-layout .staff-modal input,
+.admin-layout .staff-modal select,
+.admin-layout .staff-modal textarea,
+.admin-layout .create-staff-modal input,
+.admin-layout .create-staff-modal select,
+.admin-layout .create-staff-modal textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--form-control-radius);
+  background: var(--admin-field);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: var(--form-control-font-size);
+  min-height: var(--form-control-min-height);
+  padding: 0.72rem 0.9rem;
+}
+
+.admin-layout .create-program-form input[type="file"],
+.admin-layout .admin-program-card input[type="file"],
+.admin-layout .admin-event-modal input[type="file"],
+.admin-layout .admin-edit-modal input[type="file"],
+.admin-layout .staff-modal input[type="file"],
+.admin-layout .create-staff-modal input[type="file"] {
+  color: var(--form-placeholder) !important;
+  font: inherit !important;
+}
+
+.admin-layout .create-program-form input[type="file"]::file-selector-button,
+.admin-layout .admin-program-card input[type="file"]::file-selector-button,
+.admin-layout .admin-event-modal input[type="file"]::file-selector-button,
+.admin-layout .admin-edit-modal input[type="file"]::file-selector-button,
+.admin-layout .staff-modal input[type="file"]::file-selector-button,
+.admin-layout .create-staff-modal input[type="file"]::file-selector-button {
+  margin-right: 0.8rem !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: var(--form-control-radius) !important;
+  background: var(--admin-button-secondary-bg) !important;
+  color: var(--form-placeholder) !important;
+  cursor: pointer !important;
+  font: inherit !important;
+  font-weight: var(--button-font-weight) !important;
+  min-height: var(--button-min-height) !important;
+  padding: var(--button-padding) !important;
+}
+
+.admin-layout .create-program-form input[type="file"]::file-selector-button:hover,
+.admin-layout .admin-program-card input[type="file"]::file-selector-button:hover,
+.admin-layout .admin-event-modal input[type="file"]::file-selector-button:hover,
+.admin-layout .admin-edit-modal input[type="file"]::file-selector-button:hover,
+.admin-layout .staff-modal input[type="file"]::file-selector-button:hover,
+.admin-layout .create-staff-modal input[type="file"]::file-selector-button:hover {
+  border-color: var(--admin-button-secondary-hover) !important;
+  background: var(--admin-button-secondary-hover) !important;
+  color: var(--admin-text) !important;
+}
+
+.admin-layout .create-program-form input:focus,
+.admin-layout .create-program-form textarea:focus,
+.admin-layout .admin-program-card input:focus,
+.admin-layout .admin-program-card textarea:focus,
+.admin-layout .admin-event-modal input:focus,
+.admin-layout .admin-event-modal textarea:focus,
+.admin-layout .admin-edit-modal input:focus,
+.admin-layout .admin-edit-modal textarea:focus,
+.admin-layout .admin-login input:focus,
+.admin-layout .staff-modal input:focus,
+.admin-layout .staff-modal select:focus,
+.admin-layout .staff-modal textarea:focus,
+.admin-layout .create-staff-modal input:focus,
+.admin-layout .create-staff-modal select:focus,
+.admin-layout .create-staff-modal textarea:focus {
+  border-color: var(--brand-blue);
+  outline: 3px solid rgba(60, 136, 244, 0.22);
+  box-shadow: none;
+}
+
+.admin-layout .create-program-form input::placeholder,
+.admin-layout .create-program-form textarea::placeholder,
+.admin-layout .admin-program-card input::placeholder,
+.admin-layout .admin-program-card textarea::placeholder,
+.admin-layout .admin-event-modal input::placeholder,
+.admin-layout .admin-event-modal textarea::placeholder,
+.admin-layout .admin-edit-modal input::placeholder,
+.admin-layout .admin-edit-modal textarea::placeholder,
+.admin-layout .admin-login input::placeholder,
+.admin-layout .staff-modal input::placeholder,
+.admin-layout .staff-modal textarea::placeholder,
+.admin-layout .create-staff-modal input::placeholder,
+.admin-layout .create-staff-modal textarea::placeholder {
+  color: #9a9a9a;
+  opacity: 0.82;
+}
+
+.admin-layout h1,
+.admin-layout h2,
+.admin-layout h3,
+.admin-layout .admin-event-modal h2,
+.admin-layout .admin-edit-modal h2,
+.admin-layout .admin-login h1,
+.admin-layout .staff-modal h2,
+.admin-layout .create-staff-modal h2,
+.admin-layout .admin-form-title {
+  color: var(--admin-text);
+  font-family: var(--heading-font);
+  font-size: var(--heading-size);
+  font-weight: var(--heading-weight);
+  letter-spacing: 0;
+  line-height: var(--heading-line-height);
+  margin-top: var(--heading-space-before);
+  margin-bottom: var(--heading-space-after);
+  text-align: center;
+}
+
+.admin-layout .admin-program-form-error,
+.admin-layout .admin-login-error,
+.admin-layout .staff-action-error,
+.admin-layout .admin-dashboard-error,
+.admin-layout .admin-event-modal .error,
+.admin-layout .admin-edit-modal .error {
+  color: #ffb4b4;
+  font-size: var(--text-sm);
+  font-weight: 900;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.admin-layout button:disabled,
+.admin-layout .admin-event-modal button:disabled,
+.admin-layout .admin-edit-modal button:disabled,
+.admin-layout .staff-modal button:disabled,
+.admin-layout .create-program-form button:disabled,
+.admin-layout .admin-login button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+/* Admin form standardization layer */
+.admin-layout .create-program-form {
+  border-radius: var(--form-radius) !important;
+  gap: var(--form-gap) !important;
+}
+
+.admin-layout .admin-event-modal form,
+.admin-layout .admin-edit-modal form,
+.admin-layout .admin-login form,
+.admin-layout .staff-modal form,
+.admin-layout .create-staff-modal form {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  gap: var(--form-gap) !important;
+}
+
+.admin-layout .create-program-form label,
+.admin-layout .admin-event-modal label,
+.admin-layout .admin-edit-modal label,
+.admin-layout .admin-login label,
+.admin-layout .staff-modal label,
+.admin-layout .create-staff-modal label,
+.admin-layout .admin-program-card label,
+.admin-layout .admin-event-modal legend {
+  color: var(--admin-text) !important;
+  font-size: var(--form-control-font-size) !important;
+  font-weight: var(--form-label-font-weight) !important;
+  line-height: 1.2 !important;
+}
+
+.admin-layout .create-program-form input,
+.admin-layout .create-program-form textarea,
+.admin-layout .admin-program-card input,
+.admin-layout .admin-program-card textarea,
+.admin-layout .admin-event-modal input,
+.admin-layout .admin-event-modal textarea,
+.admin-layout .admin-edit-modal input,
+.admin-layout .admin-edit-modal textarea,
+.admin-layout .admin-login input,
+.admin-layout .staff-modal input,
+.admin-layout .staff-modal select,
+.admin-layout .staff-modal textarea,
+.admin-layout .create-staff-modal input,
+.admin-layout .create-staff-modal select,
+.admin-layout .create-staff-modal textarea {
+  min-height: var(--form-control-min-height) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: var(--form-control-radius) !important;
+  background: var(--admin-field) !important;
+  color: var(--admin-text) !important;
+  font: inherit !important;
+  font-size: var(--form-control-font-size) !important;
+  padding: 0.72rem 0.9rem !important;
+}
+
+.admin-layout .create-program-form textarea,
+.admin-layout .admin-program-card textarea,
+.admin-layout .admin-event-modal textarea,
+.admin-layout .admin-edit-modal textarea,
+.admin-layout .staff-modal textarea,
+.admin-layout .create-staff-modal textarea {
+  min-height: 7.5rem !important;
+}
+
+.admin-layout .create-program-form input::placeholder,
+.admin-layout .create-program-form textarea::placeholder,
+.admin-layout .admin-program-card input::placeholder,
+.admin-layout .admin-program-card textarea::placeholder,
+.admin-layout .admin-event-modal input::placeholder,
+.admin-layout .admin-event-modal textarea::placeholder,
+.admin-layout .admin-edit-modal input::placeholder,
+.admin-layout .admin-edit-modal textarea::placeholder,
+.admin-layout .admin-login input::placeholder,
+.admin-layout .staff-modal input::placeholder,
+.admin-layout .staff-modal textarea::placeholder,
+.admin-layout .create-staff-modal input::placeholder,
+.admin-layout .create-staff-modal textarea::placeholder {
+  color: #9a9a9a !important;
+  opacity: 0.82 !important;
+}
+
+.admin-layout .create-program-form input:focus,
+.admin-layout .create-program-form textarea:focus,
+.admin-layout .admin-program-card input:focus,
+.admin-layout .admin-program-card textarea:focus,
+.admin-layout .admin-event-modal input:focus,
+.admin-layout .admin-event-modal textarea:focus,
+.admin-layout .admin-edit-modal input:focus,
+.admin-layout .admin-edit-modal textarea:focus,
+.admin-layout .admin-login input:focus,
+.admin-layout .staff-modal input:focus,
+.admin-layout .staff-modal select:focus,
+.admin-layout .staff-modal textarea:focus,
+.admin-layout .create-staff-modal input:focus,
+.admin-layout .create-staff-modal select:focus,
+.admin-layout .create-staff-modal textarea:focus {
+  border-color: var(--brand-blue) !important;
+  outline: 3px solid rgba(60, 136, 244, 0.22) !important;
+}
+
+.admin-layout .create-program-form button[type="submit"],
+.admin-layout .admin-event-modal button[type="submit"],
+.admin-layout .admin-edit-modal button[type="submit"],
+.admin-layout .admin-login button[type="submit"],
+.admin-layout .staff-modal button[type="submit"],
+.admin-layout .create-staff-modal button[type="submit"] {
+  justify-self: center !important;
+  border: 1px solid var(--admin-button-primary-bg) !important;
+  background: var(--admin-button-primary-bg) !important;
+  color: var(--admin-button-primary-text) !important;
+}
+
+.admin-layout .create-program-form button[type="submit"]:hover,
+.admin-layout .admin-event-modal button[type="submit"]:hover,
+.admin-layout .admin-edit-modal button[type="submit"]:hover,
+.admin-layout .admin-login button[type="submit"]:hover,
+.admin-layout .staff-modal button[type="submit"]:hover,
+.admin-layout .create-staff-modal button[type="submit"]:hover {
+  border-color: var(--admin-button-primary-hover) !important;
+  background: var(--admin-button-primary-hover) !important;
+}
+
+.admin-layout .create-program-form button[type="button"],
+.admin-layout .admin-event-modal button[type="button"],
+.admin-layout .admin-edit-modal button[type="button"],
+.admin-layout .staff-modal button[type="button"],
+.admin-layout .create-staff-modal button[type="button"] {
+  justify-self: center !important;
+  border: 1px solid #3b3b3b !important;
+  background: var(--admin-button-secondary-bg) !important;
+  color: var(--admin-button-secondary-text) !important;
+}
+
+.admin-layout .create-program-form button[type="button"]:hover,
+.admin-layout .admin-event-modal button[type="button"]:hover,
+.admin-layout .admin-edit-modal button[type="button"]:hover,
+.admin-layout .staff-modal button[type="button"]:hover,
+.admin-layout .create-staff-modal button[type="button"]:hover {
+  background: var(--admin-button-secondary-hover) !important;
+}
+
+.admin-layout .create-program-form button:disabled,
+.admin-layout .admin-event-modal button:disabled,
+.admin-layout .admin-edit-modal button:disabled,
+.admin-layout .admin-login button:disabled,
+.admin-layout .staff-modal button:disabled,
+.admin-layout .create-staff-modal button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
+}
+
+.admin-layout .admin-create-program-toggle {
+  justify-self: center !important;
+  border: 1px solid var(--admin-button-primary-bg) !important;
+  background: var(--admin-button-primary-bg) !important;
+  color: var(--admin-button-primary-text) !important;
+}
+
+.admin-layout .admin-programs-page .admin-create-program-toggle {
+  justify-self: end !important;
+}
+
+.admin-layout .admin-create-program-toggle:hover {
+  border-color: var(--admin-button-primary-hover) !important;
+  background: var(--admin-button-primary-hover) !important;
+}
+
+.admin-layout h1,
+.admin-layout h2,
+.admin-layout h3,
+.admin-layout .admin-event-modal h2,
+.admin-layout .admin-edit-modal h2,
+.admin-layout .admin-login h1,
+.admin-layout .staff-modal h2,
+.admin-layout .create-staff-modal h2,
+.admin-layout .admin-form-title {
+  font-family: var(--heading-font) !important;
+  font-size: var(--heading-size) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+  margin-top: var(--heading-space-before) !important;
+  margin-bottom: var(--heading-space-after) !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+}
+
+.admin-layout input[type="checkbox"],
+.admin-layout .create-program-form input[type="checkbox"],
+.admin-layout .admin-program-card input[type="checkbox"],
+.admin-layout .admin-event-modal input[type="checkbox"],
+.admin-layout .admin-edit-modal input[type="checkbox"],
+.admin-layout .staff-modal input[type="checkbox"],
+.admin-layout .create-staff-modal input[type="checkbox"] {
+  width: 1rem !important;
+  height: 1rem !important;
+  min-height: 1rem !important;
+  padding: 0 !important;
+  accent-color: #0d7f71;
+}
+
+.admin-layout label:has(input[type="checkbox"]) {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.55rem !important;
+}
+
+.admin-layout .admin-form-close,
+.admin-layout .modal-close {
+  position: absolute !important;
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+  width: 2.15rem !important;
+  height: 2.15rem !important;
+  min-width: 2.15rem !important;
+  min-height: 2.15rem !important;
+  padding: 0 !important;
+  border: 1px solid #3b3b3b !important;
+  border-radius: var(--radius-pill) !important;
+  background: #2a2a2a !important;
+  color: #f5f5f5 !important;
+  font-size: 1.35rem !important;
+  font-weight: var(--button-font-weight) !important;
+  line-height: 1 !important;
+}
+
+.admin-layout .admin-form-close:hover,
+.admin-layout .modal-close:hover {
+  background: #3a3a3a !important;
+}
+
+.admin-layout .admin-program-edit-modal {
+  width: min(640px, 100%) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.admin-layout .admin-event-modal .event-color-choices {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.55rem;
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+.admin-layout .admin-event-modal .event-color-choice-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-layout .admin-event-modal button.event-color-choice[type="button"] {
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  padding: 0 !important;
+  border: 2px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: var(--radius-pill) !important;
+  background: var(--event-choice-color) !important;
+  background-color: var(--event-choice-color) !important;
+  color: transparent !important;
+  box-shadow: inset 0 0 0 2px rgba(18, 18, 18, 0.36) !important;
+}
+
+.admin-layout .admin-event-modal button.event-color-choice[type="button"]:hover,
+.admin-layout .admin-event-modal button.event-color-choice[type="button"]:focus-visible {
+  border-color: #ffffff !important;
+  background: var(--event-choice-color) !important;
+  background-color: var(--event-choice-color) !important;
+  outline: none !important;
+}
+
+.admin-layout .admin-event-modal button.event-color-choice[type="button"].is-selected {
+  border-color: #ffffff !important;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.18),
+    inset 0 0 0 2px rgba(18, 18, 18, 0.36) !important;
+}
+
+.admin-layout button,
+.admin-layout .btn,
+.admin-layout .button-primary,
+.admin-layout .button-secondary,
+.admin-layout .button-tertiary,
+.admin-layout .admin-nav button,
+.admin-layout .admin-create-program-toggle,
+.admin-layout .admin-program-card-action,
+.admin-layout .create-program-form button,
+.admin-layout .admin-event-modal button,
+.admin-layout .admin-edit-modal button,
+.admin-layout .modal-actions button,
+.admin-layout .event-occurrence-delete-button,
+.admin-layout .event-occurrence-add-button,
+.admin-layout .staff-card-actions button,
+.admin-layout .staff-modal-actions button,
+.admin-layout .admin-login button {
+  font-weight: var(--button-font-weight) !important;
+}
+
+.admin-layout .admin-nav-link,
+.admin-layout .admin-public-link,
+.admin-layout .admin-title {
+  font-weight: var(--nav-font-weight) !important;
+}
+
+.admin-layout .admin-nav-link,
+.admin-layout .admin-public-link,
+.admin-layout .admin-nav button {
+  font-size: 1.08rem !important;
+  font-weight: var(--nav-font-weight) !important;
+  line-height: 1 !important;
+  min-height: 2.9rem !important;
+  padding: 0.78rem 1rem !important;
+}
+
+.admin-layout .admin-title {
+  font-size: 1.85rem !important;
+  line-height: 1 !important;
+}
+
+.admin-layout .admin-nav-notification {
+  min-width: 1.45rem !important;
+  height: 1.45rem !important;
+  font-size: 0.85rem !important;
+}
+
+/* Final admin heading standardization */
+.admin-layout h1,
+.admin-layout .admin-event-modal h2,
+.admin-layout .admin-edit-modal h2,
+.admin-layout .admin-login h1,
+.admin-layout .staff-modal h2,
+.admin-layout .staff-modal h3,
+.admin-layout .create-staff-modal h2,
+.admin-layout .create-staff-modal h3,
+.admin-layout .admin-form-title {
+  font-family: var(--heading-font) !important;
+  font-size: var(--heading-size) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+  letter-spacing: 0 !important;
+  margin-top: var(--heading-space-before) !important;
+  margin-bottom: var(--heading-space-after) !important;
+  text-align: center !important;
+}
+
+/* Final admin nested-form reset: no smaller inner form backgrounds. */
+.admin-layout .admin-event-modal form,
+.admin-layout .admin-edit-modal form,
+.admin-layout .admin-login form,
+.admin-layout .staff-modal form,
+.admin-layout .create-staff-modal form {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Final admin form font standardization: no bold form text. */
+.admin-layout .admin-event-modal h2,
+.admin-layout .admin-edit-modal h2,
+.admin-layout .admin-login h1,
+.admin-layout .staff-modal h2,
+.admin-layout .staff-modal h3,
+.admin-layout .create-staff-modal h2,
+.admin-layout .create-staff-modal h3,
+.admin-layout .admin-form-title {
+  font-weight: var(--form-title-font-weight) !important;
+}
+
+.admin-layout .create-program-form,
+.admin-layout .admin-event-modal form,
+.admin-layout .admin-edit-modal form,
+.admin-layout .admin-login form,
+.admin-layout .staff-modal form,
+.admin-layout .create-staff-modal form,
+.admin-layout .create-program-form input,
+.admin-layout .create-program-form textarea,
+.admin-layout .admin-event-modal input,
+.admin-layout .admin-event-modal textarea,
+.admin-layout .admin-edit-modal input,
+.admin-layout .admin-edit-modal textarea,
+.admin-layout .admin-login input,
+.admin-layout .staff-modal input,
+.admin-layout .staff-modal select,
+.admin-layout .staff-modal textarea,
+.admin-layout .create-staff-modal input,
+.admin-layout .create-staff-modal select,
+.admin-layout .create-staff-modal textarea,
+.admin-layout .admin-program-form-error,
+.admin-layout .admin-login-error,
+.admin-layout .staff-action-error,
+.admin-layout .admin-event-modal .error,
+.admin-layout .admin-edit-modal .error {
+  font-weight: var(--form-font-weight) !important;
+}
+
+.admin-layout .admin-event-modal .event-color-choices legend {
+  color: var(--admin-text) !important;
+  font-size: var(--form-control-font-size) !important;
+  font-weight: var(--form-label-font-weight) !important;
+  line-height: 1.2 !important;
+  padding: 0 !important;
+}
+
+.admin-layout .create-program-form label,
+.admin-layout .admin-event-modal label,
+.admin-layout .admin-edit-modal label,
+.admin-layout .admin-login label,
+.admin-layout .staff-modal label,
+.admin-layout .create-staff-modal label,
+.admin-layout .admin-program-card label,
+.admin-layout .admin-event-modal legend {
+  font-size: var(--form-control-font-size) !important;
+  font-weight: var(--form-label-font-weight) !important;
+}
+
+.admin-layout .create-program-form {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--admin-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: var(--form-radius) !important;
+  box-shadow: var(--shadow-admin) !important;
+  padding: var(--form-padding) !important;
+}
+
+.admin-layout .admin-program-card-title {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-family: var(--card-heading-font) !important;
+  font-size: var(--card-heading-size) !important;
+  font-weight: var(--card-heading-weight) !important;
+  line-height: var(--card-heading-line-height) !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+}
+
+.admin-layout .admin-program-edit-form,
+.admin-layout .admin-program-card.is-editing .create-program-form,
+.admin-layout .admin-program-edit-modal .admin-program-edit-form,
+.admin-layout .admin-edit-modal form.admin-program-edit-form {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--admin-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: var(--form-radius) !important;
+  box-shadow: var(--shadow-admin) !important;
+  padding: var(--form-padding) !important;
+}
+
+/* Final admin h1 standardization */
+.admin-layout h1 {
+  font-family: var(--heading-font) !important;
+  font-size: var(--heading-size) !important;
+  font-weight: var(--heading-weight) !important;
+  line-height: var(--heading-line-height) !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  margin-top: var(--heading-space-before) !important;
+  margin-bottom: var(--heading-space-after) !important;
+}
+
+/* Final copy scale: keep admin page-specific CSS from shrinking body copy. */
+.admin-layout p,
+.admin-layout li,
+.admin-layout .admin-dashboard-list span,
+.admin-layout .admin-dashboard-donation-row span,
+.admin-layout .admin-program-card p,
+.admin-layout .staff-card-content p,
+.admin-layout .admin-registration-status-heading p,
+.admin-layout .admin-event-registration-group-header p {
+  font-size: var(--body-scale-size) !important;
+  line-height: 1.65 !important;
+}
+
+.admin-layout .required-mark {
+  color: #ff4d4d !important;
+  -webkit-text-fill-color: #ff4d4d !important;
+  font-weight: 900 !important;
+}
+
+/* Admin button ownership: all admin button styling belongs here. */
+.admin-layout button:not(.modal-close):not(.admin-form-close):not(.calendar-nav-button):not(.event-color-choice),
+.admin-layout .btn,
+.admin-layout .btn-primary,
+.admin-layout .btn-secondary,
+.admin-layout .btn-tertiary,
+.admin-layout .button-primary,
+.admin-layout .button-secondary,
+.admin-layout .button-tertiary,
+.admin-layout .admin-nav button,
+.admin-layout .admin-nav-link,
+.admin-layout .admin-public-link,
+.admin-layout .admin-create-program-toggle,
+.admin-layout .admin-create-event-button,
+.admin-layout .admin-program-card-action,
+.admin-layout .admin-registration-back-button,
+.admin-layout .admin-registration-email-all-button,
+.admin-layout .admin-registration-email-day-button,
+.admin-layout .admin-registration-email-button,
+.admin-layout .admin-registration-notes-button,
+.admin-layout .admin-email-composer-actions button,
+.admin-layout .admin-volunteer-email-button,
+.admin-layout .admin-contact-email-button,
+.admin-layout .staff-card-actions button,
+.admin-layout .staff-modal-actions button,
+.admin-layout .create-staff-modal button,
+.admin-layout .create-program-form button,
+.admin-layout .admin-event-modal button,
+.admin-layout .admin-edit-modal button,
+.admin-layout .modal-actions button,
+.admin-layout .event-occurrence-delete-button,
+.admin-layout .event-occurrence-add-button,
+.admin-layout .admin-login button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--button-gap, 0.4rem) !important;
+  border-radius: var(--radius-pill) !important;
+  cursor: pointer !important;
+  font: inherit !important;
+  font-size: var(--button-font-size) !important;
+  font-weight: var(--button-font-weight) !important;
+  line-height: 1 !important;
+  min-height: var(--button-min-height) !important;
+  padding: var(--button-padding) !important;
+  text-decoration: none !important;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    filter 0.15s ease !important;
+}
+
+.admin-layout button:not(.modal-close):not(.admin-form-close):not(.calendar-nav-button):not(.event-color-choice):hover:not(:disabled),
+.admin-layout .btn:hover,
+.admin-layout .btn-primary:hover,
+.admin-layout .btn-secondary:hover,
+.admin-layout .btn-tertiary:hover,
+.admin-layout .button-primary:hover,
+.admin-layout .button-secondary:hover,
+.admin-layout .button-tertiary:hover,
+.admin-layout .admin-nav-link:hover,
+.admin-layout .admin-public-link:hover,
+.admin-layout .admin-create-program-toggle:hover,
+.admin-layout .admin-create-event-button:hover,
+.admin-layout .admin-program-card-action:hover,
+.admin-layout .admin-registration-back-button:hover,
+.admin-layout .admin-registration-email-all-button:hover,
+.admin-layout .admin-registration-email-day-button:hover,
+.admin-layout .admin-registration-email-button:hover,
+.admin-layout .admin-registration-notes-button:hover,
+.admin-layout .admin-email-composer-actions button:hover,
+.admin-layout .admin-volunteer-email-button:hover,
+.admin-layout .admin-contact-email-button:hover,
+.admin-layout .staff-card-actions button:hover,
+.admin-layout .staff-modal-actions button:hover,
+.admin-layout .create-staff-modal button:hover,
+.admin-layout .create-program-form button:hover,
+.admin-layout .admin-event-modal button:hover,
+.admin-layout .admin-edit-modal button:hover,
+.admin-layout .modal-actions button:hover,
+.admin-layout .event-occurrence-delete-button:hover,
+.admin-layout .event-occurrence-add-button:hover,
+.admin-layout .admin-login button:hover {
+  transform: translateY(-1px) !important;
+}
+
+.admin-layout button:not(.modal-close):not(.admin-form-close):not(.calendar-nav-button):not(.event-color-choice):disabled,
+.admin-layout .btn:disabled,
+.admin-layout .btn-primary:disabled,
+.admin-layout .btn-secondary:disabled,
+.admin-layout .btn-tertiary:disabled,
+.admin-layout .button-primary:disabled,
+.admin-layout .button-secondary:disabled,
+.admin-layout .button-tertiary:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55 !important;
+  transform: none !important;
+}
+
+.admin-layout .admin-create-program-toggle,
+.admin-layout .admin-create-event-button,
+.admin-layout .admin-program-card-action--edit,
+.admin-layout .admin-registration-email-all-button,
+.admin-layout .admin-registration-email-day-button,
+.admin-layout .admin-registration-email-button,
+.admin-layout .admin-email-composer-actions button,
+.admin-layout .admin-volunteer-email-button,
+.admin-layout .admin-contact-email-button,
+.admin-layout .create-program-form button[type="submit"],
+.admin-layout .admin-event-modal button[type="submit"],
+.admin-layout .admin-edit-modal button[type="submit"],
+.admin-layout .admin-login button[type="submit"],
+.admin-layout .staff-modal button[type="submit"],
+.admin-layout .create-staff-modal button[type="submit"],
+.admin-layout .staff-card-actions button:nth-last-child(2) {
+  border: 1px solid var(--admin-button-primary-bg) !important;
+  background: var(--admin-button-primary-bg) !important;
+  color: var(--admin-button-primary-text) !important;
+}
+
+.admin-layout .admin-create-program-toggle:hover,
+.admin-layout .admin-create-event-button:hover,
+.admin-layout .admin-program-card-action--edit:hover,
+.admin-layout .admin-registration-email-all-button:hover,
+.admin-layout .admin-registration-email-day-button:hover,
+.admin-layout .admin-registration-email-button:hover,
+.admin-layout .admin-email-composer-actions button:hover,
+.admin-layout .admin-volunteer-email-button:hover,
+.admin-layout .admin-contact-email-button:hover,
+.admin-layout .create-program-form button[type="submit"]:hover,
+.admin-layout .admin-event-modal button[type="submit"]:hover,
+.admin-layout .admin-edit-modal button[type="submit"]:hover,
+.admin-layout .admin-login button[type="submit"]:hover,
+.admin-layout .staff-modal button[type="submit"]:hover,
+.admin-layout .create-staff-modal button[type="submit"]:hover,
+.admin-layout .staff-card-actions button:nth-last-child(2):hover {
+  border-color: var(--admin-button-primary-hover) !important;
+  background: var(--admin-button-primary-hover) !important;
+  color: var(--admin-button-primary-text) !important;
+}
+
+.admin-layout .admin-registration-back-button,
+.admin-layout .admin-registration-notes-button,
+.admin-layout .create-program-form button[type="button"],
+.admin-layout .admin-event-modal button[type="button"],
+.admin-layout .admin-edit-modal button[type="button"],
+.admin-layout .staff-modal button[type="button"],
+.admin-layout .create-staff-modal button[type="button"],
+.admin-layout .staff-card-actions button {
+  border: 1px solid var(--admin-button-secondary-bg) !important;
+  background: var(--admin-button-secondary-bg) !important;
+  color: var(--admin-button-secondary-text) !important;
+}
+
+.admin-layout .admin-registration-back-button:hover,
+.admin-layout .admin-registration-notes-button:hover,
+.admin-layout .create-program-form button[type="button"]:hover,
+.admin-layout .admin-event-modal button[type="button"]:hover,
+.admin-layout .admin-edit-modal button[type="button"]:hover,
+.admin-layout .staff-modal button[type="button"]:hover,
+.admin-layout .create-staff-modal button[type="button"]:hover,
+.admin-layout .staff-card-actions button:hover {
+  border-color: var(--admin-button-secondary-hover) !important;
+  background: var(--admin-button-secondary-hover) !important;
+  color: var(--admin-button-secondary-text) !important;
+}
+
+.admin-layout .admin-program-card-action--toggle {
+  border: 1px solid var(--admin-button-warning-bg) !important;
+  background: var(--admin-button-warning-bg) !important;
+  color: var(--admin-button-warning-text) !important;
+}
+
+.admin-layout .admin-program-card-action--toggle:hover {
+  border-color: var(--admin-button-warning-hover) !important;
+  background: var(--admin-button-warning-hover) !important;
+  color: var(--admin-button-warning-text) !important;
+}
+
+.admin-layout .admin-program-card-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.85rem !important;
+  width: 100% !important;
+  margin-top: 0.5rem !important;
+}
+
+.admin-layout .admin-program-card-action {
+  flex: 0 1 auto !important;
+  white-space: nowrap !important;
+}
+
+.admin-layout .admin-program-card-action--registrations {
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  background: #242424 !important;
+  color: #f5f5f5 !important;
+}
+
+.admin-layout .admin-program-card-action--registrations:hover {
+  border-color: rgba(255, 255, 255, 0.38) !important;
+  background: #303030 !important;
+  color: #ffffff !important;
+}
+
+.admin-layout .admin-program-card-action--delete,
+.admin-layout .admin-event-delete-confirm-button,
+.admin-layout .admin-delete-program-confirm-button,
+.admin-layout .staff-card-actions button:last-child {
+  border: 1px solid var(--admin-button-danger-bg) !important;
+  background: var(--admin-button-danger-bg) !important;
+  color: var(--admin-button-danger-text) !important;
+}
+
+.admin-layout .admin-program-card-action--delete:hover,
+.admin-layout .admin-event-delete-confirm-button:hover,
+.admin-layout .admin-delete-program-confirm-button:hover,
+.admin-layout .staff-card-actions button:last-child:hover {
+  border-color: var(--admin-button-danger-hover) !important;
+  background: var(--admin-button-danger-hover) !important;
+  color: var(--admin-button-danger-text) !important;
+}
+
+.admin-layout .admin-public-link {
+  border: 1px solid var(--brand-lime) !important;
+  background: var(--brand-lime) !important;
+  color: #1f2a12 !important;
+}
+
+.admin-layout .admin-public-link:hover {
+  border-color: var(--brand-lime-dark) !important;
+  background: var(--brand-lime-dark) !important;
+  color: #ffffff !important;
+}
+
+.admin-layout .admin-events-page .events-controls {
+  justify-content: center !important;
+  gap: clamp(0.7rem, 1.5vw, 1.15rem) !important;
+}
+
+.admin-layout .admin-events-page .events-controls strong,
+.admin-layout .admin-events-page .events-month-heading {
+  color: #ffffff !important;
+  font-family: var(--heading-font) !important;
+  font-size: clamp(1.7rem, 2.4vw, 2.25rem) !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  min-width: min(100%, 16rem) !important;
+  text-align: center !important;
+}
+
+.admin-layout .admin-events-page .calendar-nav-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: clamp(2.9rem, 4vw, 3.45rem) !important;
+  height: clamp(2.9rem, 4vw, 3.45rem) !important;
+  min-width: clamp(2.9rem, 4vw, 3.45rem) !important;
+  min-height: clamp(2.9rem, 4vw, 3.45rem) !important;
+  padding: 0 !important;
+  border: 2px solid var(--admin-button-primary-bg) !important;
+  border-radius: var(--radius-pill) !important;
+  background: rgba(13, 127, 113, 0.18) !important;
+  color: #ffffff !important;
+  font: inherit !important;
+  font-size: clamp(1.65rem, 2.2vw, 2rem) !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: 0 10px 24px rgba(13, 127, 113, 0.22) !important;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease !important;
+}
+
+.admin-layout .admin-events-page .calendar-nav-button:hover,
+.admin-layout .admin-events-page .calendar-nav-button:focus-visible {
+  border-color: var(--admin-button-primary-hover) !important;
+  background: var(--admin-button-primary-bg) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 14px 28px rgba(13, 127, 113, 0.32) !important;
+}
+
+.admin-layout .admin-events-page .calendar-nav-button:focus-visible {
+  outline: 3px solid rgba(13, 127, 113, 0.28) !important;
+  outline-offset: 3px !important;
+}
+
+/* Targeted form weight/spacing: admin create/edit program and event forms. */
+.admin-layout .create-program-form,
+.admin-layout .admin-program-edit-form,
+.admin-layout .admin-event-modal form,
+.admin-layout .admin-edit-modal form,
+.admin-layout .create-program-form label,
+.admin-layout .admin-program-edit-form label,
+.admin-layout .admin-event-modal label,
+.admin-layout .admin-edit-modal label,
+.admin-layout .admin-event-modal legend,
+.admin-layout .admin-edit-modal legend,
+.admin-layout .create-program-form input,
+.admin-layout .create-program-form textarea,
+.admin-layout .create-program-form select,
+.admin-layout .admin-program-edit-form input,
+.admin-layout .admin-program-edit-form textarea,
+.admin-layout .admin-program-edit-form select,
+.admin-layout .admin-event-modal input,
+.admin-layout .admin-event-modal textarea,
+.admin-layout .admin-event-modal select,
+.admin-layout .admin-edit-modal input,
+.admin-layout .admin-edit-modal textarea,
+.admin-layout .admin-edit-modal select,
+.admin-layout .admin-program-form-error,
+.admin-layout .admin-event-modal .error,
+.admin-layout .admin-edit-modal .error {
+  font-weight: 800 !important;
+}
+
+.admin-layout .create-program-form input::placeholder,
+.admin-layout .create-program-form textarea::placeholder,
+.admin-layout .admin-program-edit-form input::placeholder,
+.admin-layout .admin-program-edit-form textarea::placeholder,
+.admin-layout .admin-event-modal input::placeholder,
+.admin-layout .admin-event-modal textarea::placeholder,
+.admin-layout .admin-edit-modal input::placeholder,
+.admin-layout .admin-edit-modal textarea::placeholder {
+  font-weight: 800 !important;
+}
+
+.admin-layout .create-program-form > button,
+.admin-layout .create-program-form button[type="submit"],
+.admin-layout .admin-program-edit-form > button,
+.admin-layout .admin-program-edit-form button[type="submit"],
+.admin-layout .admin-edit-from-buttons,
+.admin-layout .admin-event-modal form > button,
+.admin-layout .admin-event-modal button[type="submit"],
+.admin-layout .admin-edit-modal form > button,
+.admin-layout .admin-edit-modal button[type="submit"],
+.admin-layout .admin-event-modal-actions,
+.admin-layout .modal-actions {
+  justify-self: center !important;
+  justify-content: center !important;
+}
+
+.admin-layout .admin-event-modal .event-occurrence-add-button,
+.admin-layout .admin-edit-modal .event-occurrence-add-button {
+  justify-self: center !important;
+}
+
+/* Final admin form control text rule: typed values should not be bold. */
+.admin-layout input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="file"]):not([type="color"]),
+.admin-layout textarea,
+.admin-layout select {
+  font-weight: var(--form-font-weight) !important;
+}
+
+.admin-layout .admin-menu-toggle,
+.admin-layout .admin-menu-toggle:hover,
+.admin-layout .admin-menu-toggle:focus {
+  display: none !important;
+  width: 2.75rem !important;
+  min-width: 2.75rem !important;
+  height: 2.75rem !important;
+  min-height: 2.75rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #f5f5f5 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.admin-layout .admin-menu-toggle span {
+  background: #f5f5f5 !important;
+}
+
+@media (max-width: 820px) {
+  .admin-layout .admin-title {
+    font-size: 1.35rem !important;
+  }
+
+  .admin-layout .admin-public-link,
+  .admin-layout .admin-nav-actions button:not(.admin-menu-toggle) {
+    min-height: 2.5rem !important;
+    padding: 0.55rem 0.72rem !important;
+    font-size: 0.92rem !important;
+  }
+
+  .admin-layout .admin-menu-toggle,
+  .admin-layout .admin-menu-toggle:hover,
+  .admin-layout .admin-menu-toggle:focus {
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-layout .admin-title {
+    font-size: 1.05rem !important;
+  }
+
+  .admin-layout .admin-public-link,
+  .admin-layout .admin-nav-actions button:not(.admin-menu-toggle) {
+    min-height: 2.35rem !important;
+    padding: 0.48rem 0.55rem !important;
+    font-size: 0.82rem !important;
+  }
+}
+
+@media (min-width: 821px) {
+  .admin-layout .admin-menu-toggle,
+  .admin-layout .admin-menu-toggle:hover,
+  .admin-layout .admin-menu-toggle:focus {
+    display: none !important;
+  }
+}

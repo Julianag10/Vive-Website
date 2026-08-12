@@ -11,7 +11,7 @@
 
 
 // event item click -> set selectedEvent -> edit event form recives event 
-import { formatDisplayTime } from "../../../utils/dateFormat";
+import { formatDisplayTime, formatDisplayTimeRange } from "../../../utils/dateFormat";
 
 function hexToRgba(hex, alpha) {
   const value = String(hex || "").replace("#", "");
@@ -26,9 +26,9 @@ function hexToRgba(hex, alpha) {
 }
 
 export default function EventItem({event, onClick, onMouseEnter}) {
-  const startTime = event.occurrence?.start_time
-    ? formatDisplayTime(event.occurrence.start_time)
-    : formatDisplayTime(event.startDate);
+  const previewTime = event.occurrence?.start_time
+    ? formatDisplayTimeRange(event.occurrence.start_time, event.occurrence.end_time)
+    : formatDisplayTimeRange(event.startDate, event.endDate) || formatDisplayTime(event.startDate);
 
   return (
     // each event item is a div -> when Event div is clicked/hovered
@@ -50,7 +50,7 @@ export default function EventItem({event, onClick, onMouseEnter}) {
         boxShadow: `inset 4px 0 0 ${event.color || "#f0c15d"}`,
       }}
     >
-      <span className="event-item-time">{startTime}</span>
+      <span className="event-item-time">{previewTime}</span>
       <span>{event.title}</span>
     </div>
   );

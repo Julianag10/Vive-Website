@@ -89,6 +89,15 @@ export async function getAllEventsForMonth(month, year) {
   return rows;
 }
 
+export async function getAllEvents() {
+  const { rows } = await pool.query(`
+    ${eventSelectSql("")}
+    ORDER BY events.start_date DESC
+  `);
+
+  return rows;
+}
+
 async function getAdminEventById(client, id) {
   const { rows } = await client.query(`
     ${eventSelectSql("WHERE events.id = $1")}

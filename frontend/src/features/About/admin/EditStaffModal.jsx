@@ -1,8 +1,15 @@
 import { useState } from "react";
 import { compressStaffImage } from "../imageCompression";
+import { DEFAULT_STAFF_GROUP, STAFF_GROUPS } from "../staffGroups";
+
+const STAFF_PLACEHOLDER_IMAGE = "/uploads/staff/StaffPlaceHolder.png";
 
 function imageSrc(imageUrl) {
-  if (!imageUrl || imageUrl.startsWith("blob:") || imageUrl.startsWith("http")) {
+  if (!imageUrl) {
+    return `http://localhost:3000${STAFF_PLACEHOLDER_IMAGE}`;
+  }
+
+  if (imageUrl.startsWith("blob:") || imageUrl.startsWith("http")) {
     return imageUrl;
   }
 
@@ -14,9 +21,12 @@ export default function EditStaffModal({
   onSaveUpdate,
   onClose,
 }) {
-  const [form, setForm] = useState(staffMember);
+  const [form, setForm] = useState({
+    ...staffMember,
+    staff_group: staffMember.staff_group || DEFAULT_STAFF_GROUP,
+  });
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(staffMember.image_url);
+  const [preview, setPreview] = useState(staffMember.image_url || STAFF_PLACEHOLDER_IMAGE);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
@@ -43,11 +53,12 @@ export default function EditStaffModal({
     formData.append("id", staffMember.id);
     formData.append("name", form.name);
     formData.append("role", form.role);
+    formData.append("staff_group", form.staff_group);
     formData.append("bio", form.bio);
     formData.append("display_order", form.display_order);
 
     if (image) {
-      formData.append("image", await compressStaffImage(image));
+      formData.append("image", await compressStaffImage(image, form.name));
     }
 
     try {
@@ -79,30 +90,52 @@ export default function EditStaffModal({
         )}
 
         <form onSubmit={handleSubmit}>
+          <label htmlFor="edit-staff-name">Name</label>
           <input
+            id="edit-staff-name"
             name="name"
             value={form.name}
-            placeholder="Name"
+            placeholder="Enter staff member name"
             onChange={handleChange}
             required
           />
 
+          <label htmlFor="edit-staff-role">Role</label>
           <input
+            id="edit-staff-role"
             name="role"
             value={form.role}
-            placeholder="Role"
+            placeholder="Enter staff member role"
             onChange={handleChange}
             required
           />
 
+          <label htmlFor="edit-staff-group">Staff Group</label>
+          <select
+            id="edit-staff-group"
+            name="staff_group"
+            value={form.staff_group}
+            onChange={handleChange}
+          >
+            {STAFF_GROUPS.map((group) => (
+              <option key={group.value} value={group.value}>
+                {group.label}
+              </option>
+            ))}
+          </select>
+
+          <label htmlFor="edit-staff-bio">Bio</label>
           <textarea
+            id="edit-staff-bio"
             name="bio"
             value={form.bio}
-            placeholder="Bio"
+            placeholder="Enter staff member bio"
             onChange={handleChange}
           />
 
+          <label htmlFor="edit-staff-image">Staff Photo</label>
           <input
+            id="edit-staff-image"
             type="file"
             accept="image/*"
             onChange={handleImage}

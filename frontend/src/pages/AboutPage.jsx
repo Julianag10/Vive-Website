@@ -7,6 +7,14 @@ export default function AboutPage() {
   const [staffMembers, setStaffMembers] = useState([]);
 
   useEffect(() => {
+    document.body.classList.add("about-page-active");
+
+    return () => {
+      document.body.classList.remove("about-page-active");
+    };
+  }, []);
+
+  useEffect(() => {
     async function loadStaff() {
       try {
         const data = await getStaff();
@@ -22,8 +30,7 @@ export default function AboutPage() {
   return (
     <main className="about-page">
       <section className="about-hero">
-        <p className="about-eyebrow">Community wellness, equity, and belonging</p>
-        <h1>About ViVe Wellness</h1>
+        <h1 className="public-display-page-title">About ViVe Wellness</h1>
         <p>
           ViVe Wellness creates culturally relevant programs that support physical,
           mental, and social wellness for families across Denver and surrounding

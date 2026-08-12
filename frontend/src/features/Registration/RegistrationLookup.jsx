@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import RegistrationService from "./RegistrationService";
 import UnregisterModal from "./UnregisterModal";
@@ -11,6 +12,65 @@ const registrationService = new RegistrationService();
 
 function registrationTitle(registration) {
   return registration.resourceTitle || registration.name || "Registration";
+}
+
+function participantName(registration) {
+  return registration.name || [registration.firstName, registration.lastName]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+}
+
+function detailsLink(registration) {
+  if (registration.type === "event") {
+    return {
+      label: "View event details",
+      to: "/events",
+    };
+  }
+
+  return {
+    label: "View program details",
+    to: `/programs/${registration.resourceId}`,
+  };
+}
+
+function RegistrationLookupResult({ registration, onUnregister }) {
+  const details = detailsLink(registration);
+
+  return (
+    <div className="registration-lookup-result">
+      <h4>{registrationTitle(registration)}</h4>
+      {participantName(registration) && (
+        <p className="registration-lookup-participant">
+          <strong>Participant:</strong> {participantName(registration)}
+        </p>
+      )}
+      {registration.occurrenceDate && (
+        <p>
+          {formatDisplayDate(registration.occurrenceDate, "")}
+          {registration.startTime && registration.endTime
+            ? `, ${formatDisplayTimeRange(registration.startTime, registration.endTime, "")}`
+            : ""}
+        </p>
+      )}
+      <p><strong>Status:</strong> {registration.status}</p>
+
+      {registration.status === "waitlisted" && (
+        <>
+          <p>You are #{registration.waitlistPosition} on the waitlist.</p>
+          <p>Capacity: {registration.capacity ?? "Not set"}</p>
+        </>
+      )}
+
+      <button type="button" onClick={() => onUnregister(registration)}>
+        Unregister
+      </button>
+      <Link className="registration-lookup-details-link" to={details.to}>
+        {details.label}
+      </Link>
+    </div>
+  );
 }
 
 export default function RegistrationLookup({ type, item, registrationData = {} }) {
@@ -56,21 +116,14 @@ export default function RegistrationLookup({ type, item, registrationData = {} }
 
   return (
     <section className="registration-lookup-section">
-      {!showLookup && (
-        <button
-          className="already-registered-btn"
-          type="button"
-          onClick={() => setShowLookup(true)}
-        >
-          Confirm registration or waitlist spot
-        </button>
-      )}
+      {!hasRegistrations && (
+        <div className="registration-lookup-card">
+          <h2>Look Up Registration</h2>
+          <p>
+            Confirm your registration, waitlist status, or current waitlist spot.
+          </p>
 
-      {showLookup && (
-        <div className="registration-lookup-panel">
-          <h2>Find Your Registration</h2>
-
-          {!hasRegistrations && (
+          {showLookup ? (
             <form onSubmit={handleLookup}>
               <input
                 type="email"
@@ -95,45 +148,28 @@ export default function RegistrationLookup({ type, item, registrationData = {} }
                   : "Find Registration"}
               </button>
             </form>
+          ) : (
+            <button
+              className="already-registered-btn"
+              type="button"
+              onClick={() => setShowLookup(true)}
+            >
+              Confirm registration or waitlist spot
+            </button>
           )}
+        </div>
+      )}
 
-          {hasRegistrations && (
-            <>
+      {hasRegistrations && (
+        <div className="registration-lookup-panel">
               <h3>Registrations Found</h3>
               <p>{email}</p>
               {registrations.map((registration) => (
-                <div className="registration-lookup-result" key={registration.id}>
-                  <h4>{registrationTitle(registration)}</h4>
-                  <p>{registration.type === "event" ? "Event" : "Program"}</p>
-                  {registration.occurrenceDate && (
-                    <p>
-                      {formatDisplayDate(registration.occurrenceDate, "")}
-                      {registration.startTime && registration.endTime
-                        ? `, ${formatDisplayTimeRange(registration.startTime, registration.endTime, "")}`
-                        : ""}
-                    </p>
-                  )}
-                  <p>Status: {registration.status}</p>
-
-                  {registration.status === "waitlisted" && (
-                    <>
-                      <p>
-                        You are #{registration.waitlistPosition} on the waitlist.
-                      </p>
-                      <p>
-                        Capacity: {registration.capacity ?? "Not set"}
-                      </p>
-                    </>
-                  )}
-
-                  <button
-                    onClick={() =>
-                      setSelectedUnregisterRegistration(registration)
-                    }
-                  >
-                    Unregister
-                  </button>
-                </div>
+                <RegistrationLookupResult
+                  key={registration.id}
+                  registration={registration}
+                  onUnregister={setSelectedUnregisterRegistration}
+                />
               ))}
               <button
                 type="button"
@@ -141,8 +177,6 @@ export default function RegistrationLookup({ type, item, registrationData = {} }
               >
                 Find another registration
               </button>
-            </>
-          )}
         </div>
       )}
 

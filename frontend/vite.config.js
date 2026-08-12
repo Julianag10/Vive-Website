@@ -31,6 +31,14 @@ export default defineConfig({
                     target: "http://localhost:3000",
                     changeOrigin: true,
                 },
+                "/api/volunteers": {
+                    target: "http://localhost:3000",
+                    changeOrigin: true,
+                },
+                "/api/contact": {
+                    target: "http://localhost:3000",
+                    changeOrigin: true,
+                },
                 "/admin/api": {
                     target: "http://localhost:3000",
                     changeOrigin: true,

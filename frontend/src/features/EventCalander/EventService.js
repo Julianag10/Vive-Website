@@ -58,6 +58,19 @@ export default class EventService {
     return allPrograms;  
   }
 
+  async getAllAdminEvents() {
+    const res = await fetch("/admin/api/events/all", {
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch events");
+    }
+
+    const data = await res.json();
+    return data.map(eventData => new Event(eventData));
+  }
+
   // ADMIN
   async postCreatedEvent(eventData) {
     const payload = this.normalizeOutgoingEvent(eventData);

@@ -20,8 +20,14 @@ export async function loginController(req,res) {
     // - sets session cookie in res header
     req.session.admin = admin;
     
-    // sends browser cookie with session id -> browsers saves cookies in cache
-    res.json({success: true});
+    req.session.save((err) => {
+        if (err) {
+            return res.status(500).json({ error: "Unable to save admin session" });
+        }
+
+        // sends browser cookie with session id -> browsers saves cookies in cache
+        res.json({success: true});
+    });
 }
 
 // destroys the enitre sesssin
@@ -37,6 +43,5 @@ export function meController(req, res) {
     // reports the Session STATE (current memory being used -> admin )
     res.json({admin: req.session.admin || null});
 }
-
 
 

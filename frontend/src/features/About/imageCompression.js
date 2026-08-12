@@ -1,5 +1,5 @@
 const MAX_IMAGE_SIZE = 900;
-const JPEG_QUALITY = 0.82;
+const AVIF_QUALITY = 0.82;
 
 function loadImage(file) {
   return new Promise((resolve, reject) => {
@@ -34,7 +34,27 @@ function imageDimensions(width, height) {
   };
 }
 
-export async function compressStaffImage(file) {
+function staffImageFilename(staffName) {
+  const slug = String(staffName || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${slug || "staff-photo"}.avif`;
+}
+
+function slugifyFilenamePart(value, fallback = "image") {
+  const slug = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return slug || fallback;
+}
+
+async function compressImage(file, { filename, mimeType, quality }) {
   if (!file || !file.type.startsWith("image/")) {
     return file;
   }
@@ -50,16 +70,30 @@ export async function compressStaffImage(file) {
     context.drawImage(image, 0, 0, dimensions.width, dimensions.height);
 
     const blob = await new Promise((resolve) => {
-      canvas.toBlob(resolve, "image/jpeg", JPEG_QUALITY);
+      canvas.toBlob(resolve, mimeType, quality);
     });
 
-    if (!blob || blob.size >= file.size) {
+    if (!blob || blob.type !== mimeType) {
       return file;
     }
 
-    const filename = file.name.replace(/\.[^.]+$/, ".jpg");
-    return new File([blob], filename, { type: "image/jpeg" });
+    return new File([blob], filename, { type: mimeType });
   } catch {
     return file;
   }
+}
+
+export async function compressStaffImage(file, staffName) {
+  return compressImage(file, {
+    filename: staffImageFilename(staffName),
+    mimeType: "image/avif",
+    quality: AVIF_QUALITY,
+  });
+}
+
+export async function compressProgramImage(file, filename = "program-image.png") {
+  return compressImage(file, {
+    filename: `${slugifyFilenamePart(filename.replace(/\.[^.]+$/, ""), "program-image")}.png`,
+    mimeType: "image/png",
+  });
 }

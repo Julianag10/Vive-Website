@@ -23,7 +23,7 @@ export default function EventColorChoices({ value, onChange }) {
             className={`event-color-choice ${value === color ? "is-selected" : ""}`}
             key={color}
             onClick={() => onChange(color)}
-            style={{ backgroundColor: color }}
+            style={{ "--event-choice-color": color }}
             type="button"
           />
         ))}
