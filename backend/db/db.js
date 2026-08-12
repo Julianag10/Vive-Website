@@ -14,6 +14,87 @@ export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
+export async function ensureBaseTables() {
+  await pool.query(`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS donations (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      stripe_session_id TEXT UNIQUE NOT NULL,
+      stripe_payment_intent_id TEXT,
+      amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+      currency TEXT NOT NULL DEFAULT 'usd',
+      status TEXT NOT NULL CHECK (
+        status IN ('pending', 'succeeded', 'failed', 'refunded', 'abandond')
+      ),
+      donor_email TEXT,
+      donation_email_sent_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS programs (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      title TEXT NOT NULL,
+      description TEXT,
+      location TEXT,
+      start_date TIMESTAMP NOT NULL,
+      end_date TIMESTAMP NOT NULL,
+      capacity INTEGER CHECK (capacity >= 0),
+      is_active BOOLEAN NOT NULL DEFAULT true,
+      is_featured BOOLEAN NOT NULL DEFAULT false,
+      created_at TIMESTAMP NOT NULL DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now(),
+      image_url TEXT,
+      gallery_images TEXT[] NOT NULL DEFAULT '{}',
+      activities TEXT[]
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS events (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      title TEXT NOT NULL,
+      description TEXT,
+      location TEXT,
+      color TEXT NOT NULL DEFAULT '#f0c15d',
+      notes TEXT[] NOT NULL DEFAULT '{}',
+      start_date TIMESTAMP NOT NULL,
+      end_date TIMESTAMP NOT NULL,
+      is_active BOOLEAN NOT NULL DEFAULT true,
+      capacity INTEGER CHECK (capacity >= 0),
+      waitlist_enabled BOOLEAN NOT NULL DEFAULT false,
+      is_registerable BOOLEAN NOT NULL DEFAULT false,
+      created_at TIMESTAMP NOT NULL DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS staff (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      role TEXT NOT NULL,
+      staff_group TEXT NOT NULL DEFAULT 'staff',
+      bio TEXT,
+      image_url TEXT,
+      display_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT now(),
+      updated_at TIMESTAMP DEFAULT now()
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS admins (
+      id SERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT now()
+    );
+  `);
+}
+
 export async function ensureEventColumns() {
   await pool.query(`
     ALTER TABLE events

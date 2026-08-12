@@ -32,7 +32,7 @@ import adminEventsRouter from "./routes/admin/events.routes.js";
 import adminStaffRouter from "./routes/admin/staff.routes.js";
 import adminVolunteersRouter from "./routes/admin/volunteers.routes.js";
 import adminContactRouter from "./routes/admin/contact.routes.js";
-import { ensureContactMessagesTable, ensureDonationColumns, ensureEventColumns, ensureProgramColumns, ensureRegistrationTables, ensureStaffColumns, ensureVolunteerApplicationTable } from "./db/db.js";
+import { ensureBaseTables, ensureContactMessagesTable, ensureDonationColumns, ensureEventColumns, ensureProgramColumns, ensureRegistrationTables, ensureStaffColumns, ensureVolunteerApplicationTable } from "./db/db.js";
 
 
 // ---------- EXPRESS APP SETUP ----------------------------------------
@@ -198,6 +198,7 @@ app.use((err, _req, res, _next) => {
 // ---------- START SERVER --------------------
 const PORT = process.env.PORT || 3000;
 
+await ensureBaseTables();
 await ensureEventColumns();
 await ensureDonationColumns();
 await ensureProgramColumns();
